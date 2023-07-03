@@ -6,5 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-scrap = "0.5.0"
-repng = "0.2"
+scrap = "0.5.0"         # For capturing screen
+repng = "0.2"           # For saving image
+show-image = "0.13.1"   # Quickly show images

@@ -1,10 +1,10 @@
-use repng;
 use scrap::{Capturer, Display};
-use std::fs::File;
+use show_image::{create_window, event, ImageInfo, ImageView};
 use std::io::ErrorKind::WouldBlock;
 use std::thread;
 use std::time::Duration;
 
+#[show_image::main]
 fn main() {
     let one_second = Duration::new(1, 0);
     let one_frame = one_second / 60;
@@ -15,7 +15,6 @@ fn main() {
 
     loop {
         // Wait until there's a frame.
-
         let buffer = match capturer.frame() {
             Ok(buffer) => buffer,
             Err(error) => {
@@ -29,31 +28,35 @@ fn main() {
             }
         };
 
-        println!("Captured! Saving...");
-
-        // Flip the ARGB image into a BGRA image.
-
-        let mut bitflipped = Vec::with_capacity(w * h * 4);
+        // Convert BGRA buffer into dense RGB array
+        let mut dense_array: Vec<u8> = Vec::with_capacity(w * h * 3);
         let stride = buffer.len() / h;
-
         for y in 0..h {
             for x in 0..w {
                 let i = stride * y + 4 * x;
-                bitflipped.extend_from_slice(&[buffer[i + 2], buffer[i + 1], buffer[i], 255]);
+                dense_array.extend_from_slice(&[buffer[i + 2], buffer[i + 1], buffer[i]]);
             }
         }
 
-        // Save the image.
+        // Show original image
+        let image = ImageView::new(ImageInfo::rgb8(w as u32, h as u32), &dense_array);
 
-        repng::encode(
-            File::create("screenshot.png").unwrap(),
-            w as u32,
-            h as u32,
-            &bitflipped,
-        )
-        .unwrap();
+        let window = create_window("image", Default::default()).unwrap();
+        window.set_image("image-001", &image).unwrap();
 
-        println!("Image saved to `screenshot.png`.");
+        // Print keyboard events until Escape is pressed, then exit.
+        // If the user closes the window, the channel is closed and the loop also exits.
+        for event in window.event_channel().unwrap() {
+            if let event::WindowEvent::KeyboardInput(event) = event {
+                println!("{:#?}", event);
+                if event.input.key_code == Some(event::VirtualKeyCode::Escape)
+                    && event.input.state.is_pressed()
+                {
+                    break;
+                }
+            }
+        }
+
         break;
     }
 }
