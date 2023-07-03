@@ -1,5 +1,6 @@
+use image::RgbImage;
 use scrap::{Capturer, Display};
-use show_image::{create_window, event, ImageInfo, ImageView};
+use show_image::{create_window, event};
 use std::io::ErrorKind::WouldBlock;
 use std::thread;
 use std::time::{Duration, Instant};
@@ -12,8 +13,6 @@ fn main() {
     let display = Display::primary().expect("Couldn't find primary display.");
     let mut capturer = Capturer::new(display).expect("Couldn't begin capture.");
     let (w, h) = (capturer.width(), capturer.height());
-
-    let mut dense_array: Vec<u8> = Vec::with_capacity(w * h * 3);
 
     let window = create_window("image", Default::default()).unwrap();
 
@@ -33,18 +32,18 @@ fn main() {
         };
 
         // Convert BGRA buffer into dense RGB array
-        dense_array.clear();
+        let mut raw_pixels: Vec<u8> = Vec::with_capacity(w * h * 3);
         let stride = buffer.len() / h;
         for y in 0..h {
             for x in 0..w {
                 let i = stride * y + 4 * x;
-                dense_array.extend_from_slice(&[buffer[i + 2], buffer[i + 1], buffer[i]]);
+                raw_pixels.extend_from_slice(&[buffer[i + 2], buffer[i + 1], buffer[i]]);
             }
         }
 
         // Show original image
-        let image = ImageView::new(ImageInfo::rgb8(w as u32, h as u32), &dense_array);
-        window.set_image("image-001", &image).unwrap();
+        let image = RgbImage::from_raw(w as u32, h as u32, raw_pixels).unwrap();
+        window.set_image("image-001", image).unwrap();
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
