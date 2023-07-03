@@ -1,4 +1,5 @@
 use image::{DynamicImage, GrayImage, RgbImage};
+use image::io::Reader as ImageReader;
 use imageproc::contrast::threshold;
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
@@ -20,38 +21,41 @@ fn main() {
     let window_threshold = create_window("Threshold", Default::default()).unwrap();
 
     loop {
-        // Wait until there's a frame.
-        let buffer = match capturer.frame() {
-            Ok(buffer) => buffer,
-            Err(error) => {
-                if error.kind() == WouldBlock {
-                    // Keep spinning.
-                    thread::sleep(one_frame);
-                    continue;
-                } else {
-                    panic!("Error: {}", error);
-                }
-            }
-        };
+        // // Wait until there's a frame.
+        // let buffer = match capturer.frame() {
+        //     Ok(buffer) => buffer,
+        //     Err(error) => {
+        //         if error.kind() == WouldBlock {
+        //             // Keep spinning.
+        //             thread::sleep(one_frame);
+        //             continue;
+        //         } else {
+        //             panic!("Error: {}", error);
+        //         }
+        //     }
+        // };
 
-        // Convert BGRA buffer into dense RGB array
-        let mut raw_pixels: Vec<u8> = Vec::with_capacity(w * h * 3);
-        let stride = buffer.len() / h;
-        for y in 0..h {
-            for x in 0..w {
-                let i = stride * y + 4 * x;
-                raw_pixels.extend_from_slice(&[buffer[i + 2], buffer[i + 1], buffer[i]]);
-            }
-        }
+        // // Convert BGRA buffer into dense RGB array
+        // let mut raw_pixels: Vec<u8> = Vec::with_capacity(w * h * 3);
+        // let stride = buffer.len() / h;
+        // for y in 0..h {
+        //     for x in 0..w {
+        //         let i = stride * y + 4 * x;
+        //         raw_pixels.extend_from_slice(&[buffer[i + 2], buffer[i + 1], buffer[i]]);
+        //     }
+        // }
 
         // Show initial image
-        let image_initial = RgbImage::from_raw(w as u32, h as u32, raw_pixels).unwrap();
+        // let image_initial = RgbImage::from_raw(w as u32, h as u32, raw_pixels).unwrap();
+
+        let image_initial = ImageReader::open("screenshot.png").unwrap().decode().unwrap();
+
         window_initial
             .set_image("image-001", image_initial.clone())
             .unwrap();
 
         // Covert to greyscale
-        let image_gray: GrayImage = DynamicImage::ImageRgb8(image_initial).into_luma8();
+        let image_gray: GrayImage = image_initial.into_luma8();
         window_grey.set_image("Grey", image_gray.clone()).unwrap();
 
         // Threhsold to find white section
