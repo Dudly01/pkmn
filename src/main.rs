@@ -1,4 +1,5 @@
-use image::RgbImage;
+use image::{DynamicImage, GrayImage, RgbImage};
+use imageproc::contrast::threshold;
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 use std::io::ErrorKind::WouldBlock;
@@ -14,7 +15,9 @@ fn main() {
     let mut capturer = Capturer::new(display).expect("Couldn't begin capture.");
     let (w, h) = (capturer.width(), capturer.height());
 
-    let window = create_window("image", Default::default()).unwrap();
+    let window_initial = create_window("Initial", Default::default()).unwrap();
+    let window_grey = create_window("Greyscale", Default::default()).unwrap();
+    let window_threshold = create_window("Threshold", Default::default()).unwrap();
 
     loop {
         // Wait until there's a frame.
@@ -41,14 +44,26 @@ fn main() {
             }
         }
 
-        // Show original image
-        let image = RgbImage::from_raw(w as u32, h as u32, raw_pixels).unwrap();
-        window.set_image("image-001", image).unwrap();
+        // Show initial image
+        let image_initial = RgbImage::from_raw(w as u32, h as u32, raw_pixels).unwrap();
+        window_initial
+            .set_image("image-001", image_initial.clone())
+            .unwrap();
+
+        // Covert to greyscale
+        let image_gray: GrayImage = DynamicImage::ImageRgb8(image_initial).into_luma8();
+        window_grey.set_image("Grey", image_gray.clone()).unwrap();
+
+        // Threhsold to find white section
+        let image_binary = threshold(&image_gray, 200);
+        window_threshold
+            .set_image("Grey", image_binary.clone())
+            .unwrap();
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
         let time_wait = Instant::now();
-        for event in window.event_channel().unwrap() {
+        for event in window_initial.event_channel().unwrap() {
             if let event::WindowEvent::KeyboardInput(event) = event {
                 println!("{:#?}", event);
                 if event.input.key_code == Some(event::VirtualKeyCode::Escape)
