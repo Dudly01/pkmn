@@ -2,7 +2,7 @@ use scrap::{Capturer, Display};
 use show_image::{create_window, event, ImageInfo, ImageView};
 use std::io::ErrorKind::WouldBlock;
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 #[show_image::main]
 fn main() {
@@ -12,6 +12,10 @@ fn main() {
     let display = Display::primary().expect("Couldn't find primary display.");
     let mut capturer = Capturer::new(display).expect("Couldn't begin capture.");
     let (w, h) = (capturer.width(), capturer.height());
+
+    let mut dense_array: Vec<u8> = Vec::with_capacity(w * h * 3);
+
+    let window = create_window("image", Default::default()).unwrap();
 
     loop {
         // Wait until there's a frame.
@@ -29,7 +33,7 @@ fn main() {
         };
 
         // Convert BGRA buffer into dense RGB array
-        let mut dense_array: Vec<u8> = Vec::with_capacity(w * h * 3);
+        dense_array.clear();
         let stride = buffer.len() / h;
         for y in 0..h {
             for x in 0..w {
@@ -40,23 +44,23 @@ fn main() {
 
         // Show original image
         let image = ImageView::new(ImageInfo::rgb8(w as u32, h as u32), &dense_array);
-
-        let window = create_window("image", Default::default()).unwrap();
         window.set_image("image-001", &image).unwrap();
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
+        let time_wait = Instant::now();
         for event in window.event_channel().unwrap() {
             if let event::WindowEvent::KeyboardInput(event) = event {
                 println!("{:#?}", event);
                 if event.input.key_code == Some(event::VirtualKeyCode::Escape)
                     && event.input.state.is_pressed()
                 {
-                    break;
+                    return;
                 }
             }
+            if time_wait.elapsed().as_millis() > 50 {
+                break;
+            }
         }
-
-        break;
     }
 }
