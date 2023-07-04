@@ -1,6 +1,9 @@
 # Rust build files
 target/*
 
+# Images for development
+*.png
+
 # Libraries do not have this in version control
 # https://doc.rust-lang.org/cargo/faq.html#why-do-binaries-have-cargolock-in-version-control-but-not-libraries
 Cargo.lock
