@@ -1,61 +1,12 @@
 use image::io::Reader as ImageReader;
-use image::{imageops, DynamicImage, GrayImage, ImageBuffer, RgbImage};
-use imageproc::contours::Contour;
+use image::{DynamicImage, GrayImage, RgbImage};
 use imageproc::contrast::threshold;
-use imageproc::rect::Rect;
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
-use std::cmp::{max, min};
-use std::ffi::c_float;
-use std::io::ErrorKind::WouldBlock;
-use std::thread;
+
 use std::time::{Duration, Instant};
 
-/// Returns the inclusive bounding rectangle for the points of the contour.
-fn get_bounding_box(contour: &Contour<i32>) -> Result<Rect, &str> {
-    if contour.points.len() < 1 {
-        return Err("Contour contains no points!");
-    }
-
-    let curr_point = &contour.points[0];
-    let mut x_min = curr_point.x;
-    let mut x_max = curr_point.x;
-    let mut y_min = curr_point.y;
-    let mut y_max = curr_point.y;
-
-    for point in &contour.points[1..] {
-        x_min = min(x_min, point.x);
-        x_max = max(x_max, point.x);
-        y_min = min(y_min, point.y);
-        y_max = max(y_max, point.y);
-    }
-
-    let width = x_max - x_min + 1;
-    let height = y_max - y_min + 1;
-    let rectangle = Rect::at(x_min, y_min).of_size(width as u32, height as u32);
-    Ok(rectangle)
-}
-
-fn get_possible_screens(contours: &Vec<Contour<i32>>) -> Vec<Rect> {
-    // Find potential contours
-    let mut potential_rects: Vec<Rect> = Vec::with_capacity(8);
-    for contour in contours {
-        let current_rect = get_bounding_box(&contour).unwrap();
-
-        if current_rect.width() < 160 || current_rect.height() < 144 {
-            continue; // Too small size
-        }
-
-        let target_ratio = 10.0 / 9.0;
-        let width_height_ratio = current_rect.width() as f32 / current_rect.height() as f32;
-        if (width_height_ratio - target_ratio).abs() > 0.01 {
-            continue; // Ratio is not within tolerance
-        }
-
-        potential_rects.push(current_rect);
-    }
-    potential_rects
-}
+use pokemon_dv_calculator as pkmn;
 
 #[show_image::main]
 fn main() {
@@ -103,12 +54,10 @@ fn main() {
         let image_initial = ImageReader::open("screenshot.png")
             .unwrap()
             .decode()
-            .unwrap();       
+            .unwrap();
 
-        // Covert to greyscale
         let image_gray: GrayImage = image_initial.clone().into_luma8();
 
-        // Threhsold to find white section
         let image_threshold = threshold(&image_gray, 200);
 
         let erode_size = 1;
@@ -118,13 +67,10 @@ fn main() {
             erode_size,
         );
 
-        // Find contours
         let contours = imageproc::contours::find_contours::<i32>(&image_erode);
 
-        // Find potential contours
-        let potential_rects = get_possible_screens(&contours);
+        let potential_rects = pkmn::get_possible_screens(&contours);
 
-        // Find biggest contour
         let largest_rect = potential_rects
             .iter()
             .max_by_key(|rect| rect.width() * rect.height());
@@ -164,7 +110,9 @@ fn main() {
                 if event.input.key_code == Some(event::VirtualKeyCode::S)
                     && event.input.state.is_pressed()
                 {
-                    image_screen.save("gameboy.png").expect("Could not save image");
+                    image_screen
+                        .save("gameboy.png")
+                        .expect("Could not save image");
                 }
             }
             // if time_wait.elapsed().as_millis() > 50 {
