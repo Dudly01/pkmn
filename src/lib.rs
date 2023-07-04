@@ -27,9 +27,11 @@ pub fn get_bounding_box(contour: &Contour<i32>) -> Result<Rect, &str> {
     Ok(rectangle)
 }
 
-/// Finds the GameBoy screen candidates within the contours
-pub fn get_possible_screens(contours: &Vec<Contour<i32>>) -> Vec<Rect> {
+/// Finds the GameBoy screen candidates within the contours.
+/// Candidates have a minimum size of 160x140 and a ratio of ~10:9.
+pub fn find_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Rect> {
     let target_ratio = 10.0 / 9.0;
+    let tolerance = 0.01;
 
     let mut potential_rects: Vec<Rect> = Vec::with_capacity(8);
     for contour in contours {
@@ -40,7 +42,7 @@ pub fn get_possible_screens(contours: &Vec<Contour<i32>>) -> Vec<Rect> {
         }
 
         let ratio = bbox.width() as f32 / bbox.height() as f32;
-        if (ratio - target_ratio).abs() > 0.01 {
+        if (ratio - target_ratio).abs() > tolerance {
             continue; // Not within tolerance
         }
 

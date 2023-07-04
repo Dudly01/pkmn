@@ -69,13 +69,13 @@ fn main() {
 
         let contours = imageproc::contours::find_contours::<i32>(&image_erode);
 
-        let potential_rects = pkmn::get_possible_screens(&contours);
+        let screen_candidates = pkmn::find_screen_candidates(&contours);
 
-        let largest_rect = potential_rects
+        let largest_candidate = screen_candidates
             .iter()
             .max_by_key(|rect| rect.width() * rect.height());
 
-        let image_screen = match largest_rect {
+        let image_screen = match largest_candidate {
             Some(r) => {
                 let image_screen = image_initial.clone().crop(
                     r.left() as u32 - erode_size as u32,
