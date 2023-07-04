@@ -145,7 +145,7 @@ fn main() {
                 let image_screen = image_initial.clone().crop(
                     r.left() as u32 - erode_size as u32,
                     r.top() as u32 - erode_size as u32,
-                    r.width() +  2 * erode_size as u32,
+                    r.width() + 2 * erode_size as u32,
                     r.height() + 2 * erode_size as u32,
                 );
                 image_screen
@@ -170,6 +170,12 @@ fn main() {
                     && event.input.state.is_pressed()
                 {
                     return;
+                }
+
+                if event.input.key_code == Some(event::VirtualKeyCode::S)
+                    && event.input.state.is_pressed()
+                {
+                    image_screen.save("gameboy.png").expect("Could not save image");
                 }
             }
             // if time_wait.elapsed().as_millis() > 50 {
