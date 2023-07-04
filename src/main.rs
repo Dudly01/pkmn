@@ -66,10 +66,10 @@ fn main() {
     let mut capturer = Capturer::new(display).expect("Couldn't begin capture.");
     let (w, h) = (capturer.width(), capturer.height());
 
-    let window_initial = create_window("Initial", Default::default()).unwrap();
-    let window_grey = create_window("Greyscale", Default::default()).unwrap();
-    let window_threshold = create_window("Threshold", Default::default()).unwrap();
-    let window_erode = create_window("Erode", Default::default()).unwrap();
+    // let window_initial = create_window("Initial", Default::default()).unwrap();
+    // let window_grey = create_window("Greyscale", Default::default()).unwrap();
+    // let window_threshold = create_window("Threshold", Default::default()).unwrap();
+    // let window_erode = create_window("Erode", Default::default()).unwrap();
     let window_gameboy = create_window("GameBoy", Default::default()).unwrap();
 
     loop {
@@ -103,21 +103,13 @@ fn main() {
         let image_initial = ImageReader::open("screenshot.png")
             .unwrap()
             .decode()
-            .unwrap();
-
-        window_initial
-            .set_image("image-001", image_initial.clone())
-            .unwrap();
+            .unwrap();       
 
         // Covert to greyscale
         let image_gray: GrayImage = image_initial.clone().into_luma8();
-        window_grey.set_image("Grey", image_gray.clone()).unwrap();
 
         // Threhsold to find white section
         let image_threshold = threshold(&image_gray, 200);
-        window_threshold
-            .set_image("Grey", image_threshold.clone())
-            .unwrap();
 
         let erode_size = 1;
         let image_erode = imageproc::morphology::erode(
@@ -125,9 +117,6 @@ fn main() {
             imageproc::distance_transform::Norm::LInf,
             erode_size,
         );
-        window_erode
-            .set_image("Eroded", image_erode.clone())
-            .unwrap();
 
         // Find contours
         let contours = imageproc::contours::find_contours::<i32>(&image_erode);
@@ -163,7 +152,7 @@ fn main() {
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
         let time_wait = Instant::now();
-        for event in window_initial.event_channel().unwrap() {
+        for event in window_gameboy.event_channel().unwrap() {
             if let event::WindowEvent::KeyboardInput(event) = event {
                 println!("{:#?}", event);
                 if event.input.key_code == Some(event::VirtualKeyCode::Escape)
