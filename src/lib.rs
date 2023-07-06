@@ -52,7 +52,7 @@ pub fn find_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Rect> {
 }
 
 /// Returns a vector with the available chars, and another with their bitmaps.
-/// The bitmaps have 7x7 pixels, 1 corresponds to the foreground and 0 to the background.
+/// The bitmaps have 7x7 pixels.
 pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
     let mut chars: Vec<char> = Vec::with_capacity(11);
     let mut char_fonts: Vec<[u8; 49]> = Vec::with_capacity(11);
@@ -66,7 +66,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         1, 1, 0, 0, 0, 1, 1, //
         0, 1, 1, 0, 0, 1, 0, //
         0, 0, 1, 1, 1, 0, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('0');
     char_fonts.push(char);
 
@@ -79,7 +84,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         0, 0, 0, 1, 1, 0, 0, //
         0, 0, 0, 1, 1, 0, 0, //
         0, 1, 1, 1, 1, 1, 1, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('1');
     char_fonts.push(char);
 
@@ -92,7 +102,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         0, 1, 1, 1, 1, 0, 0, //
         1, 1, 1, 0, 0, 0, 0, //
         1, 1, 1, 1, 1, 1, 1, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('2');
     char_fonts.push(char);
 
@@ -105,7 +120,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         0, 0, 0, 0, 0, 1, 1, //
         1, 1, 0, 0, 0, 1, 1, //
         0, 1, 1, 1, 1, 1, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('3');
     char_fonts.push(char);
 
@@ -118,7 +138,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         1, 1, 0, 0, 1, 1, 0, //
         1, 1, 1, 1, 1, 1, 1, //
         0, 0, 0, 0, 1, 1, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('4');
     char_fonts.push(char);
 
@@ -131,7 +156,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         0, 0, 0, 0, 0, 1, 1, //
         1, 1, 0, 0, 0, 1, 1, //
         0, 1, 1, 1, 1, 1, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('5');
     char_fonts.push(char);
 
@@ -144,7 +174,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         1, 1, 0, 0, 0, 1, 1, //
         1, 1, 0, 0, 0, 1, 1, //
         0, 1, 1, 1, 1, 1, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('6');
     char_fonts.push(char);
 
@@ -157,7 +192,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         0, 0, 0, 1, 1, 0, 0, //
         0, 0, 1, 1, 0, 0, 0, //
         0, 0, 1, 1, 0, 0, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('7');
     char_fonts.push(char);
 
@@ -170,7 +210,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         1, 1, 0, 0, 0, 1, 1, //
         1, 1, 0, 0, 0, 1, 1, //
         0, 1, 1, 1, 1, 1, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('8');
     char_fonts.push(char);
 
@@ -183,7 +228,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         0, 1, 1, 1, 1, 1, 1, //
         0, 0, 0, 0, 0, 1, 1, //
         0, 1, 1, 1, 1, 1, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push('9');
     char_fonts.push(char);
 
@@ -196,7 +246,12 @@ pub fn create_char_bitmaps() -> (Vec<char>, Vec<[u8; 49]>) {
         0, 0, 0, 0, 0, 0, 0, //
         0, 0, 0, 0, 0, 0, 0, //
         0, 0, 0, 0, 0, 0, 0, //
-    ];
+    ]
+    .iter()
+    .map(|&n| if n == 0 { 255 } else { 0 })
+    .collect::<Vec<u8>>()
+    .try_into()
+    .unwrap();
     chars.push(' ');
     char_fonts.push(char);
 
