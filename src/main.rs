@@ -5,6 +5,7 @@ use image::{DynamicImage, GrayImage, RgbImage};
 use imageproc::contrast::threshold;
 use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
+use pkmn::{create_char_bitmaps, match_field};
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 
@@ -21,12 +22,15 @@ fn main() {
     let mut capturer = Capturer::new(display).expect("Couldn't begin capture.");
     let (w, h) = (capturer.width(), capturer.height());
 
+    let known_chars = create_char_bitmaps();
+
     // let window_initial = create_window("Initial", Default::default()).unwrap();
     // let window_grey = create_window("Greyscale", Default::default()).unwrap();
     // let window_threshold = create_window("Threshold", Default::default()).unwrap();
     // let window_erode = create_window("Erode", Default::default()).unwrap();
     let window_gameboy = create_window("GameBoy", Default::default()).unwrap();
     let window_roi = create_window("Region of Interest", Default::default()).unwrap();
+    let window_debug = create_window("Debug", Default::default()).unwrap();
 
     loop {
         // // Wait until there's a frame.
@@ -38,7 +42,7 @@ fn main() {
         //             thread::sleep(one_frame);
         //             continue;
         //         } else {
-        //             panic!("Error: {}", error);
+        //             panic!("Error: '{}'", error);
         //         }
         //     }
         // };
@@ -112,29 +116,48 @@ fn main() {
         let y_pkmn_no: u32 = 56;
         let img_pkmn_no = img_screen_small.crop(x_pkmn_no, y_pkmn_no, field_width, field_height);
 
+        // window_debug
+        //     .set_image("Debug", img_pkmn_no.clone())
+        //     .unwrap();
+
+        // let pkmn_no = match_field(img_pkmn_no, &known_chars).unwrap();
+        // println!("No: '{}'", pkmn_no);
+
         let x_level: u32 = 120;
         let y_level: u32 = 16;
         let img_level = img_screen_small.crop(x_level, y_level, field_width, field_height);
+        let level = match_field(img_level, &known_chars).unwrap();
+        println!("level: '{}'", level);
 
         let x_hp: u32 = 150 - field_width + 1;
         let y_hp: u32 = 39 - field_height;
         let img_hp = img_screen_small.crop(x_hp, y_hp, field_width, field_height);
+        let hp = match_field(img_hp, &known_chars).unwrap();
+        println!("hp: '{}'", hp);
 
         let x_attack: u32 = 70 - field_width + 1;
         let y_attack: u32 = 87 - field_height;
         let img_attack = img_screen_small.crop(x_attack, y_attack, field_width, field_height);
+        let attack = match_field(img_attack, &known_chars).unwrap();
+        println!("attack: '{}'", attack);
 
         let x_defense: u32 = 70 - field_width + 1;
         let y_defense: u32 = 103 - field_height;
         let img_defense = img_screen_small.crop(x_defense, y_defense, field_width, field_height);
+        let defense = match_field(img_defense, &known_chars).unwrap();
+        println!("defense: '{}'", defense);
 
         let x_speed: u32 = 70 - field_width + 1;
         let y_speed: u32 = 119 - field_height;
         let img_speed = img_screen_small.crop(x_speed, y_speed, field_width, field_height);
+        let speed = match_field(img_speed, &known_chars).unwrap();
+        println!("speed: '{}'", speed);
 
         let x_special: u32 = 70 - field_width + 1;
         let y_special: u32 = 135 - field_height;
         let img_special = img_screen_small.crop(x_special, y_special, field_width, field_height);
+        let special = match_field(img_special, &known_chars).unwrap();
+        println!("special: '{}'", special);
 
         let img_roi = img_screen_small;
 
