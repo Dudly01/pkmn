@@ -1,61 +1,16 @@
+use image::imageops::FilterType;
 use image::io::Reader as ImageReader;
-use image::{imageops, DynamicImage, GrayImage, ImageBuffer, RgbImage};
-use imageproc::contours::Contour;
+use image::Rgba;
+use image::{DynamicImage, GrayImage, RgbImage};
 use imageproc::contrast::threshold;
+use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
-use std::cmp::{max, min};
-use std::ffi::c_float;
-use std::io::ErrorKind::WouldBlock;
-use std::thread;
+
 use std::time::{Duration, Instant};
 
-/// Returns the inclusive bounding rectangle for the points of the contour.
-fn get_bounding_box(contour: &Contour<i32>) -> Result<Rect, &str> {
-    if contour.points.len() < 1 {
-        return Err("Contour contains no points!");
-    }
-
-    let curr_point = &contour.points[0];
-    let mut x_min = curr_point.x;
-    let mut x_max = curr_point.x;
-    let mut y_min = curr_point.y;
-    let mut y_max = curr_point.y;
-
-    for point in &contour.points[1..] {
-        x_min = min(x_min, point.x);
-        x_max = max(x_max, point.x);
-        y_min = min(y_min, point.y);
-        y_max = max(y_max, point.y);
-    }
-
-    let width = x_max - x_min + 1;
-    let height = y_max - y_min + 1;
-    let rectangle = Rect::at(x_min, y_min).of_size(width as u32, height as u32);
-    Ok(rectangle)
-}
-
-fn get_possible_screens(contours: &Vec<Contour<i32>>) -> Vec<Rect> {
-    // Find potential contours
-    let mut potential_rects: Vec<Rect> = Vec::with_capacity(8);
-    for contour in contours {
-        let current_rect = get_bounding_box(&contour).unwrap();
-
-        if current_rect.width() < 160 || current_rect.height() < 144 {
-            continue; // Too small size
-        }
-
-        let target_ratio = 10.0 / 9.0;
-        let width_height_ratio = current_rect.width() as f32 / current_rect.height() as f32;
-        if (width_height_ratio - target_ratio).abs() > 0.01 {
-            continue; // Ratio is not within tolerance
-        }
-
-        potential_rects.push(current_rect);
-    }
-    potential_rects
-}
+use pokemon_dv_calculator as pkmn;
 
 #[show_image::main]
 fn main() {
@@ -66,11 +21,12 @@ fn main() {
     let mut capturer = Capturer::new(display).expect("Couldn't begin capture.");
     let (w, h) = (capturer.width(), capturer.height());
 
-    let window_initial = create_window("Initial", Default::default()).unwrap();
-    let window_grey = create_window("Greyscale", Default::default()).unwrap();
-    let window_threshold = create_window("Threshold", Default::default()).unwrap();
-    let window_erode = create_window("Erode", Default::default()).unwrap();
+    // let window_initial = create_window("Initial", Default::default()).unwrap();
+    // let window_grey = create_window("Greyscale", Default::default()).unwrap();
+    // let window_threshold = create_window("Threshold", Default::default()).unwrap();
+    // let window_erode = create_window("Erode", Default::default()).unwrap();
     let window_gameboy = create_window("GameBoy", Default::default()).unwrap();
+    let window_roi = create_window("Region of Interest", Default::default()).unwrap();
 
     loop {
         // // Wait until there's a frame.
@@ -105,19 +61,9 @@ fn main() {
             .decode()
             .unwrap();
 
-        window_initial
-            .set_image("image-001", image_initial.clone())
-            .unwrap();
-
-        // Covert to greyscale
         let image_gray: GrayImage = image_initial.clone().into_luma8();
-        window_grey.set_image("Grey", image_gray.clone()).unwrap();
 
-        // Threhsold to find white section
         let image_threshold = threshold(&image_gray, 200);
-        window_threshold
-            .set_image("Grey", image_threshold.clone())
-            .unwrap();
 
         let erode_size = 1;
         let image_erode = imageproc::morphology::erode(
@@ -125,29 +71,26 @@ fn main() {
             imageproc::distance_transform::Norm::LInf,
             erode_size,
         );
-        window_erode
-            .set_image("Eroded", image_erode.clone())
-            .unwrap();
 
-        // Find contours
         let contours = imageproc::contours::find_contours::<i32>(&image_erode);
 
-        // Find potential contours
-        let potential_rects = get_possible_screens(&contours);
+        let screen_candidates = pkmn::find_screen_candidates(&contours);
 
-        // Find biggest contour
-        let largest_rect = potential_rects
+        let largest_candidate = screen_candidates
             .iter()
             .max_by_key(|rect| rect.width() * rect.height());
 
-        let image_screen = match largest_rect {
+        let mut found_screen = false;
+
+        let image_screen = match largest_candidate {
             Some(r) => {
                 let image_screen = image_initial.clone().crop(
                     r.left() as u32 - erode_size as u32,
                     r.top() as u32 - erode_size as u32,
-                    r.width() +  2 * erode_size as u32,
+                    r.width() + 2 * erode_size as u32,
                     r.height() + 2 * erode_size as u32,
                 );
+                found_screen = true;
                 image_screen
             }
             None => {
@@ -160,16 +103,103 @@ fn main() {
             .set_image("GameBoy", image_screen.clone())
             .unwrap();
 
+        let mut img_screen_small = image_screen.resize_exact(160, 144, FilterType::Nearest);
+
+        let field_width: u32 = 23;
+        let field_height: u32 = 7;
+
+        let x_pkmn_no: u32 = 24;
+        let y_pkmn_no: u32 = 56;
+        let img_pkmn_no = img_screen_small.crop(x_pkmn_no, y_pkmn_no, field_width, field_height);
+
+        let x_level: u32 = 120;
+        let y_level: u32 = 16;
+        let img_level = img_screen_small.crop(x_level, y_level, field_width, field_height);
+
+        let x_hp: u32 = 150 - field_width + 1;
+        let y_hp: u32 = 39 - field_height;
+        let img_hp = img_screen_small.crop(x_hp, y_hp, field_width, field_height);
+
+        let x_attack: u32 = 70 - field_width + 1;
+        let y_attack: u32 = 87 - field_height;
+        let img_attack = img_screen_small.crop(x_attack, y_attack, field_width, field_height);
+
+        let x_defense: u32 = 70 - field_width + 1;
+        let y_defense: u32 = 103 - field_height;
+        let img_defense = img_screen_small.crop(x_defense, y_defense, field_width, field_height);
+
+        let x_speed: u32 = 70 - field_width + 1;
+        let y_speed: u32 = 119 - field_height;
+        let img_speed = img_screen_small.crop(x_speed, y_speed, field_width, field_height);
+
+        let x_special: u32 = 70 - field_width + 1;
+        let y_special: u32 = 135 - field_height;
+        let img_special = img_screen_small.crop(x_special, y_special, field_width, field_height);
+
+        let img_roi = img_screen_small;
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_pkmn_no as i32, y_pkmn_no as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_level as i32, y_level as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_hp as i32, y_hp as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_attack as i32, y_attack as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_defense as i32, y_defense as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_speed as i32, y_speed as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_special as i32, y_special as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        window_roi.set_image("Stats", img_roi.clone()).unwrap();
+
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
         let time_wait = Instant::now();
-        for event in window_initial.event_channel().unwrap() {
+        for event in window_roi.event_channel().unwrap() {
             if let event::WindowEvent::KeyboardInput(event) = event {
                 println!("{:#?}", event);
                 if event.input.key_code == Some(event::VirtualKeyCode::Escape)
                     && event.input.state.is_pressed()
                 {
                     return;
+                }
+
+                if event.input.key_code == Some(event::VirtualKeyCode::S)
+                    && event.input.state.is_pressed()
+                {
+                    image_screen
+                        .save("gameboy.png")
+                        .expect("Could not save image");
                 }
             }
             // if time_wait.elapsed().as_millis() > 50 {
