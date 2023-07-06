@@ -1,6 +1,10 @@
+use image::imageops::FilterType;
 use image::io::Reader as ImageReader;
+use image::Rgba;
 use image::{DynamicImage, GrayImage, RgbImage};
 use imageproc::contrast::threshold;
+use imageproc::drawing::draw_hollow_rect;
+use imageproc::rect::Rect;
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 
@@ -22,6 +26,7 @@ fn main() {
     // let window_threshold = create_window("Threshold", Default::default()).unwrap();
     // let window_erode = create_window("Erode", Default::default()).unwrap();
     let window_gameboy = create_window("GameBoy", Default::default()).unwrap();
+    let window_roi = create_window("Region of Interest", Default::default()).unwrap();
 
     loop {
         // // Wait until there's a frame.
@@ -75,6 +80,8 @@ fn main() {
             .iter()
             .max_by_key(|rect| rect.width() * rect.height());
 
+        let mut found_screen = false;
+
         let image_screen = match largest_candidate {
             Some(r) => {
                 let image_screen = image_initial.clone().crop(
@@ -83,6 +90,7 @@ fn main() {
                     r.width() + 2 * erode_size as u32,
                     r.height() + 2 * erode_size as u32,
                 );
+                found_screen = true;
                 image_screen
             }
             None => {
@@ -95,10 +103,89 @@ fn main() {
             .set_image("GameBoy", image_screen.clone())
             .unwrap();
 
+        let mut img_screen_small = image_screen.resize_exact(160, 144, FilterType::Nearest);
+
+        let field_width: u32 = 23;
+        let field_height: u32 = 7;
+
+        let x_pkmn_no: u32 = 24;
+        let y_pkmn_no: u32 = 56;
+        let img_pkmn_no = img_screen_small.crop(x_pkmn_no, y_pkmn_no, field_width, field_height);
+
+        let x_level: u32 = 120;
+        let y_level: u32 = 16;
+        let img_level = img_screen_small.crop(x_level, y_level, field_width, field_height);
+
+        let x_hp: u32 = 150 - field_width + 1;
+        let y_hp: u32 = 39 - field_height;
+        let img_hp = img_screen_small.crop(x_hp, y_hp, field_width, field_height);
+
+        let x_attack: u32 = 70 - field_width + 1;
+        let y_attack: u32 = 87 - field_height;
+        let img_attack = img_screen_small.crop(x_attack, y_attack, field_width, field_height);
+
+        let x_defense: u32 = 70 - field_width + 1;
+        let y_defense: u32 = 103 - field_height;
+        let img_defense = img_screen_small.crop(x_defense, y_defense, field_width, field_height);
+
+        let x_speed: u32 = 70 - field_width + 1;
+        let y_speed: u32 = 119 - field_height;
+        let img_speed = img_screen_small.crop(x_speed, y_speed, field_width, field_height);
+
+        let x_special: u32 = 70 - field_width + 1;
+        let y_special: u32 = 135 - field_height;
+        let img_special = img_screen_small.crop(x_special, y_special, field_width, field_height);
+
+        let img_roi = img_screen_small;
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_pkmn_no as i32, y_pkmn_no as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_level as i32, y_level as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_hp as i32, y_hp as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_attack as i32, y_attack as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_defense as i32, y_defense as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_speed as i32, y_speed as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        let img_roi = draw_hollow_rect(
+            &img_roi,
+            Rect::at(x_special as i32, y_special as i32).of_size(field_width, field_height),
+            Rgba([0, 255, 0, 255]),
+        );
+
+        window_roi.set_image("Stats", img_roi.clone()).unwrap();
+
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
         let time_wait = Instant::now();
-        for event in window_gameboy.event_channel().unwrap() {
+        for event in window_roi.event_channel().unwrap() {
             if let event::WindowEvent::KeyboardInput(event) = event {
                 println!("{:#?}", event);
                 if event.input.key_code == Some(event::VirtualKeyCode::Escape)
