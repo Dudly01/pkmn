@@ -12,6 +12,7 @@ use show_image::{create_window, event};
 use std::time::{Duration, Instant};
 
 use pokemon_dv_calculator as pkmn;
+mod pkmn_stats;
 
 #[show_image::main]
 fn main() {
@@ -120,8 +121,8 @@ fn main() {
         //     .set_image("Debug", img_pkmn_no.clone())
         //     .unwrap();
 
-        // let pkmn_no = match_field(img_pkmn_no, &known_chars).unwrap();
-        // println!("No: '{}'", pkmn_no);
+        let pkmn_no = match_field(img_pkmn_no, &known_chars).unwrap();
+        println!("No: '{}'", pkmn_no);
 
         let x_level: u32 = 120;
         let y_level: u32 = 16;
@@ -204,6 +205,16 @@ fn main() {
         );
 
         window_roi.set_image("Stats", img_roi.clone()).unwrap();
+
+        let base_stats = pkmn_stats::pkmn_stats::load_stats();
+        for stat in &base_stats {
+            println!("{:?}", stat)
+        }
+
+        let pkmn_no: usize = pkmn_no.parse().unwrap();
+        let found_pkmn_stats = &base_stats[pkmn_no - 1]; // -1 as Dex number starts with 1
+
+        println!("Found this pokemon on the screen {:?}", found_pkmn_stats);
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
