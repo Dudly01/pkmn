@@ -17,7 +17,7 @@ pub mod pkmn_stats {
     pub fn load_stats() -> Vec<RbyRecord> {
         let mut records: Vec<RbyRecord> = Vec::with_capacity(151);
 
-        let csv_path = "RBY pokemon stats.csv";
+        let csv_path = "data/base_stats.csv";
         let mut csv_reader = csv::Reader::from_path(csv_path).expect("could not load CSV file.");
 
         for result in csv_reader.deserialize() {
