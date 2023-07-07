@@ -5,7 +5,7 @@ use image::{DynamicImage, GrayImage, RgbImage};
 use imageproc::contrast::threshold;
 use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
-use pkmn::{create_char_bitmaps, match_field};
+use pkmn::{create_char_bitmaps, match_field, BaseStats, CurrentStats};
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 
@@ -160,6 +160,22 @@ fn main() {
         let special = match_field(img_special, &known_chars).unwrap();
         println!("special: '{}'", special);
 
+        let hp: i32 = hp.trim().parse().expect("Could not parse hp");
+        let attack: i32 = attack.trim().parse().expect("Could not parse attack");
+        let defense: i32 = defense.trim().parse().expect("Could not parse defense");
+        let speed: i32 = speed.trim().parse().expect("Could not parse speed");
+        let special: i32 = special.trim().parse().expect("Could not parse special");
+
+        let current_stats = CurrentStats {
+            hp: hp,
+            attack: attack,
+            defense: defense,
+            speed: speed,
+            special: special,
+        };
+
+        println!("{:?}", current_stats);
+
         let img_roi = img_screen_small;
 
         let img_roi = draw_hollow_rect(
@@ -207,14 +223,24 @@ fn main() {
         window_roi.set_image("Stats", img_roi.clone()).unwrap();
 
         let base_stats = pkmn_stats::pkmn_stats::load_stats();
-        for stat in &base_stats {
-            println!("{:?}", stat)
-        }
+        // for stat in &base_stats {
+        //     println!("{:?}", stat)
+        // }
 
         let pkmn_no: usize = pkmn_no.parse().unwrap();
         let found_pkmn_stats = &base_stats[pkmn_no - 1]; // -1 as Dex number starts with 1
 
         println!("Found this pokemon on the screen {:?}", found_pkmn_stats);
+
+        let current_base_stats = BaseStats {
+            hp: found_pkmn_stats.hp,
+            attack: found_pkmn_stats.attack,
+            defense: found_pkmn_stats.defense,
+            speed: found_pkmn_stats.speed,
+            special: found_pkmn_stats.special,
+        };
+
+        println!("{:?}", current_base_stats);
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.

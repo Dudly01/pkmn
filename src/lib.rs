@@ -333,3 +333,63 @@ pub fn match_field(
     let field_string: String = found_chars.into_iter().collect();
     Ok(field_string)
 }
+
+/// Returns the possible DV-HP pairs based on the supplied data.
+/// Only for HP.
+pub fn get_dv_hp_pairs(level: i32, base: i32, exp: i32) -> Vec<i32> {
+    let offset = level + 10;
+    let result = calc_possible_stat_values(level, base, exp, offset);
+    result
+}
+
+/// Returns the possible DV-STAT pairs based on the supplied data.
+/// Not for HP.
+pub fn get_dv_stat_pairs(level: i32, base: i32, exp: i32) -> Vec<i32> {
+    let offset = 5;
+    let result = calc_possible_stat_values(level, base, exp, offset);
+    result
+}
+
+/// Returns the possible DV-STAT pairs based on the supplied data.
+/// Acts as a helper function.
+fn calc_possible_stat_values(level: i32, base: i32, exp: i32, offset: i32) -> Vec<i32> {
+    let mut result = Vec::with_capacity(16);
+
+    let effort_gain = ((exp - 1) as f32).sqrt() + 1.0 / 4.0;
+    let effort_gain = effort_gain as i32;
+
+    for dv in 0..16 {
+        let val = (((base + dv) * 2 + effort_gain) * level) as f32 / 100.0;
+        let val = val as i32 + offset;
+        result.push(val);
+    }
+
+    result
+}
+
+#[derive(Debug)]
+pub struct BaseStats {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+#[derive(Debug)]
+pub struct CurrentStats {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+#[derive(Debug)]
+pub struct StatExperience {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
