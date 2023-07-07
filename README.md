@@ -28,4 +28,5 @@ cargo update
 # Sources
 
 Bulbapedia https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)
-Pokémon base stats https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html
+Neoseeker https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html
+Smogon https://www.smogon.com/ingame/guides/rby_gsc_stats

@@ -2,15 +2,15 @@ pub mod pkmn_stats {
 
     #[derive(Debug, serde::Deserialize)]
     pub struct RbyRecord {
-        ndex: i32,
-        pokemon: String,
-        types: String,
-        hp: i32,
-        attack: i32,
-        defense: i32,
-        speed: i32,
-        special: i32,
-        total: i32,
+        pub ndex: i32,
+        pub pokemon: String,
+        pub types: String,
+        pub hp: i32,
+        pub attack: i32,
+        pub defense: i32,
+        pub speed: i32,
+        pub special: i32,
+        pub total: i32,
     }
 
     /// Loads the base stats from the CSV file.

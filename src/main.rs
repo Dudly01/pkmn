@@ -5,7 +5,10 @@ use image::{DynamicImage, GrayImage, RgbImage};
 use imageproc::contrast::threshold;
 use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
-use pkmn::{create_char_bitmaps, match_field};
+use pkmn::{
+    create_char_bitmaps, find_value_range, get_dv_hp_pairs, get_dv_stat_pairs, match_field,
+    print_dv_table, BaseStats, CurrentStats,
+};
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 
@@ -160,6 +163,22 @@ fn main() {
         let special = match_field(img_special, &known_chars).unwrap();
         println!("special: '{}'", special);
 
+        let hp: i32 = hp.trim().parse().expect("Could not parse hp");
+        let attack: i32 = attack.trim().parse().expect("Could not parse attack");
+        let defense: i32 = defense.trim().parse().expect("Could not parse defense");
+        let speed: i32 = speed.trim().parse().expect("Could not parse speed");
+        let special: i32 = special.trim().parse().expect("Could not parse special");
+
+        let current_stats = CurrentStats {
+            hp: hp,
+            attack: attack,
+            defense: defense,
+            speed: speed,
+            special: special,
+        };
+
+        println!("{:?}", current_stats);
+
         let img_roi = img_screen_small;
 
         let img_roi = draw_hollow_rect(
@@ -207,14 +226,81 @@ fn main() {
         window_roi.set_image("Stats", img_roi.clone()).unwrap();
 
         let base_stats = pkmn_stats::pkmn_stats::load_stats();
-        for stat in &base_stats {
-            println!("{:?}", stat)
-        }
+        // for stat in &base_stats {
+        //     println!("{:?}", stat)
+        // }
 
         let pkmn_no: usize = pkmn_no.parse().unwrap();
         let found_pkmn_stats = &base_stats[pkmn_no - 1]; // -1 as Dex number starts with 1
 
         println!("Found this pokemon on the screen {:?}", found_pkmn_stats);
+
+        let current_base_stats = BaseStats {
+            hp: found_pkmn_stats.hp,
+            attack: found_pkmn_stats.attack,
+            defense: found_pkmn_stats.defense,
+            speed: found_pkmn_stats.speed,
+            special: found_pkmn_stats.special,
+        };
+
+        println!("{:?}", current_base_stats);
+
+        let level = level
+            .trim()
+            .parse()
+            .expect("Could not parse level into int");
+        let hp_dv = get_dv_hp_pairs(level, current_base_stats.hp, 0);
+        let attack_dv = get_dv_stat_pairs(level, current_base_stats.attack, 0);
+        let defense_dv = get_dv_stat_pairs(level, current_base_stats.defense, 0);
+        let speed_dv = get_dv_stat_pairs(level, current_base_stats.speed, 0);
+        let special_dv = get_dv_stat_pairs(level, current_base_stats.special, 0);
+
+        print_dv_table(&hp_dv, &attack_dv, &defense_dv, &speed_dv, &special_dv);
+
+        let hp_dv_range = find_value_range(current_stats.hp, hp_dv);
+
+        let hp_dv_range = match hp_dv_range {
+            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
+            Err(_) => String::from("Invalid HP value"),
+        };
+
+        println!(" HP DV: {}", hp_dv_range);
+
+        let attack_dv_range = find_value_range(current_stats.attack, attack_dv);
+
+        let attack_dv_range = match attack_dv_range {
+            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
+            Err(_) => String::from("Invalid attack value"),
+        };
+
+        println!("ATT DV: {}", attack_dv_range);
+
+        let defense_dv_range = find_value_range(current_stats.defense, defense_dv);
+
+        let defense_dv_range = match defense_dv_range {
+            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
+            Err(_) => String::from("Invalid defense value"),
+        };
+
+        println!("DEF DV: {}", defense_dv_range);
+
+        let speed_dv_range = find_value_range(current_stats.speed, speed_dv);
+
+        let speed_dv_range = match speed_dv_range {
+            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
+            Err(_) => String::from("Invalid speed value"),
+        };
+
+        println!("SPE DV: {}", speed_dv_range);
+
+        let special_dv_range = find_value_range(current_stats.special, special_dv);
+
+        let special_dv_range = match special_dv_range {
+            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
+            Err(_) => String::from("Invalid special value"),
+        };
+
+        println!("SPC DV: {}", special_dv_range);
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.

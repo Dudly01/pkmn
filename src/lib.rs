@@ -333,3 +333,119 @@ pub fn match_field(
     let field_string: String = found_chars.into_iter().collect();
     Ok(field_string)
 }
+
+/// Returns the possible DV-HP pairs based on the supplied data.
+/// Only for HP.
+pub fn get_dv_hp_pairs(level: i32, base: i32, exp: i32) -> Vec<i32> {
+    let offset = level + 10;
+    let result = calc_possible_stat_values(level, base, exp, offset);
+    result
+}
+
+/// Returns the possible DV-STAT pairs based on the supplied data.
+/// Not for HP.
+pub fn get_dv_stat_pairs(level: i32, base: i32, exp: i32) -> Vec<i32> {
+    let offset = 5;
+    let result = calc_possible_stat_values(level, base, exp, offset);
+    result
+}
+
+/// Returns the possible DV-STAT pairs based on the supplied data.
+/// Acts as a helper function.
+fn calc_possible_stat_values(level: i32, base: i32, exp: i32, offset: i32) -> Vec<i32> {
+    let mut result = Vec::with_capacity(16);
+
+    let effort_gain = ((exp - 1) as f32).sqrt() + 1.0 / 4.0;
+    let effort_gain = effort_gain as i32;
+
+    for dv in 0..16 {
+        let val = (((base + dv) * 2 + effort_gain) * level) as f32 / 100.0;
+        let val = val as i32 + offset;
+        result.push(val);
+    }
+
+    result
+}
+
+#[derive(Debug)]
+pub struct BaseStats {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+#[derive(Debug)]
+pub struct CurrentStats {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+#[derive(Debug)]
+pub struct StatExperience {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+pub fn print_dv_table(
+    hp: &Vec<i32>,
+    attack: &Vec<i32>,
+    defense: &Vec<i32>,
+    speed: &Vec<i32>,
+    special: &Vec<i32>,
+) {
+    println!(
+        "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
+        "DV", "HP", "ATT", "DEF", "SPD", "SPC"
+    );
+
+    for i in 0..16 {
+        let curr_hp = hp[i];
+        let curr_attack = attack[i];
+        let curr_defense = defense[i];
+        let curr_speed = speed[i];
+        let curr_special = special[i];
+
+        println!(
+            "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
+            i, curr_hp, curr_attack, curr_defense, curr_speed, curr_special
+        );
+    }
+}
+
+/// Returns the range that the value is present in the sorted vector.
+pub fn find_value_range(value: i32, vector: Vec<i32>) -> Result<(usize, usize), &'static str> {
+    if vector.len() < 1 {
+        return Err("Vector contains no values");
+    }
+
+    let mut start = -1;
+    let mut end = -1;
+
+    for (i, val) in vector.iter().enumerate() {
+        if *val == value as i32 {
+            start = i as i32;
+            break;
+        }
+    }
+
+    if start == -1 {
+        return Err("Vector does not contain reference value");
+    }
+
+    for (i, val) in vector.iter().enumerate().rev() {
+        if *val == value as i32 {
+            end = i as i32 + 1;
+            break;
+        }
+    }
+
+    Ok((start as usize, end as usize))
+}
