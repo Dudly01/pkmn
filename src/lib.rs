@@ -395,11 +395,11 @@ pub struct StatExperience {
 }
 
 pub fn print_dv_table(
-    hp: Vec<i32>,
-    attack: Vec<i32>,
-    defense: Vec<i32>,
-    speed: Vec<i32>,
-    special: Vec<i32>,
+    hp: &Vec<i32>,
+    attack: &Vec<i32>,
+    defense: &Vec<i32>,
+    speed: &Vec<i32>,
+    special: &Vec<i32>,
 ) {
     println!(
         "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
@@ -418,4 +418,34 @@ pub fn print_dv_table(
             i, curr_hp, curr_attack, curr_defense, curr_speed, curr_special
         );
     }
+}
+
+/// Returns the range that the value is present in the sorted vector.
+pub fn find_value_range(value: i32, vector: Vec<i32>) -> Result<(usize, usize), &'static str> {
+    if vector.len() < 1 {
+        return Err("Vector contains no values");
+    }
+
+    let mut start = -1;
+    let mut end = -1;
+
+    for (i, val) in vector.iter().enumerate() {
+        if *val == value as i32 {
+            start = i as i32;
+            break;
+        }
+    }
+
+    if start == -1 {
+        return Err("Vector does not contain reference value");
+    }
+
+    for (i, val) in vector.iter().enumerate().rev() {
+        if *val == value as i32 {
+            end = i as i32 + 1;
+            break;
+        }
+    }
+
+    Ok((start as usize, end as usize))
 }
