@@ -393,3 +393,29 @@ pub struct StatExperience {
     pub speed: i32,
     pub special: i32,
 }
+
+pub fn print_dv_table(
+    hp: Vec<i32>,
+    attack: Vec<i32>,
+    defense: Vec<i32>,
+    speed: Vec<i32>,
+    special: Vec<i32>,
+) {
+    println!(
+        "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
+        "DV", "HP", "ATT", "DEF", "SPD", "SPC"
+    );
+
+    for i in 0..16 {
+        let curr_hp = hp[i];
+        let curr_attack = attack[i];
+        let curr_defense = defense[i];
+        let curr_speed = speed[i];
+        let curr_special = special[i];
+
+        println!(
+            "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
+            i, curr_hp, curr_attack, curr_defense, curr_speed, curr_special
+        );
+    }
+}

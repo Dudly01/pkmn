@@ -5,7 +5,10 @@ use image::{DynamicImage, GrayImage, RgbImage};
 use imageproc::contrast::threshold;
 use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
-use pkmn::{create_char_bitmaps, match_field, BaseStats, CurrentStats};
+use pkmn::{
+    create_char_bitmaps, get_dv_hp_pairs, get_dv_stat_pairs, match_field, print_dv_table,
+    BaseStats, CurrentStats,
+};
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 
@@ -241,6 +244,18 @@ fn main() {
         };
 
         println!("{:?}", current_base_stats);
+
+        let level = level
+            .trim()
+            .parse()
+            .expect("Could not parse level into int");
+        let hp_dv = get_dv_hp_pairs(level, current_base_stats.hp, 0);
+        let attack_dv = get_dv_stat_pairs(level, current_base_stats.attack, 0);
+        let defense_dv = get_dv_stat_pairs(level, current_base_stats.defense, 0);
+        let speed_dv = get_dv_stat_pairs(level, current_base_stats.speed, 0);
+        let special_dv = get_dv_stat_pairs(level, current_base_stats.special, 0);
+
+        print_dv_table(hp_dv, attack_dv, defense_dv, speed_dv, special_dv);
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
