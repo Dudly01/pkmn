@@ -6,8 +6,8 @@ use imageproc::contrast::threshold;
 use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
 use pkmn::{
-    create_char_bitmaps, find_value_range, get_dv_hp_pairs, get_dv_stat_pairs, match_field,
-    print_dv_table, BaseStats, CurrentStats,
+    create_char_bitmaps, find_value_range, get_dv_hp_pairs, get_dv_stat_pairs,
+    locate_gameboy_screen, match_field, print_dv_table, BaseStats, CurrentStats,
 };
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
@@ -69,43 +69,13 @@ fn main() {
             .decode()
             .unwrap();
 
-        let image_gray: GrayImage = image_initial.clone().into_luma8();
+        let gb_screen_pos = locate_gameboy_screen(image_initial.clone());
 
-        let image_threshold = threshold(&image_gray, 200);
-
-        let erode_size = 1;
-        let image_erode = imageproc::morphology::erode(
-            &image_threshold,
-            imageproc::distance_transform::Norm::LInf,
-            erode_size,
-        );
-
-        let contours = imageproc::contours::find_contours::<i32>(&image_erode);
-
-        let screen_candidates = pkmn::find_screen_candidates(&contours);
-
-        let largest_candidate = screen_candidates
-            .iter()
-            .max_by_key(|rect| rect.width() * rect.height());
-
-        let mut found_screen = false;
-
-        let image_screen = match largest_candidate {
-            Some(r) => {
-                let image_screen = image_initial.clone().crop(
-                    r.left() as u32 - erode_size as u32,
-                    r.top() as u32 - erode_size as u32,
-                    r.width() + 2 * erode_size as u32,
-                    r.height() + 2 * erode_size as u32,
-                );
-                found_screen = true;
-                image_screen
-            }
-            None => {
-                let rgb: RgbImage = RgbImage::new(160, 144);
-                DynamicImage::ImageRgb8(rgb)
-            }
+        let Some((x, y, width, height)) = gb_screen_pos else {
+            continue;  // Did not find gameBoy screen
         };
+
+        let image_screen = image_initial.clone().crop(x, y, width, height);
 
         window_gameboy
             .set_image("GameBoy", image_screen.clone())

@@ -449,3 +449,38 @@ pub fn find_value_range(value: i32, vector: Vec<i32>) -> Result<(usize, usize), 
 
     Ok((start as usize, end as usize))
 }
+
+/// Returns the location of the GameBoy screen on an image.
+pub fn locate_gameboy_screen(img: DynamicImage) -> Option<(u32, u32, u32, u32)> {
+    let img_gray = img.into_luma8();
+
+    let threshold_val = 200;
+    let img_threshold = threshold(&img_gray, threshold_val);
+
+    let erode_size = 1;
+    let image_erode = imageproc::morphology::erode(
+        &img_threshold,
+        imageproc::distance_transform::Norm::LInf,
+        erode_size,
+    );
+
+    let contours = imageproc::contours::find_contours::<i32>(&image_erode);
+
+    let screen_candidates = find_screen_candidates(&contours);
+
+    let largest_candidate = screen_candidates
+        .iter()
+        .max_by_key(|rect| rect.width() * rect.height());
+
+    let gameboy_screen_position = match largest_candidate {
+        Some(r) => Some((
+            r.left() as u32 - erode_size as u32,
+            r.top() as u32 - erode_size as u32,
+            r.width() + 2 * erode_size as u32,
+            r.height() + 2 * erode_size as u32,
+        )),
+        None => None,
+    };
+
+    gameboy_screen_position
+}
