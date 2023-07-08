@@ -7,7 +7,7 @@ use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
 use pkmn::{
     create_char_bitmaps, find_value_range, get_dv_hp_pairs, get_dv_stat_pairs,
-    locate_gameboy_screen, match_field, print_dv_table, BaseStats, CurrentStats,
+    locate_gameboy_screen, match_field, print_dv_table, BaseStats, CurrentStats, StatScreenLayout,
 };
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
@@ -33,8 +33,6 @@ fn main() {
     // let window_threshold = create_window("Threshold", Default::default()).unwrap();
     // let window_erode = create_window("Erode", Default::default()).unwrap();
     let window_gameboy = create_window("GameBoy", Default::default()).unwrap();
-    let window_roi = create_window("Region of Interest", Default::default()).unwrap();
-    let window_debug = create_window("Debug", Default::default()).unwrap();
 
     loop {
         // // Wait until there's a frame.
@@ -81,55 +79,46 @@ fn main() {
             .set_image("GameBoy", image_screen.clone())
             .unwrap();
 
-        let mut img_screen_small = image_screen.resize_exact(160, 144, FilterType::Nearest);
+        let stats_screen_layout = StatScreenLayout::new();
 
-        let field_width: u32 = 23;
-        let field_height: u32 = 7;
+        let mut img_screen_small = image_screen.resize_exact(
+            stats_screen_layout.width as u32,
+            stats_screen_layout.height as u32,
+            FilterType::Nearest,
+        );
 
-        let x_pkmn_no: u32 = 24;
-        let y_pkmn_no: u32 = 56;
-        let img_pkmn_no = img_screen_small.crop(x_pkmn_no, y_pkmn_no, field_width, field_height);
-
-        // window_debug
-        //     .set_image("Debug", img_pkmn_no.clone())
-        //     .unwrap();
-
+        let pos = stats_screen_layout.pkmn_ndex_pos;
+        let img_pkmn_no = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
         let pkmn_no = match_field(img_pkmn_no, &known_chars).unwrap();
         println!("No: '{}'", pkmn_no);
 
-        let x_level: u32 = 120;
-        let y_level: u32 = 16;
-        let img_level = img_screen_small.crop(x_level, y_level, field_width, field_height);
+        let pos = stats_screen_layout.level_field_pos;
+        let img_level = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
         let level = match_field(img_level, &known_chars).unwrap();
         println!("level: '{}'", level);
 
-        let x_hp: u32 = 150 - field_width + 1;
-        let y_hp: u32 = 39 - field_height;
-        let img_hp = img_screen_small.crop(x_hp, y_hp, field_width, field_height);
+        let pos = stats_screen_layout.hp_field_pos;
+        let img_hp = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
         let hp = match_field(img_hp, &known_chars).unwrap();
         println!("hp: '{}'", hp);
 
-        let x_attack: u32 = 70 - field_width + 1;
-        let y_attack: u32 = 87 - field_height;
-        let img_attack = img_screen_small.crop(x_attack, y_attack, field_width, field_height);
+        let pos = stats_screen_layout.attack_field_pos;
+        let img_attack = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
         let attack = match_field(img_attack, &known_chars).unwrap();
         println!("attack: '{}'", attack);
 
-        let x_defense: u32 = 70 - field_width + 1;
-        let y_defense: u32 = 103 - field_height;
-        let img_defense = img_screen_small.crop(x_defense, y_defense, field_width, field_height);
+        let pos = stats_screen_layout.defense_field_pos;
+        let img_defense = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
         let defense = match_field(img_defense, &known_chars).unwrap();
         println!("defense: '{}'", defense);
 
-        let x_speed: u32 = 70 - field_width + 1;
-        let y_speed: u32 = 119 - field_height;
-        let img_speed = img_screen_small.crop(x_speed, y_speed, field_width, field_height);
+        let pos = stats_screen_layout.speed_field_pos;
+        let img_speed = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
         let speed = match_field(img_speed, &known_chars).unwrap();
         println!("speed: '{}'", speed);
 
-        let x_special: u32 = 70 - field_width + 1;
-        let y_special: u32 = 135 - field_height;
-        let img_special = img_screen_small.crop(x_special, y_special, field_width, field_height);
+        let pos = stats_screen_layout.special_field_pos;
+        let img_special = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
         let special = match_field(img_special, &known_chars).unwrap();
         println!("special: '{}'", special);
 
@@ -229,7 +218,7 @@ fn main() {
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
         let time_wait = Instant::now();
-        for event in window_roi.event_channel().unwrap() {
+        for event in window_gameboy.event_channel().unwrap() {
             if let event::WindowEvent::KeyboardInput(event) = event {
                 println!("{:#?}", event);
                 if event.input.key_code == Some(event::VirtualKeyCode::Escape)

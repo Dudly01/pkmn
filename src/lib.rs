@@ -484,3 +484,97 @@ pub fn locate_gameboy_screen(img: DynamicImage) -> Option<(u32, u32, u32, u32)> 
 
     gameboy_screen_position
 }
+
+pub struct TextPosition {
+    pub x: u32,
+    pub y: u32,
+    pub width: u32,
+    pub height: u32,
+}
+
+pub struct StatScreenLayout {
+    pub width: i32,
+    pub height: i32,
+    pub pkmn_ndex_pos: TextPosition,
+    pub level_field_pos: TextPosition,
+    pub hp_field_pos: TextPosition,
+    pub attack_field_pos: TextPosition,
+    pub defense_field_pos: TextPosition,
+    pub speed_field_pos: TextPosition,
+    pub special_field_pos: TextPosition,
+}
+
+impl StatScreenLayout {
+    pub fn new() -> StatScreenLayout {
+        let field_width = 23;
+        let field_height = 7;
+
+        let x_pkmn_no = 24;
+        let y_pkmn_no = 56;
+
+        let x_level = 120;
+        let y_level = 16;
+
+        let x_hp = 150 - field_width + 1;
+        let y_hp = 39 - field_height;
+
+        let x_attack = 70 - field_width + 1;
+        let y_attack = 87 - field_height;
+
+        let x_defense = 70 - field_width + 1;
+        let y_defense = 103 - field_height;
+
+        let x_speed = 70 - field_width + 1;
+        let y_speed = 119 - field_height;
+
+        let x_special = 70 - field_width + 1;
+        let y_special = 135 - field_height;
+
+        StatScreenLayout {
+            width: 160,
+            height: 144,
+            pkmn_ndex_pos: TextPosition {
+                x: x_pkmn_no,
+                y: y_pkmn_no,
+                width: field_width,
+                height: field_height,
+            },
+            level_field_pos: TextPosition {
+                x: x_level,
+                y: y_level,
+                width: field_width,
+                height: field_height,
+            },
+            hp_field_pos: TextPosition {
+                x: x_hp,
+                y: y_hp,
+                width: field_width,
+                height: field_height,
+            },
+            attack_field_pos: TextPosition {
+                x: x_attack,
+                y: y_attack,
+                width: field_width,
+                height: field_height,
+            },
+            defense_field_pos: TextPosition {
+                x: x_defense,
+                y: y_defense,
+                width: field_width,
+                height: field_height,
+            },
+            speed_field_pos: TextPosition {
+                x: x_speed,
+                y: y_speed,
+                width: field_width,
+                height: field_height,
+            },
+            special_field_pos: TextPosition {
+                x: x_special,
+                y: y_special,
+                width: field_width,
+                height: field_height,
+            },
+        }
+    }
+}
