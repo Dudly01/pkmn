@@ -149,52 +149,6 @@ fn main() {
 
         println!("{:?}", current_stats);
 
-        let img_roi = img_screen_small;
-
-        let img_roi = draw_hollow_rect(
-            &img_roi,
-            Rect::at(x_pkmn_no as i32, y_pkmn_no as i32).of_size(field_width, field_height),
-            Rgba([0, 255, 0, 255]),
-        );
-
-        let img_roi = draw_hollow_rect(
-            &img_roi,
-            Rect::at(x_level as i32, y_level as i32).of_size(field_width, field_height),
-            Rgba([0, 255, 0, 255]),
-        );
-
-        let img_roi = draw_hollow_rect(
-            &img_roi,
-            Rect::at(x_hp as i32, y_hp as i32).of_size(field_width, field_height),
-            Rgba([0, 255, 0, 255]),
-        );
-
-        let img_roi = draw_hollow_rect(
-            &img_roi,
-            Rect::at(x_attack as i32, y_attack as i32).of_size(field_width, field_height),
-            Rgba([0, 255, 0, 255]),
-        );
-
-        let img_roi = draw_hollow_rect(
-            &img_roi,
-            Rect::at(x_defense as i32, y_defense as i32).of_size(field_width, field_height),
-            Rgba([0, 255, 0, 255]),
-        );
-
-        let img_roi = draw_hollow_rect(
-            &img_roi,
-            Rect::at(x_speed as i32, y_speed as i32).of_size(field_width, field_height),
-            Rgba([0, 255, 0, 255]),
-        );
-
-        let img_roi = draw_hollow_rect(
-            &img_roi,
-            Rect::at(x_special as i32, y_special as i32).of_size(field_width, field_height),
-            Rgba([0, 255, 0, 255]),
-        );
-
-        window_roi.set_image("Stats", img_roi.clone()).unwrap();
-
         let base_stats = pkmn_stats::pkmn_stats::load_stats();
         // for stat in &base_stats {
         //     println!("{:?}", stat)
