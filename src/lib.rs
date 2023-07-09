@@ -485,6 +485,8 @@ pub fn locate_gameboy_screen(img: DynamicImage) -> Option<(u32, u32, u32, u32)> 
     gameboy_screen_position
 }
 
+/// The inclusive bounding box of something.
+/// The elements on the border are part of the thing.
 pub struct TextPosition {
     pub x: u32,
     pub y: u32,
@@ -492,6 +494,8 @@ pub struct TextPosition {
     pub height: u32,
 }
 
+/// The position of important data on first page of the stats screen.
+/// Could also be called as the summary screen.
 pub struct StatScreenLayout {
     pub width: i32,
     pub height: i32,
@@ -505,6 +509,8 @@ pub struct StatScreenLayout {
 }
 
 impl StatScreenLayout {
+    /// Populates the struct with the known positions.
+    /// Beware, text that is of no concern are not populated.
     pub fn new() -> StatScreenLayout {
         let field_width = 23;
         let field_height = 7;
