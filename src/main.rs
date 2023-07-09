@@ -1,22 +1,12 @@
 use image::imageops::FilterType;
 use image::io::Reader as ImageReader;
-use image::Rgba;
-use image::{DynamicImage, GrayImage, RgbImage};
-use imageproc::contrast::threshold;
-use imageproc::drawing::draw_hollow_rect;
-use imageproc::rect::Rect;
-use pkmn::{
-    create_char_bitmaps, find_value_range, get_dv_hp_pairs, get_dv_stat_pairs,
-    locate_gameboy_screen, match_field, print_dv_table, read_text, BaseStats, CurrentStats,
-    StatScreen1Layout,
-};
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 
 use std::time::{Duration, Instant};
 
+use pkmn::gameboy::{locate_screen, StatScreen1Layout};
 use pokemon_dv_calculator as pkmn;
-mod pkmn_stats;
 
 #[show_image::main]
 fn main() {
@@ -27,7 +17,8 @@ fn main() {
     let mut capturer = Capturer::new(display).expect("Couldn't begin capture.");
     let (w, h) = (capturer.width(), capturer.height());
 
-    let known_chars = create_char_bitmaps();
+    let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
+    let pkmn_base_stats = pkmn::stats::load_base_stats();
 
     // let window_initial = create_window("Initial", Default::default()).unwrap();
     // let window_grey = create_window("Greyscale", Default::default()).unwrap();
@@ -68,121 +59,87 @@ fn main() {
             .decode()
             .unwrap();
 
-        let gb_screen_pos = locate_gameboy_screen(image_initial.clone());
-
-        let Some((x, y, width, height)) = gb_screen_pos else {
+        let screen_pos = locate_screen(image_initial.clone());
+        let Some(screen_pos) = screen_pos else {
             continue;  // Did not find gameBoy screen
         };
 
-        let image_screen = image_initial.clone().crop(x, y, width, height);
-
+        let image_screen = image_initial.clone().crop(
+            screen_pos.x,
+            screen_pos.y,
+            screen_pos.width,
+            screen_pos.height,
+        );
         window_gameboy
             .set_image("GameBoy", image_screen.clone())
             .unwrap();
 
         let stats_screen_layout = StatScreen1Layout::new();
 
-        let mut img_screen_small = image_screen.resize_exact(
+        let img_screen_small = image_screen.resize_exact(
             stats_screen_layout.width as u32,
             stats_screen_layout.height as u32,
             FilterType::Nearest,
         );
 
-        let texts = read_text(&img_screen_small, &stats_screen_layout, &known_chars);
+        let texts =
+            pkmn::gameboy::read_text(&img_screen_small, &stats_screen_layout, &symbol_bitmaps);
         let (pkmn_no, level, hp, attack, defense, speed, special) = texts;
 
+        let pkmn_no: usize = pkmn_no.trim().parse().unwrap();
+        let level: i32 = level.trim().parse().unwrap();
         let hp: i32 = hp.trim().parse().expect("Could not parse hp");
         let attack: i32 = attack.trim().parse().expect("Could not parse attack");
         let defense: i32 = defense.trim().parse().expect("Could not parse defense");
         let speed: i32 = speed.trim().parse().expect("Could not parse speed");
         let special: i32 = special.trim().parse().expect("Could not parse special");
 
-        let current_stats = CurrentStats {
-            hp: hp,
-            attack: attack,
-            defense: defense,
-            speed: speed,
-            special: special,
-        };
+        let pkmn_base_stats = &pkmn_base_stats[pkmn_no - 1]; // -1 as Dex number starts with 1
+        println!("Found this pokemon on the screen {:?}", pkmn_base_stats);
 
-        println!("{:?}", current_stats);
+        let hp_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.hp, 0, true);
+        let attack_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.attack, 0, false);
+        let defense_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.defense, 0, false);
+        let speed_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.speed, 0, false);
+        let special_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.special, 0, false);
 
-        let base_stats = pkmn_stats::pkmn_stats::load_stats();
-        // for stat in &base_stats {
-        //     println!("{:?}", stat)
-        // }
+        pkmn::stats::print_dv_table(&hp_dv, &attack_dv, &defense_dv, &speed_dv, &special_dv);
 
-        let pkmn_no: usize = pkmn_no.parse().unwrap();
-        let found_pkmn_stats = &base_stats[pkmn_no - 1]; // -1 as Dex number starts with 1
-
-        println!("Found this pokemon on the screen {:?}", found_pkmn_stats);
-
-        let current_base_stats = BaseStats {
-            hp: found_pkmn_stats.hp,
-            attack: found_pkmn_stats.attack,
-            defense: found_pkmn_stats.defense,
-            speed: found_pkmn_stats.speed,
-            special: found_pkmn_stats.special,
-        };
-
-        println!("{:?}", current_base_stats);
-
-        let level = level
-            .trim()
-            .parse()
-            .expect("Could not parse level into int");
-        let hp_dv = get_dv_hp_pairs(level, current_base_stats.hp, 0);
-        let attack_dv = get_dv_stat_pairs(level, current_base_stats.attack, 0);
-        let defense_dv = get_dv_stat_pairs(level, current_base_stats.defense, 0);
-        let speed_dv = get_dv_stat_pairs(level, current_base_stats.speed, 0);
-        let special_dv = get_dv_stat_pairs(level, current_base_stats.special, 0);
-
-        print_dv_table(&hp_dv, &attack_dv, &defense_dv, &speed_dv, &special_dv);
-
-        let hp_dv_range = find_value_range(current_stats.hp, hp_dv);
-
+        let hp_dv_range = pkmn::stats::find_dv_range(&hp, &hp_dv);
         let hp_dv_range = match hp_dv_range {
             Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
             Err(_) => String::from("Invalid HP value"),
         };
 
-        println!(" HP DV: {}", hp_dv_range);
-
-        let attack_dv_range = find_value_range(current_stats.attack, attack_dv);
-
+        let attack_dv_range = pkmn::stats::find_dv_range(&attack, &attack_dv);
         let attack_dv_range = match attack_dv_range {
             Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
             Err(_) => String::from("Invalid attack value"),
         };
 
-        println!("ATT DV: {}", attack_dv_range);
-
-        let defense_dv_range = find_value_range(current_stats.defense, defense_dv);
-
+        let defense_dv_range = pkmn::stats::find_dv_range(&defense, &defense_dv);
         let defense_dv_range = match defense_dv_range {
             Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
             Err(_) => String::from("Invalid defense value"),
         };
 
-        println!("DEF DV: {}", defense_dv_range);
-
-        let speed_dv_range = find_value_range(current_stats.speed, speed_dv);
-
+        let speed_dv_range = pkmn::stats::find_dv_range(&speed, &speed_dv);
         let speed_dv_range = match speed_dv_range {
             Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
             Err(_) => String::from("Invalid speed value"),
         };
 
-        println!("SPE DV: {}", speed_dv_range);
-
-        let special_dv_range = find_value_range(current_stats.special, special_dv);
-
+        let special_dv_range = pkmn::stats::find_dv_range(&special, &special_dv);
         let special_dv_range = match special_dv_range {
             Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
             Err(_) => String::from("Invalid special value"),
         };
 
-        println!("SPC DV: {}", special_dv_range);
+        println!(" HP: {:<3} DV: {}", hp, hp_dv_range);
+        println!("ATT: {:<3} DV: {}", attack, attack_dv_range);
+        println!("DEF: {:<3} DV: {}", defense, defense_dv_range);
+        println!("SPE: {:<3} DV: {}", speed, speed_dv_range);
+        println!("SPC: {:<3} DV: {}", special, special_dv_range);
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.
