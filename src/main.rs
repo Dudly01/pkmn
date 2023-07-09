@@ -7,7 +7,7 @@ use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
 use pkmn::{
     create_char_bitmaps, find_value_range, get_dv_hp_pairs, get_dv_stat_pairs,
-    locate_gameboy_screen, match_field, print_dv_table, BaseStats, CurrentStats, StatScreenLayout,
+    locate_gameboy_screen, match_field, print_dv_table, BaseStats, CurrentStats, StatScreen1Layout,
 };
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
@@ -79,7 +79,7 @@ fn main() {
             .set_image("GameBoy", image_screen.clone())
             .unwrap();
 
-        let stats_screen_layout = StatScreenLayout::new();
+        let stats_screen_layout = StatScreen1Layout::new();
 
         let mut img_screen_small = image_screen.resize_exact(
             stats_screen_layout.width as u32,
