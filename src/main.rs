@@ -7,7 +7,8 @@ use imageproc::drawing::draw_hollow_rect;
 use imageproc::rect::Rect;
 use pkmn::{
     create_char_bitmaps, find_value_range, get_dv_hp_pairs, get_dv_stat_pairs,
-    locate_gameboy_screen, match_field, print_dv_table, BaseStats, CurrentStats, StatScreen1Layout,
+    locate_gameboy_screen, match_field, print_dv_table, read_text, BaseStats, CurrentStats,
+    StatScreen1Layout,
 };
 use scrap::{Capturer, Display};
 use show_image::{create_window, event};
@@ -87,40 +88,8 @@ fn main() {
             FilterType::Nearest,
         );
 
-        let pos = stats_screen_layout.pkmn_ndex_pos;
-        let img_pkmn_no = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
-        let pkmn_no = match_field(img_pkmn_no, &known_chars).unwrap();
-        println!("No: '{}'", pkmn_no);
-
-        let pos = stats_screen_layout.level_field_pos;
-        let img_level = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
-        let level = match_field(img_level, &known_chars).unwrap();
-        println!("level: '{}'", level);
-
-        let pos = stats_screen_layout.hp_field_pos;
-        let img_hp = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
-        let hp = match_field(img_hp, &known_chars).unwrap();
-        println!("hp: '{}'", hp);
-
-        let pos = stats_screen_layout.attack_field_pos;
-        let img_attack = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
-        let attack = match_field(img_attack, &known_chars).unwrap();
-        println!("attack: '{}'", attack);
-
-        let pos = stats_screen_layout.defense_field_pos;
-        let img_defense = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
-        let defense = match_field(img_defense, &known_chars).unwrap();
-        println!("defense: '{}'", defense);
-
-        let pos = stats_screen_layout.speed_field_pos;
-        let img_speed = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
-        let speed = match_field(img_speed, &known_chars).unwrap();
-        println!("speed: '{}'", speed);
-
-        let pos = stats_screen_layout.special_field_pos;
-        let img_special = img_screen_small.crop(pos.x, pos.y, pos.width, pos.height);
-        let special = match_field(img_special, &known_chars).unwrap();
-        println!("special: '{}'", special);
+        let texts = read_text(&img_screen_small, &stats_screen_layout, &known_chars);
+        let (pkmn_no, level, hp, attack, defense, speed, special) = texts;
 
         let hp: i32 = hp.trim().parse().expect("Could not parse hp");
         let attack: i32 = attack.trim().parse().expect("Could not parse attack");

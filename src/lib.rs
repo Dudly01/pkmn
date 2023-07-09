@@ -584,3 +584,44 @@ impl StatScreen1Layout {
         }
     }
 }
+
+/// Reads the text from the image.
+pub fn read_text(
+    img: &DynamicImage,
+    layout: &StatScreen1Layout,
+    symbols: &(Vec<char>, Vec<[u8; 49]>),
+) -> (String, String, String, String, String, String, String) {
+    if img.width() as i32 != layout.width || img.height() as i32 != layout.height {
+        panic!("Mismatch in image and layout dimensions.")
+    }
+
+    let pos = &layout.pkmn_ndex_pos;
+    let img_pkmn_no = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+    let pkmn_no = match_field(img_pkmn_no, symbols).unwrap();
+
+    let pos = &layout.level_field_pos;
+    let img_level = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+    let level = match_field(img_level, symbols).unwrap();
+
+    let pos = &layout.hp_field_pos;
+    let img_hp = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+    let hp = match_field(img_hp, symbols).unwrap();
+
+    let pos = &layout.attack_field_pos;
+    let img_attack = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+    let attack = match_field(img_attack, symbols).unwrap();
+
+    let pos = &layout.defense_field_pos;
+    let img_defense = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+    let defense = match_field(img_defense, &symbols).unwrap();
+
+    let pos = &layout.speed_field_pos;
+    let img_speed = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+    let speed = match_field(img_speed, &symbols).unwrap();
+
+    let pos = &layout.special_field_pos;
+    let img_special = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+    let special = match_field(img_special, &symbols).unwrap();
+
+    (pkmn_no, level, hp, attack, defense, speed, special)
+}
