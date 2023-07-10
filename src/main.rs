@@ -1,11 +1,11 @@
 use image::imageops::FilterType;
 use image::io::Reader as ImageReader;
-use scrap::{Capturer, Display};
 use show_image::{create_window, event};
 
-use std::time::{Duration, Instant};
+use std::time::Instant;
 
 use pkmn::gameboy::{locate_screen, StatScreen1Layout};
+use pkmn::stats::{BaseStats, DvRanges, DvTable, Experience, Stats};
 use pokemon_dv_calculator as pkmn;
 
 #[show_image::main]
@@ -50,60 +50,50 @@ fn main() {
 
         let content = stats_screen_layout.read_content(&img_screen_small, &symbol_bitmaps);
 
-        let pkmn_no: usize = content.pkmn_no.parse().unwrap();
+        let ndex: usize = content.pkmn_no.parse().unwrap();
         let level: i32 = content.level.parse().unwrap();
-        let hp: i32 = content.hp.parse().unwrap();
-        let attack: i32 = content.attack.parse().unwrap();
-        let defense: i32 = content.defense.parse().unwrap();
-        let speed: i32 = content.speed.parse().unwrap();
-        let special: i32 = content.special.parse().unwrap();
+        let stats = Stats::from_screen_content(&content);
+        let record = &pkmn_base_stats[ndex - 1]; // -1 as Dex number starts with 1
+        let base_stats = BaseStats::from_record(&record);
 
-        let pkmn_base_stats = &pkmn_base_stats[pkmn_no - 1]; // -1 as Dex number starts with 1
-        println!("Found this pokemon on the screen {:?}", pkmn_base_stats);
+        let exp = Experience::with_no_experience();
 
-        let hp_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.hp, 0, true);
-        let attack_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.attack, 0, false);
-        let defense_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.defense, 0, false);
-        let speed_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.speed, 0, false);
-        let special_dv = pkmn::stats::get_dv_stat_pairs(level, pkmn_base_stats.special, 0, false);
+        let dv_stats_table = DvTable::new(&level, &base_stats, &exp);
 
-        pkmn::stats::print_dv_table(&hp_dv, &attack_dv, &defense_dv, &speed_dv, &special_dv);
+        dv_stats_table.print();
 
-        let hp_dv_range = pkmn::stats::find_dv_range(&hp, &hp_dv);
-        let hp_dv_range = match hp_dv_range {
-            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
-            Err(_) => String::from("Invalid HP value"),
+        let dv_ranges = DvRanges::new(&stats, &dv_stats_table);
+
+        let hp = match dv_ranges.hp {
+            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            None => String::from("Stat is not within expectations."),
         };
 
-        let attack_dv_range = pkmn::stats::find_dv_range(&attack, &attack_dv);
-        let attack_dv_range = match attack_dv_range {
-            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
-            Err(_) => String::from("Invalid attack value"),
+        let attack = match dv_ranges.attack {
+            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            None => String::from("Stat is not within expectations."),
         };
 
-        let defense_dv_range = pkmn::stats::find_dv_range(&defense, &defense_dv);
-        let defense_dv_range = match defense_dv_range {
-            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
-            Err(_) => String::from("Invalid defense value"),
+        let defense = match dv_ranges.defense {
+            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            None => String::from("Stat is not within expectations."),
         };
 
-        let speed_dv_range = pkmn::stats::find_dv_range(&speed, &speed_dv);
-        let speed_dv_range = match speed_dv_range {
-            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
-            Err(_) => String::from("Invalid speed value"),
+        let special = match dv_ranges.special {
+            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            None => String::from("Stat is not within expectations."),
         };
 
-        let special_dv_range = pkmn::stats::find_dv_range(&special, &special_dv);
-        let special_dv_range = match special_dv_range {
-            Ok(val) => format!("min {:>2} - max {:>2}", val.0, val.1 - 1),
-            Err(_) => String::from("Invalid special value"),
+        let speed = match dv_ranges.speed {
+            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            None => String::from("Stat is not within expectations."),
         };
 
-        println!(" HP: {:<3} DV: {}", hp, hp_dv_range);
-        println!("ATT: {:<3} DV: {}", attack, attack_dv_range);
-        println!("DEF: {:<3} DV: {}", defense, defense_dv_range);
-        println!("SPE: {:<3} DV: {}", speed, speed_dv_range);
-        println!("SPC: {:<3} DV: {}", special, special_dv_range);
+        println!(" HP: {:<3} DV: {}", stats.hp, hp);
+        println!("ATT: {:<3} DV: {}", stats.attack, attack);
+        println!("DEF: {:<3} DV: {}", stats.defense, defense);
+        println!("SPE: {:<3} DV: {}", stats.speed, special);
+        println!("SPC: {:<3} DV: {}", stats.special, speed);
 
         // Print keyboard events until Escape is pressed, then exit.
         // If the user closes the window, the channel is closed and the loop also exits.

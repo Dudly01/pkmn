@@ -1,3 +1,6 @@
+use crate::gameboy::StatsSreen1Content;
+
+/// Base stats csv records, containing the information about Pokemons.
 #[derive(Debug, serde::Deserialize)]
 pub struct Record {
     pub ndex: i32,
@@ -26,11 +29,122 @@ pub fn load_base_stats() -> Vec<Record> {
     records
 }
 
+/// The stats of a Pokemon.
+pub struct Stats {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+impl Stats {
+    pub fn from_screen_content(content: &StatsSreen1Content) -> Stats {
+        let hp: i32 = content.hp.parse().unwrap();
+        let attack: i32 = content.attack.parse().unwrap();
+        let defense: i32 = content.defense.parse().unwrap();
+        let speed: i32 = content.speed.parse().unwrap();
+        let special: i32 = content.special.parse().unwrap();
+
+        Stats {
+            hp,
+            attack,
+            defense,
+            speed,
+            special,
+        }
+    }
+}
+
+/// The base stats of a Pokemon species.
+pub struct BaseStats {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+impl BaseStats {
+    pub fn from_record(record: &Record) -> BaseStats {
+        BaseStats {
+            hp: record.hp,
+            attack: record.attack,
+            defense: record.defense,
+            speed: record.speed,
+            special: record.special,
+        }
+    }
+}
+
+/// The experience (Effort Values) gained by a Pokemon.
+pub struct Experience {
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
+}
+
+impl Experience {
+    pub fn with_no_experience() -> Experience {
+        Experience {
+            hp: 0,
+            attack: 0,
+            defense: 0,
+            speed: 0,
+            special: 0,
+        }
+    }
+}
+
+/// Contains the stat values corresponding to the possible DV values.
+pub struct DvTable {
+    pub hp: [i32; 16],
+    pub attack: [i32; 16],
+    pub defense: [i32; 16],
+    pub speed: [i32; 16],
+    pub special: [i32; 16],
+}
+
+impl DvTable {
+    pub fn new(level: &i32, base: &BaseStats, exp: &Experience) -> DvTable {
+        let hp = get_dv_stat_pairs(level, &base.hp, &exp.hp, &true);
+        let attack = get_dv_stat_pairs(level, &base.attack, &exp.attack, &false);
+        let defense = get_dv_stat_pairs(level, &base.defense, &exp.defense, &false);
+        let speed = get_dv_stat_pairs(level, &base.speed, &exp.speed, &false);
+        let special = get_dv_stat_pairs(level, &base.special, &exp.special, &false);
+
+        DvTable {
+            hp: hp.try_into().unwrap(),
+            attack: attack.try_into().unwrap(),
+            defense: defense.try_into().unwrap(),
+            speed: speed.try_into().unwrap(),
+            special: special.try_into().unwrap(),
+        }
+    }
+
+    /// Prints the table to the terminal in a nicely formatted fashion.
+    pub fn print(&self) {
+        println!(
+            "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
+            "DV", "HP", "ATT", "DEF", "SPD", "SPC"
+        );
+
+        for i in 0..16 {
+            println!(
+                "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
+                i, self.hp[i], self.attack[i], self.defense[i], self.speed[i], self.special[i]
+            );
+        }
+    }
+}
+
 /// Returns a vector of stats, where the index corresponds to the DV value.
 /// The HP and the other stats differ slightly in calculation.
 /// Hence the is_hp boolean argument.
-pub fn get_dv_stat_pairs(level: i32, base: i32, exp: i32, is_hp: bool) -> Vec<i32> {
-    let offset = if is_hp { level + 10 } else { 5 };
+pub fn get_dv_stat_pairs(level: &i32, base: &i32, exp: &i32, is_hp: &bool) -> Vec<i32> {
+    let offset = if *is_hp { level + 10 } else { 5 };
 
     let mut result = Vec::with_capacity(16);
     let effort_gain = ((exp - 1) as f32).sqrt() + 1.0 / 4.0;
@@ -45,40 +159,35 @@ pub fn get_dv_stat_pairs(level: i32, base: i32, exp: i32, is_hp: bool) -> Vec<i3
     result
 }
 
-pub fn print_dv_table(
-    hp: &Vec<i32>,
-    attack: &Vec<i32>,
-    defense: &Vec<i32>,
-    speed: &Vec<i32>,
-    special: &Vec<i32>,
-) {
-    println!(
-        "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
-        "DV", "HP", "ATT", "DEF", "SPD", "SPC"
-    );
+/// Contains the range of possible DVs for a Pokemon given its stats.
+/// The range is inclusive on both ends.
+pub struct DvRanges {
+    pub hp: Option<(usize, usize)>,
+    pub attack: Option<(usize, usize)>,
+    pub defense: Option<(usize, usize)>,
+    pub speed: Option<(usize, usize)>,
+    pub special: Option<(usize, usize)>,
+}
 
-    for i in 0..16 {
-        let curr_hp = hp[i];
-        let curr_attack = attack[i];
-        let curr_defense = defense[i];
-        let curr_speed = speed[i];
-        let curr_special = special[i];
+impl DvRanges {
+    pub fn new(stats: &Stats, dv_table: &DvTable) -> DvRanges {
+        let hp = find_dv_range(&stats.hp, &dv_table.hp);
+        let attack = find_dv_range(&stats.attack, &dv_table.attack);
+        let defense = find_dv_range(&stats.defense, &dv_table.defense);
+        let speed = find_dv_range(&stats.speed, &dv_table.speed);
+        let special = find_dv_range(&stats.special, &dv_table.special);
 
-        println!(
-            "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
-            i, curr_hp, curr_attack, curr_defense, curr_speed, curr_special
-        );
+        DvRanges {
+            hp: hp,
+            attack: attack,
+            defense: defense,
+            speed: speed,
+            special: special,
+        }
     }
 }
 
-pub fn find_dv_range(
-    stat_val: &i32,
-    dv_stat_pairs: &Vec<i32>,
-) -> Result<(usize, usize), &'static str> {
-    if dv_stat_pairs.len() != 16 {
-        return Err("DV-stat pairs does not contain exactly 16 elements.");
-    }
-
+pub fn find_dv_range(stat_val: &i32, dv_stat_pairs: &[i32; 16]) -> Option<(usize, usize)> {
     let mut start = -1;
     let mut end = -1;
 
@@ -90,15 +199,15 @@ pub fn find_dv_range(
     }
 
     if start == -1 {
-        return Err("DV-stat pairs do not contain desired stat value.");
+        return None;
     }
 
     for (i, val) in dv_stat_pairs.iter().enumerate().rev() {
         if *val == *stat_val as i32 {
-            end = i as i32 + 1;
+            end = i as i32;
             break;
         }
     }
 
-    Ok((start as usize, end as usize))
+    Some((start as usize, end as usize))
 }
