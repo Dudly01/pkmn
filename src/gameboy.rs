@@ -3,7 +3,9 @@ use imageproc::contours::Contour;
 use imageproc::contrast::threshold;
 use std::cmp::{max, min};
 
-use crate::{ocr, utils::Position};
+use crate::ocr;
+use crate::ocr::read_image_section;
+use crate::utils::Position;
 
 /// Returns the inclusive bounding box of a contour.
 fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
@@ -183,26 +185,66 @@ impl StatScreen1Layout {
             },
         }
     }
+
+    /// Reads the National dexnumber from the screen.
+    pub fn read_content(
+        &self,
+        img: &DynamicImage,
+        symbol_bitmaps: &(Vec<String>, Vec<ocr::SymbolBitmap>),
+    ) -> StatsSreen1Content {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            panic!("Mismatch in image and layout dimensions.")
+        }
+
+        let pkmn_no = read_image_section(img, &self.pkmn_ndex_pos, symbol_bitmaps)
+            .unwrap()
+            .trim()
+            .to_string();
+        let level = read_image_section(img, &self.level_field_pos, symbol_bitmaps)
+            .unwrap()
+            .trim()
+            .to_string();
+
+        let hp = read_image_section(img, &self.hp_field_pos, symbol_bitmaps)
+            .unwrap()
+            .trim()
+            .to_string();
+        let attack = read_image_section(img, &self.attack_field_pos, symbol_bitmaps)
+            .unwrap()
+            .trim()
+            .to_string();
+        let defense = read_image_section(img, &self.defense_field_pos, symbol_bitmaps)
+            .unwrap()
+            .trim()
+            .to_string();
+        let speed = read_image_section(img, &self.speed_field_pos, symbol_bitmaps)
+            .unwrap()
+            .trim()
+            .to_string();
+        let special = read_image_section(img, &self.special_field_pos, symbol_bitmaps)
+            .unwrap()
+            .trim()
+            .to_string();
+
+        StatsSreen1Content {
+            pkmn_no,
+            level,
+            hp,
+            attack,
+            defense,
+            speed,
+            special,
+        }
+    }
 }
 
-/// Reads the text from the image.
-pub fn read_text(
-    img: &DynamicImage,
-    layout: &StatScreen1Layout,
-    symbol_bitmaps: &(Vec<String>, Vec<ocr::SymbolBitmap>),
-) -> (String, String, String, String, String, String, String) {
-    if img.width() as i32 != layout.width || img.height() as i32 != layout.height {
-        panic!("Mismatch in image and layout dimensions.")
-    }
-
-    let pkmn_no = ocr::read_image_section(img, &layout.pkmn_ndex_pos, symbol_bitmaps).unwrap();
-    let level = ocr::read_image_section(img, &layout.level_field_pos, symbol_bitmaps).unwrap();
-
-    let hp = ocr::read_image_section(img, &layout.hp_field_pos, symbol_bitmaps).unwrap();
-    let attack = ocr::read_image_section(img, &layout.attack_field_pos, symbol_bitmaps).unwrap();
-    let defense = ocr::read_image_section(img, &layout.defense_field_pos, symbol_bitmaps).unwrap();
-    let speed = ocr::read_image_section(img, &layout.speed_field_pos, symbol_bitmaps).unwrap();
-    let special = ocr::read_image_section(img, &layout.special_field_pos, symbol_bitmaps).unwrap();
-
-    (pkmn_no, level, hp, attack, defense, speed, special)
+/// The content of Stats screen 1.
+pub struct StatsSreen1Content {
+    pub pkmn_no: String,
+    pub level: String,
+    pub hp: String,
+    pub attack: String,
+    pub defense: String,
+    pub speed: String,
+    pub special: String,
 }

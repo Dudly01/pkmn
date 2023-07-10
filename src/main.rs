@@ -48,17 +48,15 @@ fn main() {
             FilterType::Nearest,
         );
 
-        let texts =
-            pkmn::gameboy::read_text(&img_screen_small, &stats_screen_layout, &symbol_bitmaps);
-        let (pkmn_no, level, hp, attack, defense, speed, special) = texts;
+        let content = stats_screen_layout.read_content(&img_screen_small, &symbol_bitmaps);
 
-        let pkmn_no: usize = pkmn_no.trim().parse().unwrap();
-        let level: i32 = level.trim().parse().unwrap();
-        let hp: i32 = hp.trim().parse().expect("Could not parse hp");
-        let attack: i32 = attack.trim().parse().expect("Could not parse attack");
-        let defense: i32 = defense.trim().parse().expect("Could not parse defense");
-        let speed: i32 = speed.trim().parse().expect("Could not parse speed");
-        let special: i32 = special.trim().parse().expect("Could not parse special");
+        let pkmn_no: usize = content.pkmn_no.parse().unwrap();
+        let level: i32 = content.level.parse().unwrap();
+        let hp: i32 = content.hp.parse().unwrap();
+        let attack: i32 = content.attack.parse().unwrap();
+        let defense: i32 = content.defense.parse().unwrap();
+        let speed: i32 = content.speed.parse().unwrap();
+        let special: i32 = content.special.parse().unwrap();
 
         let pkmn_base_stats = &pkmn_base_stats[pkmn_no - 1]; // -1 as Dex number starts with 1
         println!("Found this pokemon on the screen {:?}", pkmn_base_stats);
