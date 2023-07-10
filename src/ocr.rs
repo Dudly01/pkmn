@@ -1,4 +1,4 @@
-use image::{DynamicImage, Luma};
+use image::{DynamicImage, GrayImage, Luma};
 use imageproc::contrast::threshold;
 
 use crate::utils::Position;
@@ -177,6 +177,20 @@ pub fn create_symbol_bitmaps() -> (Vec<String>, Vec<SymbolBitmap>) {
     (symbols, bitmaps)
 }
 
+/// Returns the number of differing pixels between the binary image and the symbol bitmap.
+pub fn match_symbol(img: &GrayImage, bitmap: &SymbolBitmap) -> Result<i32, &'static str> {
+    if img.width() != 7 || img.height() != 7 {
+        return Err("Mismatching dimensions for image and bitmap.");
+    }
+    let mut diff_count = 0;
+    for (a, Luma([b])) in bitmap.vals.iter().zip(img.pixels()) {
+        if *a != *b {
+            diff_count += 1;
+        }
+    }
+    Ok(diff_count)
+}
+
 /// Reads the symbol on a 7x7 image.
 /// Uses a naive matching algorithm, where the bitmap with the least difference
 /// is chosen as match.
@@ -193,12 +207,7 @@ pub fn read_symbol(
 
     let mut diff_counts: Vec<i32> = Vec::with_capacity(symbol_bitmaps.0.len());
     for bitmap in &symbol_bitmaps.1 {
-        let mut current_diffs = 0;
-        for (a, Luma([b])) in bitmap.vals.iter().zip(img_binary.pixels()) {
-            if *a != *b {
-                current_diffs += 1;
-            }
-        }
+        let current_diffs = match_symbol(&img_binary, bitmap).unwrap();
         diff_counts.push(current_diffs)
     }
 

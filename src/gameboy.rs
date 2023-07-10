@@ -108,6 +108,7 @@ pub struct StatScreen1Layout {
     pub defense_field_pos: Position,
     pub speed_field_pos: Position,
     pub special_field_pos: Position,
+    pub slash_positions: [Position; 5],
 }
 
 impl StatScreen1Layout {
@@ -183,7 +184,64 @@ impl StatScreen1Layout {
                 width: field_width,
                 height: field_height,
             },
+            slash_positions: [
+                Position {
+                    x: 120,
+                    y: 33,
+                    width: 7,
+                    height: 7,
+                },
+                Position {
+                    x: 120,
+                    y: 49,
+                    width: 7,
+                    height: 7,
+                },
+                Position {
+                    x: 120,
+                    y: 73,
+                    width: 7,
+                    height: 7,
+                },
+                Position {
+                    x: 96,
+                    y: 105,
+                    width: 7,
+                    height: 7,
+                },
+                Position {
+                    x: 96,
+                    y: 121,
+                    width: 7,
+                    height: 7,
+                },
+            ],
         }
+    }
+
+    /// Verifies if the screen is present on the image.
+    pub fn verify_screen(&self, img: &DynamicImage) -> bool {
+        let bitmap = ocr::SymbolBitmap::from_lazy_array(&[
+            0, 0, 0, 0, 0, 0, 1, //
+            0, 0, 0, 0, 0, 1, 0, //
+            0, 0, 0, 0, 1, 0, 0, //
+            0, 0, 0, 1, 0, 0, 0, //
+            0, 0, 1, 0, 0, 0, 0, //
+            0, 1, 0, 0, 0, 0, 0, //
+            1, 0, 0, 0, 0, 0, 0, //
+        ]);
+        
+        for pos in &self.slash_positions{
+            let img_symbol = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+            let img_symbol = img_symbol.to_luma8();
+            let img_symbol = threshold(&img_symbol, 200);
+
+            let diff = ocr::match_symbol(&img_symbol, &bitmap).unwrap();
+            if diff != 0 {
+                return false;
+            }            
+        }
+        true
     }
 
     /// Reads the National dexnumber from the screen.

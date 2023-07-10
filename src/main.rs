@@ -12,6 +12,7 @@ use pokemon_dv_calculator as pkmn;
 fn main() {
     let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
     let pkmn_base_stats = pkmn::stats::load_base_stats();
+    let stats_screen_layout = StatScreen1Layout::new();
 
     // let window_initial = create_window("Initial", Default::default()).unwrap();
     // let window_grey = create_window("Greyscale", Default::default()).unwrap();
@@ -40,13 +41,16 @@ fn main() {
             .set_image("GameBoy", image_screen.clone())
             .unwrap();
 
-        let stats_screen_layout = StatScreen1Layout::new();
-
         let img_screen_small = image_screen.resize_exact(
             stats_screen_layout.width as u32,
             stats_screen_layout.height as u32,
             FilterType::Nearest,
         );
+
+        let is_stats_screen = stats_screen_layout.verify_screen(&img_screen_small);
+        if !is_stats_screen {
+            continue;
+        }
 
         let content = stats_screen_layout.read_content(&img_screen_small, &symbol_bitmaps);
 
