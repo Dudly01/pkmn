@@ -60,11 +60,18 @@ fn main() -> Result<()> {
             stdout
                 .execute(Clear(terminal::ClearType::All))?
                 .execute(cursor::MoveTo(0, 0))?
-                .execute(Print("Not showing summary screen 1"))?;
+                .execute(Print("Not showing summary screen 1!"))?;
             continue; // Not the screen we want
         }
 
         let content = stats_screen_layout.read_content(&img_gameboy, &symbol_bitmaps);
+        let Ok(content) = content else {
+            stdout
+                .execute(Clear(terminal::ClearType::All))?
+                .execute(cursor::MoveTo(0, 0))?
+                .execute(Print("Could not read summary screen content!"))?;
+            continue;
+        };
 
         // if previous_content == Some(content.clone()) {
         //     continue;

@@ -249,42 +249,34 @@ impl StatScreen1Layout {
         &self,
         img: &DynamicImage,
         symbol_bitmaps: &(Vec<String>, Vec<ocr::SymbolBitmap>),
-    ) -> StatsSreen1Content {
+    ) -> Result<StatsSreen1Content, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
-            panic!("Mismatch in image and layout dimensions.")
+            return Err("Mismatch in image and layout dimensions.".to_string());
         }
 
-        let pkmn_no = read_image_section(img, &self.pkmn_ndex_pos, symbol_bitmaps)
-            .unwrap()
+        let pkmn_no = read_image_section(img, &self.pkmn_ndex_pos, symbol_bitmaps)?
             .trim()
             .to_string();
-        let level = read_image_section(img, &self.level_field_pos, symbol_bitmaps)
-            .unwrap()
+        let level = read_image_section(img, &self.level_field_pos, symbol_bitmaps)?
             .trim()
             .to_string();
-
-        let hp = read_image_section(img, &self.hp_field_pos, symbol_bitmaps)
-            .unwrap()
+        let hp = read_image_section(img, &self.hp_field_pos, symbol_bitmaps)?
             .trim()
             .to_string();
-        let attack = read_image_section(img, &self.attack_field_pos, symbol_bitmaps)
-            .unwrap()
+        let attack = read_image_section(img, &self.attack_field_pos, symbol_bitmaps)?
             .trim()
             .to_string();
-        let defense = read_image_section(img, &self.defense_field_pos, symbol_bitmaps)
-            .unwrap()
+        let defense = read_image_section(img, &self.defense_field_pos, symbol_bitmaps)?
             .trim()
             .to_string();
-        let speed = read_image_section(img, &self.speed_field_pos, symbol_bitmaps)
-            .unwrap()
+        let speed = read_image_section(img, &self.speed_field_pos, symbol_bitmaps)?
             .trim()
             .to_string();
-        let special = read_image_section(img, &self.special_field_pos, symbol_bitmaps)
-            .unwrap()
+        let special = read_image_section(img, &self.special_field_pos, symbol_bitmaps)?
             .trim()
             .to_string();
 
-        StatsSreen1Content {
+        let content = StatsSreen1Content {
             pkmn_no,
             level,
             hp,
@@ -292,7 +284,8 @@ impl StatScreen1Layout {
             defense,
             speed,
             special,
-        }
+        };
+        Ok(content)
     }
 }
 
