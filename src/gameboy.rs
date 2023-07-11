@@ -63,8 +63,8 @@ fn locate_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Position> {
 }
 
 /// Returns the location of the GameBoy screen on the image.
-pub fn locate_screen(img: DynamicImage) -> Option<Position> {
-    let img_gray = img.into_luma8();
+pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
+    let img_gray = img.clone().into_luma8();
 
     let threshold_val = 200;
     let img_threshold = threshold(&img_gray, threshold_val);
@@ -230,8 +230,8 @@ impl StatScreen1Layout {
             0, 1, 0, 0, 0, 0, 0, //
             1, 0, 0, 0, 0, 0, 0, //
         ]);
-        
-        for pos in &self.slash_positions{
+
+        for pos in &self.slash_positions {
             let img_symbol = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
             let img_symbol = img_symbol.to_luma8();
             let img_symbol = threshold(&img_symbol, 200);
@@ -239,7 +239,7 @@ impl StatScreen1Layout {
             let diff = ocr::match_symbol(&img_symbol, &bitmap).unwrap();
             if diff != 0 {
                 return false;
-            }            
+            }
         }
         true
     }
@@ -297,6 +297,7 @@ impl StatScreen1Layout {
 }
 
 /// The content of Stats screen 1.
+#[derive(PartialEq, PartialOrd, Clone)]
 pub struct StatsSreen1Content {
     pub pkmn_no: String,
     pub level: String,

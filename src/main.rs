@@ -26,7 +26,7 @@ fn main() {
             .decode()
             .unwrap();
 
-        let screen_pos = locate_screen(image_initial.clone());
+        let screen_pos = locate_screen(&image_initial);
         let Some(screen_pos) = screen_pos else {
             continue;  // Did not find gameBoy screen
         };
