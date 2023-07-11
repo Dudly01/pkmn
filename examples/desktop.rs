@@ -1,8 +1,20 @@
+use crossterm::{
+    cursor,
+    style::Print,
+    terminal::{self, Clear},
+    ExecutableCommand, Result,
+};
 use image::DynamicImage;
+use std::io::stdout;
 
 use pokemon_dv_calculator as pkmn;
 
-fn main() {
+fn main() -> Result<()> {
+    let mut stdout = stdout();
+    stdout
+        .execute(terminal::SetTitle("PKMN DV calc"))?
+        .execute(cursor::Hide)?;
+
     let capturer = pkmn::screen_capturer::ScreenCapturer::for_primary_display();
     let Ok(mut capturer) = capturer else {
         panic!("There was an error in capturing the primary display.");
@@ -23,7 +35,10 @@ fn main() {
 
         let gameboy_pos = pkmn::gameboy::locate_screen(&img_screen);
         let Some(gameboy_pos) = gameboy_pos else {
-            println!("No GameBoy screen was found!");
+            stdout
+                .execute(Clear(terminal::ClearType::All))?
+                .execute(cursor::MoveTo(0, 0))?
+                .execute(Print("No GameBoy screen was found!"))?;
             continue;
         };
 
@@ -42,17 +57,19 @@ fn main() {
             );
 
         if stats_screen_layout.verify_screen(&img_gameboy) == false {
-            println!("GameBoy is not showing the summary screen 1!");
+            stdout
+                .execute(Clear(terminal::ClearType::All))?
+                .execute(cursor::MoveTo(0, 0))?
+                .execute(Print("Not showing summary screen 1"))?;
             continue; // Not the screen we want
         }
 
         let content = stats_screen_layout.read_content(&img_gameboy, &symbol_bitmaps);
 
-        if previous_content == Some(content.clone()) {
-            println!("Already scanned this pokemon!");
-            continue;
-        }
-        previous_content = Some(content.clone());
+        // if previous_content == Some(content.clone()) {
+        //     continue;
+        // }
+        // previous_content = Some(content.clone());
 
         let ndex: usize = content.pkmn_no.parse().unwrap();
         let level: i32 = content.level.parse().unwrap();
@@ -63,6 +80,11 @@ fn main() {
         let exp = pkmn::stats::Experience::with_no_experience();
 
         let dv_stats_table = pkmn::stats::DvTable::new(&level, &base_stats, &exp);
+
+        stdout
+            .execute(Clear(terminal::ClearType::All))?
+            .execute(cursor::MoveTo(0, 0))?;
+
         dv_stats_table.print();
 
         let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
