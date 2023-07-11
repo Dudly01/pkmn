@@ -197,9 +197,9 @@ pub fn match_symbol(img: &GrayImage, bitmap: &SymbolBitmap) -> Result<i32, &'sta
 pub fn read_symbol(
     img: DynamicImage,
     symbol_bitmaps: &(Vec<String>, Vec<SymbolBitmap>),
-) -> Result<String, &'static str> {
+) -> Result<String, String> {
     if img.width() != 7 || img.height() != 7 {
-        return Err("Mismatching dimensions for image and bitmap.");
+        return Err("Mismatching dimensions for image and bitmap.".to_string());
     }
 
     let img_grey = &img.to_luma8();
@@ -211,14 +211,18 @@ pub fn read_symbol(
         diff_counts.push(current_diffs)
     }
 
-    let min_index = diff_counts
+    let (idx, val) = diff_counts
         .iter()
         .enumerate()
         .min_by_key(|&(_, &value)| value)
-        .map(|(index, _)| index)
         .unwrap();
 
-    let best_match = symbol_bitmaps.0[min_index].clone();
+    let tolerance = 1;
+    if *val > tolerance {
+        return Err("Symbol not recognisable.".to_string());
+    }
+
+    let best_match = symbol_bitmaps.0[idx].clone();
 
     Ok(best_match)
 }
@@ -228,9 +232,9 @@ pub fn read_symbol(
 pub fn read_line(
     img: &DynamicImage,
     symbol_bitmaps: &(Vec<String>, Vec<SymbolBitmap>),
-) -> Result<String, &'static str> {
+) -> Result<String, String> {
     if img.height() != 7 || (img.width() + 1) % 8 != 0 {
-        return Err("Input dimensions are incorrect.");
+        return Err("Input dimensions are incorrect.".to_string());
     }
 
     let symbol_count = (img.width() + 1) / 8;
@@ -243,7 +247,7 @@ pub fn read_line(
         let height = 7;
 
         let img_symbol = img.clone().crop(x, y, width, height);
-        let symbol = read_symbol(img_symbol, symbol_bitmaps).unwrap();
+        let symbol = read_symbol(img_symbol, symbol_bitmaps)?;
         symbols.push(symbol);
     }
 
@@ -259,13 +263,13 @@ pub fn read_image_section(
     img: &DynamicImage,
     pos: &Position,
     symbol_bitmaps: &(Vec<String>, Vec<SymbolBitmap>),
-) -> Result<String, &'static str> {
+) -> Result<String, String> {
     if pos.height != 7 || (pos.width + 1) % 8 != 0 {
-        return Err("Incorrect position dimensions.");
+        return Err("Incorrect position dimensions.".to_string());
     }
 
     if pos.x + pos.width >= img.width() || pos.y + pos.height >= img.height() {
-        return Err("Section is outside of image boundaries.");
+        return Err("Section is outside of image boundaries.".to_string());
     }
 
     let img_section = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
