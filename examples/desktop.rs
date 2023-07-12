@@ -120,12 +120,12 @@ fn main() -> Result<()> {
         };
 
         println!(
-            "{: <10} No.{: >3} :L{: <3}",
+            "{: <} No.{: >3} :L{: <3}",
             record.pokemon, content.pkmn_no, level
         );
 
         println!();
-        println!("Stats and DV [min:max]");
+        println!("Stats       DVs [min:max]");
         println!(" HP: {:>3}    {}", stats.hp, hp);
         println!("ATT: {:>3}    {}", stats.attack, attack);
         println!("DEF: {:>3}    {}", stats.defense, defense);
@@ -134,13 +134,19 @@ fn main() -> Result<()> {
 
         println!();
         println!("Base stats");
-
-        println!(" HP: {:>3}", base_stats.hp);
-        println!("ATT: {:>3}", base_stats.attack);
-        println!("DEF: {:>3}", base_stats.defense);
-        println!("SPD: {:>3}", base_stats.speed);
-        println!("SPC: {:>3}", base_stats.special);
-        println!("TOT: {:>3}", record.total);
+        println!(
+            "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}",
+            " HP", "ATT", "DEF", "SPC", "SPD", "SUM"
+        );
+        println!(
+            "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}",
+            base_stats.hp,
+            base_stats.attack,
+            base_stats.defense,
+            base_stats.speed,
+            base_stats.special,
+            record.total,
+        );
 
         println!();
         println!("DV-Stats table");
