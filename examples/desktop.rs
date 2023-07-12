@@ -111,20 +111,20 @@ fn main() -> Result<()> {
             None => String::from("Stat is not within expectations."),
         };
 
-        let special = match dv_ranges.special {
-            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
-            None => String::from("Stat is not within expectations."),
-        };
-
         let speed = match dv_ranges.speed {
             Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
             None => String::from("Stat is not within expectations."),
         };
 
+        let special = match dv_ranges.special {
+            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            None => String::from("Stat is not within expectations."),
+        };        
+
         println!(" HP: {:<3} DV: {}", stats.hp, hp);
         println!("ATT: {:<3} DV: {}", stats.attack, attack);
         println!("DEF: {:<3} DV: {}", stats.defense, defense);
-        println!("SPE: {:<3} DV: {}", stats.speed, special);
-        println!("SPC: {:<3} DV: {}", stats.special, speed);
+        println!("SPD: {:<3} DV: {}", stats.speed, speed);
+        println!("SPC: {:<3} DV: {}", stats.special, special);
     }
 }
