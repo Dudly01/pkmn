@@ -92,8 +92,6 @@ fn main() -> Result<()> {
             .execute(Clear(terminal::ClearType::All))?
             .execute(cursor::MoveTo(0, 0))?;
 
-        dv_stats_table.print(&stats);
-
         let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
 
         let hp = match dv_ranges.hp {
@@ -119,7 +117,12 @@ fn main() -> Result<()> {
         let special = match dv_ranges.special {
             Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
             None => String::from("Stat is not within expectations."),
-        };        
+        };
+
+        println!(
+            "{: <10} No.{: >3} :L{: <3}",
+            record.pokemon, content.pkmn_no, level
+        );
 
         println!();
         println!("Stats and DV [min:max]");
@@ -131,11 +134,16 @@ fn main() -> Result<()> {
 
         println!();
         println!("Base stats");
+
         println!(" HP: {:>3}", base_stats.hp);
         println!("ATT: {:>3}", base_stats.attack);
         println!("DEF: {:>3}", base_stats.defense);
         println!("SPD: {:>3}", base_stats.speed);
         println!("SPC: {:>3}", base_stats.special);
         println!("TOT: {:>3}", record.total);
+
+        println!();
+        println!("DV-Stats table");
+        dv_stats_table.print(&stats);
     }
 }
