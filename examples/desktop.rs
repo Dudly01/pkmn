@@ -92,39 +92,50 @@ fn main() -> Result<()> {
             .execute(Clear(terminal::ClearType::All))?
             .execute(cursor::MoveTo(0, 0))?;
 
-        dv_stats_table.print();
+        dv_stats_table.print(&stats);
 
         let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
 
         let hp = match dv_ranges.hp {
-            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
             None => String::from("Stat is not within expectations."),
         };
 
         let attack = match dv_ranges.attack {
-            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
             None => String::from("Stat is not within expectations."),
         };
 
         let defense = match dv_ranges.defense {
-            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
             None => String::from("Stat is not within expectations."),
         };
 
         let speed = match dv_ranges.speed {
-            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
             None => String::from("Stat is not within expectations."),
         };
 
         let special = match dv_ranges.special {
-            Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
+            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
             None => String::from("Stat is not within expectations."),
         };        
 
-        println!(" HP: {:<3} DV: {}", stats.hp, hp);
-        println!("ATT: {:<3} DV: {}", stats.attack, attack);
-        println!("DEF: {:<3} DV: {}", stats.defense, defense);
-        println!("SPD: {:<3} DV: {}", stats.speed, speed);
-        println!("SPC: {:<3} DV: {}", stats.special, special);
+        println!();
+        println!("Stats and DV [min:max]");
+        println!(" HP: {:>3}    {}", stats.hp, hp);
+        println!("ATT: {:>3}    {}", stats.attack, attack);
+        println!("DEF: {:>3}    {}", stats.defense, defense);
+        println!("SPD: {:>3}    {}", stats.speed, speed);
+        println!("SPC: {:>3}    {}", stats.special, special);
+
+        println!();
+        println!("Base stats");
+        println!(" HP: {:>3}", base_stats.hp);
+        println!("ATT: {:>3}", base_stats.attack);
+        println!("DEF: {:>3}", base_stats.defense);
+        println!("SPD: {:>3}", base_stats.speed);
+        println!("SPC: {:>3}", base_stats.special);
+        println!("TOT: {:>3}", record.total);
     }
 }

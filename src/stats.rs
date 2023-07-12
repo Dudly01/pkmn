@@ -125,16 +125,54 @@ impl DvTable {
     }
 
     /// Prints the table to the terminal in a nicely formatted fashion.
-    pub fn print(&self) {
+    pub fn print(&self, stats: &Stats) {
         println!(
-            "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
+            "{: >4} {: >4} {: >4} {: >4} {: >4} {: >4}",
             "DV", "HP", "ATT", "DEF", "SPD", "SPC"
         );
 
         for i in 0..16 {
+            let special_char = "-";
+
+            let hp_eq = if self.hp[i] == stats.hp {
+                special_char
+            } else {
+                " "
+            };
+            let attack_eq = if self.attack[i] == stats.attack {
+                special_char
+            } else {
+                " "
+            };
+            let defense_eq = if self.defense[i] == stats.defense {
+                special_char
+            } else {
+                " "
+            };
+            let speed_eq = if self.speed[i] == stats.speed {
+                special_char
+            } else {
+                " "
+            };
+            let special_eq = if self.special[i] == stats.special {
+                special_char
+            } else {
+                " "
+            };
+
             println!(
-                "{: >5}{: >5}{: >5}{: >5}{: >5}{: >5}",
-                i, self.hp[i], self.attack[i], self.defense[i], self.speed[i], self.special[i]
+                "{: >4} {: >4}{}{: >4}{}{: >4}{}{: >4}{}{: >4}{}",
+                i,
+                self.hp[i],
+                hp_eq,
+                self.attack[i],
+                attack_eq,
+                self.defense[i],
+                defense_eq,
+                self.speed[i],
+                speed_eq,
+                self.special[i],
+                special_eq,
             );
         }
     }
