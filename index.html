@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Screen Stream Processing</title>
+</head>
+<body>
+  <canvas id="screenCanvas"></canvas>
+
+  <script>
+    // Get the screen stream
+    async function getScreenStream() {
+      try {
+        const stream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+        const videoElement = document.createElement('video');
+        videoElement.srcObject = stream;
+        videoElement.addEventListener('loadedmetadata', () => {
+          const canvas = document.getElementById('screenCanvas');
+          canvas.width = videoElement.videoWidth;
+          canvas.height = videoElement.videoHeight;
+          const ctx = canvas.getContext('2d');
+          setInterval(() => {
+            ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+          }, 100); // Adjust the interval as needed for your use case
+        });
+        videoElement.play();
+      } catch (error) {
+        console.error('Error accessing screen stream:', error);
+      }
+    }
+
+    // Call the function to start capturing the screen
+    getScreenStream();
+  </script>
+</body>
+</html>
