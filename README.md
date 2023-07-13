@@ -4,6 +4,19 @@ A tool for estimating the DVs of a Pokémon.
 
 # Troubleshooting
 
+## Local webserver
+
+To view the examples it's best to start a local webserver from the repo's directory. In Python3, this can be done with:
+
+```
+python -m http.server
+```
+
+Afterwards, one can visit http://localhost:8000/ which will show `index.html` by default. Other `.html` files can be accessed with their relative paths.
+
+[Source](https://emscripten.org/docs/getting_started/FAQ.html#faq-local-webserver)
+
+
 ## scrap - acquiring screenshot
 
 It was missing libraries.
