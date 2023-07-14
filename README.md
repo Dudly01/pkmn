@@ -40,8 +40,11 @@ cargo update
 
 # Sources
 
+## Pokemon
 Bulbapedia https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)
 Neoseeker https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html
 Smogon https://www.smogon.com/ingame/guides/rby_gsc_stats
 
-JS app https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65
+## JS app 
+https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65
+https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
