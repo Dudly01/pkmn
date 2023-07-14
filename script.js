@@ -1,7 +1,10 @@
 function main() {
     const video = document.getElementById("video");
-    const start = document.getElementById("start");
-    const stop = document.getElementById("stop");
+    const canvas = document.getElementById("canvas");
+
+    const start_btn = document.getElementById("start_button");
+    const stop_btn = document.getElementById("stop_button");
+    const snapshot_btn = document.getElementById("snapshot_button");
 
     var displayMediaOptions = {
         video: {
@@ -10,11 +13,14 @@ function main() {
         audio: false,
     };
 
-    start.onclick = function (e) {
+    start_btn.onclick = function (e) {
         startSharing();
     };
-    stop.onclick = function (e) {
+    stop_btn.onclick = function (e) {
         stopSharing();
+    };
+    snapshot_btn.onclick = function (e) {
+        takeSnapshot();
     };
 
     async function startSharing() {
@@ -32,6 +38,15 @@ function main() {
         tracks.forEach((track) => track.stop());
         video.srcObject = null;
     }
+
+    const takeSnapshot = () => {
+        let target_width = video.videoWidth / 2;
+        let target_height = video.videoHeight / 2;
+        canvas.width = target_width;
+        canvas.height = target_height;
+        canvas.getContext('2d').drawImage(video, 0, 0, target_width, target_height);
+        return 1;
+    };
 }
 
 main();
