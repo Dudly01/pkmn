@@ -119,6 +119,10 @@ fn main() -> Result<()> {
             None => String::from("Stat is not within expectations."),
         };
 
+        stdout
+            .execute(Clear(terminal::ClearType::All))?
+            .execute(cursor::MoveTo(0, 0))?;
+
         println!(
             "{: <} No.{: >3} :L{: <3}",
             record.pokemon, content.pkmn_no, level
