@@ -53,6 +53,9 @@ fn main() {
         }
 
         let content = stats_screen_layout.read_content(&img_screen_small, &symbol_bitmaps);
+        let Ok(content) = content else {
+            continue;  // Could not read contents
+        };
 
         let ndex: usize = content.pkmn_no.parse().unwrap();
         let level: i32 = content.level.parse().unwrap();
@@ -64,7 +67,7 @@ fn main() {
 
         let dv_stats_table = DvTable::new(&level, &base_stats, &exp);
 
-        dv_stats_table.print();
+        dv_stats_table.print(&stats);
 
         let dv_ranges = DvRanges::new(&stats, &dv_stats_table);
 
