@@ -1,5 +1,5 @@
 # Rust build files
-target/*
+pokemon_dv_calculator/target/*
 
 # Images for development
 *.png
