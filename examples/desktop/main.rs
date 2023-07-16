@@ -1,4 +1,5 @@
 /// Finds the GameBoy on the primary display and shows the result in the terminal.
+pub mod screen_capturer;
 
 use crossterm::{
     cursor,
@@ -17,7 +18,7 @@ fn main() -> Result<()> {
         .execute(terminal::SetTitle("PKMN DV calc"))?
         .execute(cursor::Hide)?;
 
-    let capturer = pkmn::screen_capturer::ScreenCapturer::for_primary_display();
+    let capturer = screen_capturer::ScreenCapturer::for_primary_display();
     let Ok(mut capturer) = capturer else {
         panic!("There was an error in capturing the primary display.");
     };
