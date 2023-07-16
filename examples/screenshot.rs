@@ -1,3 +1,5 @@
+/// Finds the GameBoy on the "screenshot.png", shows images in windows, shows stats in terminal.
+
 use image::imageops::FilterType;
 use image::io::Reader as ImageReader;
 use show_image::{create_window, event};

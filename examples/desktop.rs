@@ -1,3 +1,5 @@
+/// Finds the GameBoy on the primary display and shows the result in the terminal.
+
 use crossterm::{
     cursor,
     style::Print,
