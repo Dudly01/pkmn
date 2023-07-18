@@ -7,3 +7,12 @@ pokemon_dv_calculator/target/*
 # Libraries do not have this in version control
 # https://doc.rust-lang.org/cargo/faq.html#why-do-binaries-have-cargolock-in-version-control-but-not-libraries
 Cargo.lock
+
+# Net package
+net/target
+net/**/*.rs.bk
+net/Cargo.lock
+net/bin/
+net/pkg/
+net/wasm-pack.log
+
