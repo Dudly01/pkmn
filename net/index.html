@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>WASM Module Example</title>
+</head>
+
+<body>
+    <script type="module">
+        import init from './pkg/net.js';
+
+        async function runWasm() {
+            // Instantiate the WebAssembly module
+            const wasmModule = await init();
+
+            // Use functions exposed by the module
+            // For example, if you have a function called 'add' in your Rust code:
+            const result = wasmModule.add(4, 5);
+            console.log('Result:', result);
+        }
+
+        runWasm();
+    </script>
+</body>
+
+</html>
