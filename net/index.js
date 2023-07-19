@@ -58,8 +58,8 @@ function stopSharing() {
 }
 
 const takeSnapshot = () => {
-    let target_width = video.videoWidth / 2;
-    let target_height = video.videoHeight / 2;
+    let target_width = video.videoWidth / 1;
+    let target_height = video.videoHeight / 1;
     canvas.width = target_width;
     canvas.height = target_height;
     canvas.getContext('2d').drawImage(video, 0, 0, target_width, target_height);
