@@ -9,6 +9,8 @@ const snapshot_btn = document.getElementById("snapshot_button");
 const draw_btn = document.getElementById("draw_button");
 const draw_wasm_btn = document.getElementById("draw_wasm_button");
 const test_wasm_btn = document.getElementById("test_wasm_button");
+const gameboy_btn = document.getElementById("gameboy_button");
+const text_output = document.getElementById("output");
 
 var displayMediaOptions = {
     video: {
@@ -34,6 +36,9 @@ draw_wasm_btn.onclick = function (e) {
 };
 test_wasm_btn.onclick = function (e) {
     testWasm();
+};
+gameboy_btn.onclick = function (e) {
+    gameboy();
 };
 
 async function startSharing() {
@@ -101,4 +106,23 @@ async function testWasm() {
 
     let result = wasm.add(4, 5);
     console.log("Result of add(4, 5):", result);
+}
+
+async function gameboy() {
+    // Instantiate the WebAssembly module
+    await init();
+
+    let imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+    let pixelData = imageData.data;
+
+    try {
+        let pos = wasm.locate_gameboy(pixelData, imageData.width, imageData.height);
+        
+        let msg = "Found GameBoy!"
+        console.log(msg);
+        text_output.textContent = msg;
+    } catch (error) {
+        console.log(error);
+        text_output.textContent = "GameBoy not found!";
+    }
 }
