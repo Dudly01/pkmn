@@ -1,4 +1,4 @@
-use image::DynamicImage;
+use image::{DynamicImage, ImageBuffer, Luma};
 use imageproc::contours::Contour;
 use imageproc::contrast::threshold;
 use std::cmp::{max, min};
@@ -63,17 +63,35 @@ fn locate_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Position> {
 }
 
 /// Returns the location of the GameBoy screen on the image.
+///
+/// Known limitation: fails if the input image is the original GameBoy screen (160x140 pixels).
+/// The erode is too much for that.
 pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
     let img_gray = img.clone().into_luma8();
 
     let threshold_val = 200;
     let img_threshold = threshold(&img_gray, threshold_val);
 
+    // Unlike OpenCV, the border type can not be set for erode.
+    // Would it be set to a constant zero, then erode would create a black border.
+    // Find contours need sthe black border as seen in #38
+    let border_size = 1; // pixels
+    let new_width = img_threshold.width() + 2 * border_size;
+    let new_height = img_threshold.height() + 2 * border_size;
+    let mut img_border = ImageBuffer::from_pixel(new_width, new_height, Luma([0]));
+    for y in 0..img_threshold.height() {
+        for x in 0..img_threshold.width() {
+            let pixel = img_threshold.get_pixel(x, y);
+            img_border.put_pixel(x + border_size, y + border_size, *pixel);
+        }
+    }
+
+    // Remove little dots to speed up finding contours
     let erode_size = 1;
     let image_erode = imageproc::morphology::erode(
-        &img_threshold,
+        &img_border,
         imageproc::distance_transform::Norm::LInf,
-        erode_size,
+        erode_size as u8,
     );
 
     let contours = imageproc::contours::find_contours::<i32>(&image_erode);
@@ -86,10 +104,10 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
 
     let screen_position = match largest_candidate {
         Some(p) => Some(Position {
-            x: p.x - erode_size as u32,
-            y: p.y - erode_size as u32,
-            width: p.width + 2 * erode_size as u32,
-            height: p.height + 2 * erode_size as u32,
+            x: p.x - erode_size - border_size,
+            y: p.y - erode_size - border_size,
+            width: p.width + 2 * erode_size,
+            height: p.height + 2 * erode_size,
         }),
         None => None,
     };
