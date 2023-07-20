@@ -3,7 +3,7 @@ mod utils;
 use pokemon_dv_calculator as pkmn;
 use wasm_bindgen::prelude::*;
 
-use image::{DynamicImage, ImageBuffer, Rgba}; 
+use image::{DynamicImage, ImageBuffer, Rgba};
 
 #[wasm_bindgen]
 extern "C" {
@@ -43,9 +43,13 @@ pub struct JsPosition {
 
 #[wasm_bindgen]
 pub fn locate_gameboy(data: &[u8], width: u32, height: u32) -> Result<JsPosition, JsValue> {
+    if data.len() != (width * height * 4) as usize {
+        return Err(JsValue::from_str("Dimensions do not add up."));
+    }
+
     // Container for the image
     let mut img: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
-    
+
     // Copy over the data
     for y in 0..height as usize {
         for x in 0..width as usize {
@@ -64,10 +68,10 @@ pub fn locate_gameboy(data: &[u8], width: u32, height: u32) -> Result<JsPosition
         return Err(JsValue::from_str("No GameBoy was found"));
     };
 
-    let pos = JsPosition{
-        x: pos.x, 
-        y: pos.y, 
-        width: pos.width, 
+    let pos = JsPosition {
+        x: pos.x,
+        y: pos.y,
+        width: pos.width,
         height: pos.height,
     };
 
