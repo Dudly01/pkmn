@@ -112,17 +112,28 @@ async function gameboy() {
     // Instantiate the WebAssembly module
     await init();
 
-    let imageData = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height);
+    // Update canvas from video, use source size
+    let target_width = video.videoWidth;
+    let target_height = video.videoHeight;
+    canvas.width = target_width;
+    canvas.height = target_height;
+    canvas.getContext('2d').drawImage(video, 0, 0, target_width, target_height);
+
+    // Get ImageData of whole canvas
+    let imageData = canvas.getContext('2d').getImageData(0, 0, target_width, target_height);
     let pixelData = imageData.data;
 
+    // Try locating the GameBoy
     try {
-        let pos = wasm.locate_gameboy(pixelData, imageData.width, imageData.height);
-        
-        let msg = "Found GameBoy!"
-        console.log(msg);
-        text_output.textContent = msg;
+        let pos = wasm.locate_gameboy(pixelData, target_width, target_height);
+        text_output.textContent = "Found GameBoy!";
     } catch (error) {
-        console.log(error);
         text_output.textContent = "GameBoy not found!";
     }
+
+    // Show the used image on the canvas
+    // Locating the GameBoy should not modify it, so its just an extra safety measure
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+    canvas.getContext('2d').putImageData(imageData, 0, 0);
 }
