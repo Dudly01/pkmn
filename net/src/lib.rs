@@ -51,12 +51,12 @@ pub fn locate_gameboy(data: &[u8], width: u32, height: u32) -> Result<JsPosition
     let mut img: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
 
     // Copy over the data
-    for y in 0..height as usize {
-        for x in 0..width as usize {
-            let i = y * width as usize + 4 * x;
+    for y in 0..height {
+        for x in 0..width {
+            let i = (y * width * 4 + x * 4) as usize;
 
             let rgba_pixel = Rgba([data[i], data[i + 1], data[i + 2], data[i + 3]]);
-            img.put_pixel(x as u32, y as u32, rgba_pixel);
+            img.put_pixel(x, y, rgba_pixel);
         }
     }
 
