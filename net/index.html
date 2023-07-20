@@ -1,28 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Rust WASM</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screen Share</title>
+    <script src="./index.js" type="module"></script>
 </head>
 
-<body>
-    <script type="module">
-        import init, * as wasm from './pkg/net.js';
+<body align="center">
+    <h2>Screen Capture</h2>
+    <p>
+        <button id="start_button">Start sharing</button>
+        <button id="stop_button">Stop sharing</button>
+        <button id="snapshot_button">Take snapshot</button>
+        <button id="draw_button">Draw on snapshot</button>
+        <button id="draw_wasm_button">Draw on snapshot with WASM</button>
+        <button id="test_wasm_button">Test WASM</button>
+        <button id="gameboy_button">GameBoy</button>
+    </p>
+    <p id="output"></p>
+    <video id="video" autoplay></video>
+    <h2>Canvas `canvas.getContext('2d').drawImage(video, 0, 0);`</h2>
+    <canvas id="canvas" class="d-none"></canvas>
 
-        async function runWasm() {
-            // Instantiate the WebAssembly module
-            await init("./pkg/net_bg.wasm");
-
-            // Alert user with a message
-            wasm.greet("Bulbasaur");
-
-            // Log to console once alert has been noted.
-            const result = wasm.add(4, 5);
-            console.log('Result of add(4, 5):', result);
-        }
-
-        runWasm();
-    </script>
 </body>
 
 </html>

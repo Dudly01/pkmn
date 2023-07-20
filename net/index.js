@@ -9,6 +9,8 @@ const snapshot_btn = document.getElementById("snapshot_button");
 const draw_btn = document.getElementById("draw_button");
 const draw_wasm_btn = document.getElementById("draw_wasm_button");
 const test_wasm_btn = document.getElementById("test_wasm_button");
+const gameboy_btn = document.getElementById("gameboy_button");
+const text_output = document.getElementById("output");
 
 var displayMediaOptions = {
     video: {
@@ -35,6 +37,9 @@ draw_wasm_btn.onclick = function (e) {
 test_wasm_btn.onclick = function (e) {
     testWasm();
 };
+gameboy_btn.onclick = function (e) {
+    gameboy();
+};
 
 async function startSharing() {
     try {
@@ -53,8 +58,8 @@ function stopSharing() {
 }
 
 const takeSnapshot = () => {
-    let target_width = video.videoWidth / 2;
-    let target_height = video.videoHeight / 2;
+    let target_width = video.videoWidth / 1;
+    let target_height = video.videoHeight / 1;
     canvas.width = target_width;
     canvas.height = target_height;
     canvas.getContext('2d').drawImage(video, 0, 0, target_width, target_height);
@@ -101,4 +106,34 @@ async function testWasm() {
 
     let result = wasm.add(4, 5);
     console.log("Result of add(4, 5):", result);
+}
+
+async function gameboy() {
+    // Instantiate the WebAssembly module
+    await init();
+
+    // Update canvas from video, use source size
+    let target_width = video.videoWidth;
+    let target_height = video.videoHeight;
+    canvas.width = target_width;
+    canvas.height = target_height;
+    canvas.getContext('2d').drawImage(video, 0, 0, target_width, target_height);
+
+    // Get ImageData of whole canvas
+    let imageData = canvas.getContext('2d').getImageData(0, 0, target_width, target_height);
+    let pixelData = imageData.data;
+
+    // Try locating the GameBoy
+    try {
+        let pos = wasm.locate_gameboy(pixelData, target_width, target_height);
+        text_output.textContent = "Found GameBoy!";
+    } catch (error) {
+        text_output.textContent = "GameBoy not found!";
+    }
+
+    // Show the used image on the canvas
+    // Locating the GameBoy should not modify it, so its just an extra safety measure
+    canvas.width = imageData.width;
+    canvas.height = imageData.height;
+    canvas.getContext('2d').putImageData(imageData, 0, 0);
 }

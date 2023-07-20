@@ -1,6 +1,9 @@
 mod utils;
 
+use pokemon_dv_calculator as pkmn;
 use wasm_bindgen::prelude::*;
+
+use image::{DynamicImage, ImageBuffer, Rgba};
 
 #[wasm_bindgen]
 extern "C" {
@@ -28,4 +31,49 @@ pub fn draw(pixels: &mut [u8]) {
             pixels[i + 2] = 0; // Blue component
         }
     }
+}
+
+#[wasm_bindgen]
+pub struct JsPosition {
+    pub x: u32,
+    pub y: u32,
+    pub width: u32,
+    pub height: u32,
+}
+
+#[wasm_bindgen]
+pub fn locate_gameboy(data: &[u8], width: u32, height: u32) -> Result<JsPosition, JsValue> {
+    if data.len() != (width * height * 4) as usize {
+        return Err(JsValue::from_str("Dimensions do not add up."));
+    }
+
+    // Container for the image
+    let mut img: ImageBuffer<Rgba<u8>, Vec<u8>> = ImageBuffer::new(width, height);
+
+    // Copy over the data
+    for y in 0..height {
+        for x in 0..width {
+            let i = (y * width * 4 + x * 4) as usize;
+
+            let rgba_pixel = Rgba([data[i], data[i + 1], data[i + 2], data[i + 3]]);
+            img.put_pixel(x, y, rgba_pixel);
+        }
+    }
+
+    let img = DynamicImage::ImageRgba8(img);
+
+    let pos = pkmn::gameboy::locate_screen(&img);
+
+    let Some(pos) = pos else {
+        return Err(JsValue::from_str("No GameBoy was found"));
+    };
+
+    let pos = JsPosition {
+        x: pos.x,
+        y: pos.y,
+        width: pos.width,
+        height: pos.height,
+    };
+
+    Ok(pos)
 }
