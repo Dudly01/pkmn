@@ -18,8 +18,10 @@ pub struct Record {
 pub fn load_base_stats() -> Vec<Record> {
     let mut records: Vec<Record> = Vec::with_capacity(151);
 
-    let csv_path = "data/base_stats.csv";
-    let mut csv_reader = csv::Reader::from_path(csv_path).expect("could not load CSV file.");
+    const CSV_DATA: &str = include_str!("../data/base_stats.csv");
+    let mut csv_reader = csv::ReaderBuilder::new()
+        .has_headers(true)
+        .from_reader(CSV_DATA.as_bytes());
 
     for result in csv_reader.deserialize() {
         let record: Record = result.unwrap();
