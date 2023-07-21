@@ -10,7 +10,13 @@ const draw_btn = document.getElementById("draw_button");
 const draw_wasm_btn = document.getElementById("draw_wasm_button");
 const test_wasm_btn = document.getElementById("test_wasm_button");
 const gameboy_btn = document.getElementById("gameboy_button");
+
 const text_output = document.getElementById("output");
+text_output.style.cssText =
+    `
+    font-family: monospace;
+    white-space: pre-wrap;
+    `;
 
 var displayMediaOptions = {
     video: {
