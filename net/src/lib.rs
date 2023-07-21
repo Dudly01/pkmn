@@ -41,6 +41,61 @@ pub struct JsPosition {
     pub height: u32,
 }
 
+pub fn dv_stat_table_as_string(dv_table: &pkmn::stats::DvTable, stats: &pkmn::stats::Stats) -> String {
+    let mut text_result = String::with_capacity(128);   
+    
+    text_result.push_str(&format!(
+        "{: >4} {: >4} {: >4} {: >4} {: >4} {: >4}<br>",
+        "DV", "HP", "ATT", "DEF", "SPD", "SPC"
+    ));
+
+    for i in 0..16 {
+        let special_char = "-";
+
+        let hp_eq = if dv_table.hp[i] == stats.hp {
+            special_char
+        } else {
+            " "
+        };
+        let attack_eq = if dv_table.attack[i] == stats.attack {
+            special_char
+        } else {
+            " "
+        };
+        let defense_eq = if dv_table.defense[i] == stats.defense {
+            special_char
+        } else {
+            " "
+        };
+        let speed_eq = if dv_table.speed[i] == stats.speed {
+            special_char
+        } else {
+            " "
+        };
+        let special_eq = if dv_table.special[i] == stats.special {
+            special_char
+        } else {
+            " "
+        };
+
+        text_result.push_str(&format!(
+            "{: >4} {: >4}{}{: >4}{}{: >4}{}{: >4}{}{: >4}{}<br>",
+            i,
+            dv_table.hp[i],
+            hp_eq,
+            dv_table.attack[i],
+            attack_eq,
+            dv_table.defense[i],
+            defense_eq,
+            dv_table.speed[i],
+            speed_eq,
+            dv_table.special[i],
+            special_eq,
+        ));
+    }
+    text_result
+}
+
 /// Locates the GameBoy, reads the contents of the summary screen 1
 /// and returns the stats of the found pokemon.
 #[wasm_bindgen]
@@ -162,6 +217,10 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
         base_stats.special,
         record.total,
     ));
+
+    text_result.push_str(&format!("<br>"));
+    text_result.push_str(&format!("DV-Stats table<br>"));
+    text_result.push_str(&dv_stat_table_as_string(&dv_stats_table, &stats));
 
     Ok(JsValue::from_str(&text_result))
 }
