@@ -69,11 +69,7 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
     };
 
     let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
-
-    return Ok(JsValue::from_str("Loaded symbol bitmaps"));
-
     let pkmn_base_stats = pkmn::stats::load_base_stats();
-
     let stats_screen_layout = pkmn::gameboy::StatScreen1Layout::new();
 
     let img_gameboy = img_screen
@@ -139,26 +135,26 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
     let mut text_result = String::with_capacity(128);
 
     text_result.push_str(&format!(
-        "{: <} No.{: >3} :L{: <3}",
+        "{: <} No.{: >3} :L{: <3}<br>",
         record.pokemon, content.pkmn_no, level
     ));
 
-    text_result.push_str(&format!("\n"));
-    text_result.push_str(&format!("Stats       DVs [min:max]"));
-    text_result.push_str(&format!(" HP: {:>3}    {}", stats.hp, hp));
-    text_result.push_str(&format!("ATT: {:>3}    {}", stats.attack, attack));
-    text_result.push_str(&format!("DEF: {:>3}    {}", stats.defense, defense));
-    text_result.push_str(&format!("SPD: {:>3}    {}", stats.speed, speed));
-    text_result.push_str(&format!("SPC: {:>3}    {}", stats.special, special));
+    text_result.push_str(&format!("<br>"));
+    text_result.push_str(&format!("Stats       DVs [min:max]<br>"));
+    text_result.push_str(&format!(" HP: {:>3}    {}<br>", stats.hp, hp));
+    text_result.push_str(&format!("ATT: {:>3}    {}<br>", stats.attack, attack));
+    text_result.push_str(&format!("DEF: {:>3}    {}<br>", stats.defense, defense));
+    text_result.push_str(&format!("SPD: {:>3}    {}<br>", stats.speed, speed));
+    text_result.push_str(&format!("SPC: {:>3}    {}<br>", stats.special, special));
 
-    text_result.push_str(&format!("\n"));
-    text_result.push_str(&format!("Base stats"));
+    text_result.push_str(&format!("<br>"));
+    text_result.push_str(&format!("Base stats<br>"));
     text_result.push_str(&format!(
-        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}",
+        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}<br>",
         " HP", "ATT", "DEF", "SPC", "SPD", "SUM"
     ));
     text_result.push_str(&format!(
-        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}",
+        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}<br>",
         base_stats.hp,
         base_stats.attack,
         base_stats.defense,

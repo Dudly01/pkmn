@@ -126,7 +126,7 @@ async function gameboy() {
     // Try locating the GameBoy
     try {
         var results = wasm.read_stats_from_screen(pixelData, target_width, target_height);
-        text_output.textContent = results;
+        text_output.innerHTML = results;
     } catch (error) {
         text_output.textContent = error;
         return;
