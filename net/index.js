@@ -125,15 +125,10 @@ async function gameboy() {
 
     // Try locating the GameBoy
     try {
-        let pos = wasm.locate_gameboy(pixelData, target_width, target_height);
-        text_output.textContent = "Found GameBoy!";
+        var results = wasm.read_stats_from_screen(pixelData, target_width, target_height);
+        text_output.innerHTML = results;
     } catch (error) {
-        text_output.textContent = "GameBoy not found!";
+        text_output.textContent = error;
+        return;
     }
-
-    // Show the used image on the canvas
-    // Locating the GameBoy should not modify it, so its just an extra safety measure
-    canvas.width = imageData.width;
-    canvas.height = imageData.height;
-    canvas.getContext('2d').putImageData(imageData, 0, 0);
 }
