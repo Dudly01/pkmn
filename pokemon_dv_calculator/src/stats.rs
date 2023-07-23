@@ -251,3 +251,125 @@ pub fn find_dv_range(stat_val: &i32, dv_stat_pairs: &[i32; 16]) -> Option<(usize
 
     Some((start as usize, end as usize))
 }
+
+/// Returns the text summary of the Pokemon.
+/// The result is formatted with line breaks ('\n') and spaces (' ').
+/// It terminal printable.
+pub fn summarize_pkmn_stats(
+    record: &Record,
+    base_stats: &BaseStats,
+    level: i32,
+    stats: &Stats,
+    dv_stats_table: &DvTable,
+    dv_ranges: &DvRanges,
+) -> String {
+    let mut text_result = String::with_capacity(128);
+
+    let hp = match dv_ranges.hp {
+        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
+        None => String::from("Stat is not within expectations."),
+    };
+
+    let attack = match dv_ranges.attack {
+        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
+        None => String::from("Stat is not within expectations."),
+    };
+
+    let defense = match dv_ranges.defense {
+        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
+        None => String::from("Stat is not within expectations."),
+    };
+
+    let speed = match dv_ranges.speed {
+        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
+        None => String::from("Stat is not within expectations."),
+    };
+
+    let special = match dv_ranges.special {
+        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
+        None => String::from("Stat is not within expectations."),
+    };
+
+    text_result.push_str(&format!(
+        "{: <} No.{: >03} :L{: <3}\n",
+        record.pokemon, record.ndex, level
+    ));
+
+    text_result.push_str(&format!("\n"));
+    text_result.push_str(&format!("Stats       DVs [min:max]\n"));
+    text_result.push_str(&format!(" HP: {:>3}    {}\n", stats.hp, hp));
+    text_result.push_str(&format!("ATT: {:>3}    {}\n", stats.attack, attack));
+    text_result.push_str(&format!("DEF: {:>3}    {}\n", stats.defense, defense));
+    text_result.push_str(&format!("SPD: {:>3}    {}\n", stats.speed, speed));
+    text_result.push_str(&format!("SPC: {:>3}    {}\n", stats.special, special));
+
+    text_result.push_str(&format!("\n"));
+    text_result.push_str(&format!("Base stats\n"));
+    text_result.push_str(&format!(
+        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}\n",
+        " HP", "ATT", "DEF", "SPC", "SPD", "SUM"
+    ));
+    text_result.push_str(&format!(
+        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}\n",
+        base_stats.hp,
+        base_stats.attack,
+        base_stats.defense,
+        base_stats.speed,
+        base_stats.special,
+        record.total,
+    ));
+
+    text_result.push_str(&format!("\n"));
+    text_result.push_str(&format!("DV-Stats table\n"));
+
+    text_result.push_str(&format!(
+        "{: >4} {: >4} {: >4} {: >4} {: >4} {: >4}\n",
+        "DV", "HP", "ATT", "DEF", "SPD", "SPC"
+    ));
+
+    for i in 0..16 {
+        let special_char = "-";
+
+        let hp_eq = if dv_stats_table.hp[i] == stats.hp {
+            special_char
+        } else {
+            " "
+        };
+        let attack_eq = if dv_stats_table.attack[i] == stats.attack {
+            special_char
+        } else {
+            " "
+        };
+        let defense_eq = if dv_stats_table.defense[i] == stats.defense {
+            special_char
+        } else {
+            " "
+        };
+        let speed_eq = if dv_stats_table.speed[i] == stats.speed {
+            special_char
+        } else {
+            " "
+        };
+        let special_eq = if dv_stats_table.special[i] == stats.special {
+            special_char
+        } else {
+            " "
+        };
+
+        text_result.push_str(&format!(
+            "{: >4} {: >4}{}{: >4}{}{: >4}{}{: >4}{}{: >4}{}\n",
+            i,
+            dv_stats_table.hp[i],
+            hp_eq,
+            dv_stats_table.attack[i],
+            attack_eq,
+            dv_stats_table.defense[i],
+            defense_eq,
+            dv_stats_table.speed[i],
+            speed_eq,
+            dv_stats_table.special[i],
+            special_eq,
+        ));
+    }
+    text_result
+}
