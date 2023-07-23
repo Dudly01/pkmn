@@ -91,72 +91,21 @@ fn main() -> Result<()> {
 
         let dv_stats_table = pkmn::stats::DvTable::new(&level, &base_stats, &exp);
 
-        stdout
-            .execute(Clear(terminal::ClearType::All))?
-            .execute(cursor::MoveTo(0, 0))?;
-
         let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
 
-        let hp = match dv_ranges.hp {
-            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-            None => String::from("Stat is not within expectations."),
-        };
-
-        let attack = match dv_ranges.attack {
-            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-            None => String::from("Stat is not within expectations."),
-        };
-
-        let defense = match dv_ranges.defense {
-            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-            None => String::from("Stat is not within expectations."),
-        };
-
-        let speed = match dv_ranges.speed {
-            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-            None => String::from("Stat is not within expectations."),
-        };
-
-        let special = match dv_ranges.special {
-            Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-            None => String::from("Stat is not within expectations."),
-        };
+        let result = pkmn::stats::summarize_pkmn_stats(
+            record,
+            &base_stats,
+            level,
+            &stats,
+            &dv_stats_table,
+            &dv_ranges,
+        );
 
         stdout
             .execute(Clear(terminal::ClearType::All))?
             .execute(cursor::MoveTo(0, 0))?;
 
-        println!(
-            "{: <} No.{: >3} :L{: <3}",
-            record.pokemon, content.pkmn_no, level
-        );
-
-        println!();
-        println!("Stats       DVs [min:max]");
-        println!(" HP: {:>3}    {}", stats.hp, hp);
-        println!("ATT: {:>3}    {}", stats.attack, attack);
-        println!("DEF: {:>3}    {}", stats.defense, defense);
-        println!("SPD: {:>3}    {}", stats.speed, speed);
-        println!("SPC: {:>3}    {}", stats.special, special);
-
-        println!();
-        println!("Base stats");
-        println!(
-            "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}",
-            " HP", "ATT", "DEF", "SPC", "SPD", "SUM"
-        );
-        println!(
-            "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}",
-            base_stats.hp,
-            base_stats.attack,
-            base_stats.defense,
-            base_stats.speed,
-            base_stats.special,
-            record.total,
-        );
-
-        println!();
-        println!("DV-Stats table");
-        dv_stats_table.print(&stats);
+        println!("{}", result);
     }
 }
