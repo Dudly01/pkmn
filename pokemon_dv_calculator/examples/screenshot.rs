@@ -67,40 +67,11 @@ fn main() -> Result<(), String> {
 
     let dv_stats_table = DvTable::new(&level, &base_stats, &exp);
 
-    dv_stats_table.print(&stats);
-
     let dv_ranges = DvRanges::new(&stats, &dv_stats_table);
 
-    let hp = match dv_ranges.hp {
-        Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
+    let result = pkmn::stats::summarize_pkmn_stats(record, &base_stats, level, &stats, &dv_stats_table, &dv_ranges);
 
-    let attack = match dv_ranges.attack {
-        Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    let defense = match dv_ranges.defense {
-        Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    let special = match dv_ranges.special {
-        Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    let speed = match dv_ranges.speed {
-        Some(r) => format!("min {:>2} - max {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    println!(" HP: {:<3} DV: {}", stats.hp, hp);
-    println!("ATT: {:<3} DV: {}", stats.attack, attack);
-    println!("DEF: {:<3} DV: {}", stats.defense, defense);
-    println!("SPE: {:<3} DV: {}", stats.speed, special);
-    println!("SPC: {:<3} DV: {}", stats.special, speed);
+    println!("{}", result);
 
     // Print keyboard events until Escape is pressed, then exit.
     // If the user closes the window, the channel is closed and the loop also exits.

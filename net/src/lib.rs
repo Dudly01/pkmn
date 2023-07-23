@@ -41,9 +41,12 @@ pub struct JsPosition {
     pub height: u32,
 }
 
-pub fn dv_stat_table_as_string(dv_table: &pkmn::stats::DvTable, stats: &pkmn::stats::Stats) -> String {
-    let mut text_result = String::with_capacity(128);   
-    
+pub fn dv_stat_table_as_string(
+    dv_table: &pkmn::stats::DvTable,
+    stats: &pkmn::stats::Stats,
+) -> String {
+    let mut text_result = String::with_capacity(128);
+
     text_result.push_str(&format!(
         "{: >4} {: >4} {: >4} {: >4} {: >4} {: >4}<br>",
         "DV", "HP", "ATT", "DEF", "SPD", "SPC"
@@ -162,65 +165,15 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
 
     let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
 
-    let hp = match dv_ranges.hp {
-        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
+    let result = pkmn::stats::summarize_pkmn_stats(
+        record,
+        &base_stats,
+        level,
+        &stats,
+        &dv_stats_table,
+        &dv_ranges,
+    )
+    .replace("\n", "<br>");
 
-    let attack = match dv_ranges.attack {
-        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    let defense = match dv_ranges.defense {
-        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    let speed = match dv_ranges.speed {
-        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    let special = match dv_ranges.special {
-        Some(r) => format!("{:>2} - {:>2}", r.0, r.1),
-        None => String::from("Stat is not within expectations."),
-    };
-
-    let mut text_result = String::with_capacity(128);
-
-    text_result.push_str(&format!(
-        "{: <} No.{: >3} :L{: <3}<br>",
-        record.pokemon, content.pkmn_no, level
-    ));
-
-    text_result.push_str(&format!("<br>"));
-    text_result.push_str(&format!("Stats       DVs [min:max]<br>"));
-    text_result.push_str(&format!(" HP: {:>3}    {}<br>", stats.hp, hp));
-    text_result.push_str(&format!("ATT: {:>3}    {}<br>", stats.attack, attack));
-    text_result.push_str(&format!("DEF: {:>3}    {}<br>", stats.defense, defense));
-    text_result.push_str(&format!("SPD: {:>3}    {}<br>", stats.speed, speed));
-    text_result.push_str(&format!("SPC: {:>3}    {}<br>", stats.special, special));
-
-    text_result.push_str(&format!("<br>"));
-    text_result.push_str(&format!("Base stats<br>"));
-    text_result.push_str(&format!(
-        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}<br>",
-        " HP", "ATT", "DEF", "SPC", "SPD", "SUM"
-    ));
-    text_result.push_str(&format!(
-        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}<br>",
-        base_stats.hp,
-        base_stats.attack,
-        base_stats.defense,
-        base_stats.speed,
-        base_stats.special,
-        record.total,
-    ));
-
-    text_result.push_str(&format!("<br>"));
-    text_result.push_str(&format!("DV-Stats table<br>"));
-    text_result.push_str(&dv_stat_table_as_string(&dv_stats_table, &stats));
-
-    Ok(JsValue::from_str(&text_result))
+    Ok(JsValue::from_str(&result))
 }
