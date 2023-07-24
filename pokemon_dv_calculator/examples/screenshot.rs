@@ -3,8 +3,6 @@ use image::imageops::FilterType;
 use image::io::Reader as ImageReader;
 use show_image::{create_window, event};
 
-use std::time::Instant;
-
 use pkmn::gameboy::{locate_screen, StatScreen1Layout};
 use pkmn::stats::{BaseStats, DvRanges, DvTable, Experience, Stats};
 use pokemon_dv_calculator as pkmn;
