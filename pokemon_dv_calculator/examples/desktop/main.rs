@@ -27,8 +27,6 @@ fn main() -> Result<()> {
     let pkmn_base_stats = pkmn::stats::load_base_stats();
     let stats_screen_layout = pkmn::gameboy::StatScreen1Layout::new();
 
-    let mut previous_content: Option<pkmn::gameboy::StatsSreen1Content> = None;
-
     loop {
         let img_screen = capturer.next_frame();
         let Ok(img_screen) = img_screen else {
@@ -75,11 +73,6 @@ fn main() -> Result<()> {
                 .execute(Print("Could not read summary screen content!"))?;
             continue;
         };
-
-        // if previous_content == Some(content.clone()) {
-        //     continue;
-        // }
-        // previous_content = Some(content.clone());
 
         let ndex: usize = content.pkmn_no.parse().unwrap();
         let level: i32 = content.level.parse().unwrap();
