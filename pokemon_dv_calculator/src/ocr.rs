@@ -191,9 +191,13 @@ pub fn match_symbol(img: &GrayImage, bitmap: &SymbolBitmap) -> Result<i32, &'sta
     Ok(diff_count)
 }
 
-/// Reads the symbol on a 7x7 image.
-/// Uses a naive matching algorithm, where the bitmap with the least difference
-/// is chosen as match.
+/// Reads and returns the symbol present on the 7x7 image.
+/// 
+/// The input image is converted to grayscale and thresholded right away.
+/// Therefore multiple image types are accepted.
+/// 
+/// Uses a naive matching algorithm.
+/// The symbol with the 
 pub fn read_symbol(
     img: DynamicImage,
     symbol_bitmaps: &(Vec<String>, Vec<SymbolBitmap>),
@@ -227,8 +231,9 @@ pub fn read_symbol(
     Ok(best_match)
 }
 
-/// Reads the symbols on a 7nx7 image, where n is a positive integer,
-/// The text is returned as-is, without cleaning.
+/// Reads and returns n symbols on a 7nx7 image, where n is a positive integer,
+/// Multiple image types are accepted.
+/// The text is returned as-is.
 pub fn read_line(
     img: &DynamicImage,
     symbol_bitmaps: &(Vec<String>, Vec<SymbolBitmap>),
@@ -256,8 +261,9 @@ pub fn read_line(
     Ok(line)
 }
 
-/// Reads the symbols on the section of the image.
+/// Reads and returns the symbols on the section of the image.
 /// The section is expected to contain one line of text.
+/// Multiple image types are accepted.
 /// The text is returned as-is, without cleaning.
 pub fn read_image_section(
     img: &DynamicImage,

@@ -38,7 +38,7 @@ fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
     Ok(pos)
 }
 
-/// Finds the GameBoy screen candidates within the contours.
+/// Returns the possible Game Boy screen positions.
 /// Candidates have a minimum size of 160x140 and a ratio of ~10:9.
 fn locate_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Position> {
     let target_ratio = 10.0 / 9.0;
@@ -62,7 +62,10 @@ fn locate_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Position> {
     potential_rects
 }
 
-/// Returns the location of the GameBoy screen on the image.
+/// Returns the position of the Game Boy screen.
+///
+/// The input input image is converted to grayscale and thresholded right away.
+/// Therefore it accepts images of various kinds.
 ///
 /// Known limitation: fails if the input image is the original GameBoy screen (160x140 pixels).
 /// The erode is too much for that.
@@ -115,7 +118,8 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
     screen_position
 }
 
-/// The position of important data on first page of the stats screen.
+/// The layout of the stats screen 1.
+/// Contains the position of the fields.
 pub struct StatScreen1Layout {
     pub width: i32,
     pub height: i32,
@@ -237,7 +241,9 @@ impl StatScreen1Layout {
         }
     }
 
-    /// Verifies if the screen is present on the image.
+    /// Returns true if the image is the stats screen 1.
+    /// Multiple image types are accepted.
+    /// Uses naive approach.
     pub fn verify_screen(&self, img: &DynamicImage) -> bool {
         let bitmap = ocr::SymbolBitmap::from_lazy_array(&[
             0, 0, 0, 0, 0, 0, 1, //
@@ -262,7 +268,8 @@ impl StatScreen1Layout {
         true
     }
 
-    /// Reads the National dexnumber from the screen.
+    /// Returns the content of the screen.
+    /// Multiple image types are accepted.
     pub fn read_content(
         &self,
         img: &DynamicImage,
@@ -307,7 +314,7 @@ impl StatScreen1Layout {
     }
 }
 
-/// The content of Stats screen 1.
+/// The content of the fields present on stats screen 1.
 #[derive(PartialEq, PartialOrd, Clone)]
 pub struct StatsSreen1Content {
     pub pkmn_no: String,
