@@ -1,10 +1,16 @@
-"""Collects the Gen 1 "By leveling up" learnsets from Bulbapedia."""
+"""
+Collects the Gen 1 learnsets from Bulbapedia into a JSON file.
+Currently only the "By leveling up" learnset is collected.
+"""
 
+import json
+from pathlib import Path
 from urllib.parse import urljoin
 
 import bs4
 import requests
 from bs4 import BeautifulSoup
+from tqdm import tqdm
 
 
 def get_learnset_article_urls() -> list[str]:
@@ -96,7 +102,7 @@ def get_pkmn(markdown_source: str) -> tuple[str, str]:
     return ndex, pkmn
 
 
-def get_level_up_table(markdown_source: str) -> list[list[str]]:
+def get_level_learnset(markdown_source: str) -> list[list[str]]:
     """Extracts the "By leveling up" learnset table from the WIKI markdown source.
 
     The returned table contains the header and the rows, column by column.
@@ -167,18 +173,34 @@ def get_level_up_table(markdown_source: str) -> list[list[str]]:
 
 
 def main():
-    article_urls = get_learnset_article_urls()
+    print("Collecting Gen 1 learnset articles.")
 
+    article_urls = get_learnset_article_urls()
     if len(article_urls) != 151:
         raise RuntimeError(f"Expected URLs for 151 Pokemon. Found {len(article_urls)}.")
 
-    for url in article_urls[:]:
-        markdown_source = get_wiki_article_markdown_source(url=url)
-        ndex, pkmn = get_pkmn(markdown_source)
-        print(f"{ndex}, {pkmn}", end=" ")
+    print(f"Found {len(article_urls)} article URLs.")
 
-        table = get_level_up_table(markdown_source)
-        print("OK")
+    pkmn_entries = []
+    for url in tqdm(article_urls):
+        markdown_source = get_wiki_article_markdown_source(url=url)
+
+        ndex, pkmn = get_pkmn(markdown_source)
+        table = get_level_learnset(markdown_source)
+
+        entry = {
+            "ndex": ndex,
+            "pokemon": pkmn,
+            "by_leveling_up": table,
+        }
+        pkmn_entries.append(entry)
+
+    result_json_path = Path("learnset.json")
+    with result_json_path.open("w", encoding="utf-8") as f:
+        json_str = json.dumps(pkmn_entries, indent=4, ensure_ascii=False)
+        f.write(json_str)
+
+    print(f"Written JSON file to {result_json_path.absolute()}")
 
 
 if __name__ == "__main__":
