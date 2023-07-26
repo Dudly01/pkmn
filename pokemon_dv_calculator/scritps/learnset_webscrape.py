@@ -142,20 +142,20 @@ def get_level_learnset(markdown_source: str) -> list[list[str]]:
             f"Expected one 'By leveling up' footer, got {len(table_footer)}"
         )
 
-    first_row = table_rows[0]
-    first_row.split("|")
+    first_row = table_rows[0].split("|")
 
     header = ["Move", "Type", "Power", "Accuracy", "PP"]  # The fix columns
 
-    # Check for learnset difference between Game versions
-    if first_row[2].isalpha():  # Is the second interesting column the Moves?
+    # Check if the second column of interest contains a move or a level.
+    # If its a level, then there is a difference between game versions.
+    if first_row[2].isalpha():
         column_count = 6
         header.insert(0, "Level")
     else:
         column_count = 7
-        header_elems = table_headers[0].removesuffix("}}").split("|")
-        header.insert(0, header_elems[-1])
-        header.insert(0, header_elems[-2])
+        markdown_header_elems = table_headers[0].removesuffix("}}").split("|")
+        header.insert(0, markdown_header_elems[-1])  # Game version
+        header.insert(0, markdown_header_elems[-2])  # Game version
 
     rows = []
     for row in table_rows:
