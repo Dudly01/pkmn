@@ -148,18 +148,25 @@ def get_level_learnset(markdown_source: str) -> list[list[str]]:
 
     # Check if the second column of interest contains a move or a level.
     # If its a level, then there is a difference between game versions.
-    if first_row[2].isalpha():
-        column_count = 6
-        header.insert(0, "Level")
-    else:
+    if first_row[2].isnumeric():
         column_count = 7
         markdown_header_elems = table_headers[0].removesuffix("}}").split("|")
         header.insert(0, markdown_header_elems[-1])  # Game version
         header.insert(0, markdown_header_elems[-2])  # Game version
+    else:
+        column_count = 6
+        header.insert(0, "Level")
 
     rows = []
     for row in table_rows:
         clean_row = row.removesuffix("}}").split("|")[1 : 1 + column_count]
+        if len(clean_row) != column_count:
+            raise ValueError(
+                "Failed to retrieve row from markdown row. ",
+                f"Expected {column_count} elements, got {len(clean_row)}.\n",
+                f"{row}\n",
+                f"{clean_row}\n",
+            )
         rows.append(clean_row)
 
     table = [header] + rows
