@@ -25,6 +25,7 @@ fn main() -> Result<()> {
 
     let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
     let pkmn_base_stats = pkmn::stats::load_base_stats();
+    let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let stats_screen_layout = pkmn::gameboy::StatScreen1Layout::new();
 
     loop {
@@ -99,6 +100,10 @@ fn main() -> Result<()> {
             .execute(Clear(terminal::ClearType::All))?
             .execute(cursor::MoveTo(0, 0))?;
 
+        println!("{}", result);
+
+        let learnset = &pkmn_learnsets[ndex];
+        let result = pkmn::learnset::get_pretty_learnset_table(learnset).unwrap();
         println!("{}", result);
     }
 }

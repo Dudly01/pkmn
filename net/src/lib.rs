@@ -128,6 +128,7 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
 
     let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
     let pkmn_base_stats = pkmn::stats::load_base_stats();
+    let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let stats_screen_layout = pkmn::gameboy::StatScreen1Layout::new();
 
     let img_gameboy = img_screen
@@ -165,7 +166,7 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
 
     let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
 
-    let result = pkmn::stats::summarize_pkmn_stats(
+    let stat_result = pkmn::stats::summarize_pkmn_stats(
         record,
         &base_stats,
         level,
@@ -174,6 +175,13 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
         &dv_ranges,
     )
     .replace("\n", "<br>");
+
+    let learnset = &pkmn_learnsets[ndex];
+    let learnset_result = pkmn::learnset::get_pretty_learnset_table(learnset)
+        .unwrap()
+        .replace("\n", "<br>");
+
+    let result = format!("{}\n{}", stat_result, learnset_result);
 
     Ok(JsValue::from_str(&result))
 }
