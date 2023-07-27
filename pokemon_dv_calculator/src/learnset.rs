@@ -2,24 +2,24 @@ use serde;
 use serde_json;
 
 #[derive(Debug, serde::Deserialize)]
-pub struct Entry {
+pub struct Learnset {
     pub ndex: String,
     pub pokemon: String,
     pub by_leveling_up: Vec<Vec<String>>,
 }
 
 /// Returns the learnset for each pokemon.
-pub fn load_learnsets() -> Vec<Entry> {
+pub fn load_learnsets() -> Vec<Learnset> {
     const LEARNSET_JSON: &str = include_str!("../data/learnset.json");
 
     // Deserialize the JSON data into a Vec<Entry>
-    let entries: Vec<Entry> = serde_json::from_str(&LEARNSET_JSON).expect("Failed to parse JSON");
+    let entries: Vec<Learnset> = serde_json::from_str(&LEARNSET_JSON).expect("Failed to parse JSON");
     entries
 }
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset is the same among game versions.
-fn pretty_learnset_table(learnset: &Entry) -> Result<String, String> {
+fn pretty_learnset_table(learnset: &Learnset) -> Result<String, String> {
     for row in &learnset.by_leveling_up {
         if row.len() != 6 {
             return Err("Found row with not exactly 6 elements".to_owned());
@@ -46,7 +46,7 @@ fn pretty_learnset_table(learnset: &Entry) -> Result<String, String> {
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset differs among game versions.
-fn pretty_diff_learnset_table(learnset: &Entry) -> Result<String, String> {
+fn pretty_diff_learnset_table(learnset: &Learnset) -> Result<String, String> {
     for row in &learnset.by_leveling_up {
         if row.len() != 7 {
             return Err("Found row with not exactly 7 elements".to_owned());
@@ -72,7 +72,7 @@ fn pretty_diff_learnset_table(learnset: &Entry) -> Result<String, String> {
 }
 
 /// Returns the string with the formatted "By leveling up" learnset.
-pub fn get_pretty_learnset_table(entry: &Entry) -> Result<String, String> {
+pub fn get_pretty_learnset_table(entry: &Learnset) -> Result<String, String> {
     let same_learnset = entry.by_leveling_up[0].len() == 6;
     let result = match same_learnset {
         true => pretty_learnset_table(entry),
