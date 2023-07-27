@@ -11,6 +11,7 @@ use pokemon_dv_calculator as pkmn;
 fn main() -> Result<(), String> {
     let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
     let pkmn_base_stats = pkmn::stats::load_base_stats();
+    let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let stats_screen_layout = StatScreen1Layout::new();
 
     // let window_initial = create_window("Initial", Default::default()).unwrap();
@@ -67,8 +68,19 @@ fn main() -> Result<(), String> {
 
     let dv_ranges = DvRanges::new(&stats, &dv_stats_table);
 
-    let result = pkmn::stats::summarize_pkmn_stats(record, &base_stats, level, &stats, &dv_stats_table, &dv_ranges);
+    let result = pkmn::stats::summarize_pkmn_stats(
+        record,
+        &base_stats,
+        level,
+        &stats,
+        &dv_stats_table,
+        &dv_ranges,
+    );
 
+    println!("{}", result);
+
+    let learnset = &pkmn_learnsets[ndex];
+    let result = pkmn::learnset::get_pretty_learnset_table(learnset).unwrap();
     println!("{}", result);
 
     // Print keyboard events until Escape is pressed, then exit.
