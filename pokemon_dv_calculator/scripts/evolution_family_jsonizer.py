@@ -70,6 +70,29 @@ def get_full_evolution_paths(csv_rows: list[list[str]]) -> list[list[str]]:
     return paths
 
 
+def get_evolution_dict(full_evo_paths: list[list[str]]) -> dict:
+    """Returns the full evolution paths as nested dicts."""
+    result = {}
+    for evo in full_evo_paths:
+        family = evo[0]
+        if family not in result:
+            result[family] = {}
+
+        base_pkmn = evo[1]
+
+        if base_pkmn not in result[family]:
+            result[family][base_pkmn] = {}
+
+        marcher = result[family][base_pkmn]
+        for trigger, evo_pkmn in zip(evo[2:-1:2], evo[3::2]):
+            if trigger not in marcher:
+                marcher[trigger] = {}
+            if evo_pkmn not in marcher[trigger]:
+                marcher[trigger][evo_pkmn] = {}
+            marcher = marcher[trigger][evo_pkmn]
+    return result
+
+
 def main():
     csv_path = Path("pokemon_dv_calculator/data/evolution_families.csv")
     csv_rows = get_csv_rows(csv_path)
@@ -81,6 +104,13 @@ def main():
 
     for path in evo_paths:
         print(path)
+
+    evo_dict = get_evolution_dict(evo_paths)
+
+    json_path = Path("evolution_families.json")
+    with json_path.open("w", encoding="utf-8") as f:
+        json_str = json.dumps(evo_dict, indent=4, ensure_ascii=False)
+        f.write(json_str)
 
 
 if __name__ == "__main__":
