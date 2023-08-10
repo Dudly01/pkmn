@@ -27,12 +27,6 @@ fn main() -> Result<(), String> {
 
     let screen_pos = locate_screen(&image_initial);
     let Some(screen_pos) = screen_pos else {
-        let width = image_initial.width();
-        let height = image_initial.height();
-        let img = image_initial.to_rgb8();
-        let img_data = img.as_raw();
-        let img_addr = img_data.as_ptr();
-        let empty: Vec<i32> = vec![1, 5];
         return Err("Did not find GameBoy screen".to_string());
     };
 
