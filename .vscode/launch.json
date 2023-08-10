@@ -12,11 +12,11 @@
                 "args": [
                     "build",
                     "--manifest-path=${workspaceFolder}/pokemon_dv_calculator/Cargo.toml",
-                    "--example=screenshot",
+                    "--example=vis",
                     "--package=pokemon_dv_calculator"
                 ],
                 "filter": {
-                    "name": "screenshot",
+                    "name": "vis",
                     "kind": "example"
                 }
             },
