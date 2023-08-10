@@ -1,3 +1,4 @@
+/// Helper example for developing Python debug scripts.
 
 use image::io::Reader as ImageReader;
 
