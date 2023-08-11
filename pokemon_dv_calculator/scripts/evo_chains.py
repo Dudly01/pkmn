@@ -1,15 +1,15 @@
-"""Creates a JSON from the evolution family CSV file.
+"""Exports the evo chains to a txt file from the evo families CSV file.
 
 The CSV file is created from copy-pasting the corresponding Bulbapedia page
 into a spreadsheet editor and saving as CSV.
 https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family
+
+The exported file contains the evolution chains line by line.
+E.g. Eevee take up three lines in Gen 1.
 """
 
 import csv
-import json
 from pathlib import Path
-
-COL_COUNT = 8
 
 
 def get_clean_row(row: list[str]) -> list[str]:
@@ -156,10 +156,10 @@ def main():
     #     print(path)
 
     evo_paths = [">".join(p) for p in evo_paths]
-    
+
     for path in evo_paths:
         print(path)
-        
+
     evo_chain_path = Path("evo_chain.txt")
     with evo_chain_path.open("w", encoding="utf-8") as f:
         for evo in evo_paths:
