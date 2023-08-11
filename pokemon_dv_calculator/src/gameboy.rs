@@ -325,3 +325,79 @@ pub struct StatsSreen1Content {
     pub speed: String,
     pub special: String,
 }
+
+pub struct StatScreen2Layout {
+    pub width: i32,
+    pub height: i32,
+    pub pkmn_ndex_pos: Position,
+}
+
+impl StatScreen2Layout {
+    pub fn new() -> StatScreen2Layout {
+        let field_width = 23;
+        let field_height = 7;
+
+        let x_pkmn_no = 24;
+        let y_pkmn_no = 56;
+
+        StatScreen2Layout {
+            width: 160,
+            height: 144,
+            pkmn_ndex_pos: Position {
+                x: x_pkmn_no,
+                y: y_pkmn_no,
+                width: field_width,
+                height: field_height,
+            },
+        }
+    }
+
+    pub fn verify_screen(&self, img: &DynamicImage) -> bool {
+        let bitmap = ocr::SymbolBitmap::from_lazy_array(&[
+            0, 0, 0, 0, 0, 0, 1, //
+            0, 0, 0, 0, 0, 1, 0, //
+            0, 0, 0, 0, 1, 0, 0, //
+            0, 0, 0, 1, 0, 0, 0, //
+            0, 0, 1, 0, 0, 0, 0, //
+            0, 1, 0, 0, 0, 0, 0, //
+            1, 0, 0, 0, 0, 0, 0, //
+        ]);
+
+        let pos = Position {
+            x: 128,
+            y: 81,
+            width: 7,
+            height: 7,
+        };
+
+        let img_symbol = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
+        let img_symbol = img_symbol.to_luma8();
+        let img_symbol = threshold(&img_symbol, 200);
+
+        let diff = ocr::match_symbol(&img_symbol, &bitmap).unwrap();
+        let result = diff != 0;
+        result
+    }
+
+    pub fn read_content(
+        &self,
+        img: &DynamicImage,
+        symbol_bitmaps: &(Vec<String>, Vec<ocr::SymbolBitmap>),
+    ) -> Result<StatsSreen2Content, String> {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return Err("Mismatch in image and layout dimensions.".to_string());
+        }
+
+        let pkmn_no = read_image_section(img, &self.pkmn_ndex_pos, symbol_bitmaps)?
+            .trim()
+            .to_string();
+
+        let content = StatsSreen2Content { pkmn_no };
+        Ok(content)
+    }
+}
+
+#[derive(PartialEq, PartialOrd, Clone)]
+pub struct StatsSreen2Content {
+    pub pkmn_no: String,
+}
