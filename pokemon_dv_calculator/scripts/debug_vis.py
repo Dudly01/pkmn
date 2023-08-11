@@ -1,14 +1,16 @@
 """Debug functionality to be used with CodeLLDB and the Debug console.
 
-Module needs to be imported in the launch.json.
+Module needs to be imported in the launch.json:
+```
+"initCommands": [
+    "command script import ${workspaceFolder}/path/to/module"
+]
+```
 
-From the debug console:
+The function can be called from the debug console:
 ```
 ?/py debug_vis.plot_rgb8($img_addr, $width, $height)
 ```
-
-From the conditional breakpoint:
-/py debug_vis.plot_rgb8($img_addr, $width, $height) if True else False
 """
 
 import base64

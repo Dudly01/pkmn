@@ -7,7 +7,7 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Example screenshot",
+            "name": "Example vis",
             "cargo": {
                 "args": [
                     "build",
