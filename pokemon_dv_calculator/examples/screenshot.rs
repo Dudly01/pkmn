@@ -20,7 +20,7 @@ fn main() -> Result<(), String> {
     // let window_erode = create_window("Erode", Default::default()).unwrap();
     let window_gameboy = create_window("GameBoy", Default::default()).unwrap();
 
-    let image_initial = ImageReader::open("screenshot.png")
+    let image_initial = ImageReader::open("../Yellow_summary_1.png")
         .unwrap()
         .decode()
         .unwrap();

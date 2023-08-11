@@ -1,0 +1,30 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Example vis",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--manifest-path=${workspaceFolder}/pokemon_dv_calculator/Cargo.toml",
+                    "--example=vis",
+                    "--package=pokemon_dv_calculator"
+                ],
+                "filter": {
+                    "name": "vis",
+                    "kind": "example"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}/pokemon_dv_calculator",
+            "initCommands": [
+                "command script import ${workspaceFolder}/pokemon_dv_calculator/scripts/debug_vis.py" // <<<<< This is the important bit
+            ]
+        }
+    ]
+}
