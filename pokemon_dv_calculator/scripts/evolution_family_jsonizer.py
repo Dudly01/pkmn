@@ -152,15 +152,18 @@ def main():
 
     evo_paths = get_gen_1_evo_chains(evo_paths)
 
+    # for path in evo_paths:
+    #     print(path)
+
+    evo_paths = [">".join(p) for p in evo_paths]
+    
     for path in evo_paths:
         print(path)
-
-    # evo_dict = get_evolution_dict(evo_paths)
-
-    # json_path = Path("evolution_families.json")
-    # with json_path.open("w", encoding="utf-8") as f:
-    #     json_str = json.dumps(evo_dict, indent=4, ensure_ascii=False)
-    #     f.write(json_str)
+        
+    evo_chain_path = Path("evo_chain.txt")
+    with evo_chain_path.open("w", encoding="utf-8") as f:
+        for evo in evo_paths:
+            f.write(evo + "\n")
 
 
 if __name__ == "__main__":
