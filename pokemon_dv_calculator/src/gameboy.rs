@@ -375,8 +375,8 @@ impl StatScreen2Layout {
         let img_symbol = threshold(&img_symbol, 200);
 
         let diff = ocr::match_symbol(&img_symbol, &bitmap).unwrap();
-        let result = diff != 0;
-        result
+        let is_match = diff == 0;
+        is_match
     }
 
     pub fn read_content(
