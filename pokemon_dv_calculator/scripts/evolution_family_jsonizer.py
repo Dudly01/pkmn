@@ -13,7 +13,7 @@ COL_COUNT = 8
 
 
 def get_clean_row(row: list[str]) -> list[str]:
-    """Returns the cleaned CSV row.
+    """Returns the cleaned evolutionary CSV row.
 
     Removes the always empty cells (where the images would be).
     Removes unwanted characters, including leading and trailing whitespaces.
@@ -28,39 +28,46 @@ def get_clean_row(row: list[str]) -> list[str]:
 
 
 def get_csv_rows(csv_path: Path):
-    """Returns the cleaned rows of the evolution families CSV file."""
+    """Returns the rows of the evolution families CSV file as-is."""
+    column_count = 8
     csv_rows: list[list[str]] = []
     with csv_path.open("r") as csv_file:
         csv_reader = csv.reader(csv_file, delimiter=",", quotechar='"')
         for row in csv_reader:
-            if len(row) != COL_COUNT:
-                raise RuntimeError(f"Expected {COL_COUNT} columns, got {len(row)}")
-
-            row = get_clean_row(row)
-
+            if len(row) != column_count:
+                raise RuntimeError(f"Expected {column_count} columns, got {len(row)}")
             csv_rows.append(row)
     return csv_rows
 
 
 def get_full_evolution_paths(csv_rows: list[list[str]]) -> list[list[str]]:
-    """Returns the full evolution paths from the CSV rows."""
+    """Returns the full evolution paths from the CSV rows.
+
+    Pikachu family full evo path example:
+    - [Pikachu family, Pichu, Friendship, Pikachu, Thunder Stone, Raichu (Kantonian)]
+    - [Pikachu family, Pichu, Friendship, Pikachu, Thunder Stone (Alola), Raichu (Alolan)]
+    """
     paths = []
     path = None
     for row in csv_rows:
+        row = get_clean_row(row)
+
         # Check if its a new family
         if row[0]:
             path = []
             path.append(row[0])
-            continue  # No more data in row
+            continue  # No more data in family row
 
-        # See how much of the path needs to be used
+        # Find first non-empty cell
         indent = next((i for i, v in enumerate(row) if v), None)
         if indent is None:
             raise ValueError("Found empty row.")
 
+        # Reuse path up until current cell.
+        # Because its the same as for the previous CSV row.
         path = path[:indent]
 
-        # Gather non-empty cells
+        # Gather non-empty cells, because rows are only equal long due to CSV format
         elements = [cell for cell in row if cell]
 
         for cell in elements:
@@ -68,6 +75,44 @@ def get_full_evolution_paths(csv_rows: list[list[str]]) -> list[list[str]]:
 
         paths.append(path)
     return paths
+
+
+def get_gen_1_evo_chains(full_evo_paths: list[list[str]]):
+    base_stats_path = Path("pokemon_dv_calculator/data/base_stats.csv")
+    with base_stats_path.open("r") as f:
+        csv_reader = csv.reader(f, delimiter=",", quotechar='"')
+        next(csv_reader)  # Skipping header
+        gen_1_pkmn = [row[1] for row in csv_reader]
+    gen_1_pkmn = set(gen_1_pkmn)
+
+    filtered_evo_chains: list[str] = []
+    for row in full_evo_paths:
+        # The range of columns to keep, [start, stop)
+        valid_path_range = None
+
+        for col_idx in range(1, len(row), 2):  # Only look at the PKMN
+            pkmn = row[col_idx]
+            pkmn.removesuffix(" (Kantonian)")
+
+            if pkmn in gen_1_pkmn:
+                if valid_path_range is None:
+                    valid_path_range = (col_idx, col_idx + 1)
+                valid_path_range = (valid_path_range[0], col_idx + 1)
+
+        if valid_path_range is None:
+            continue  # This row is not needed.
+
+        start, stop = valid_path_range
+        chain = ">".join(row[start:stop])
+
+        # O(n+m) solution to make sure no (sub)chain duplications
+        # Going in reverse should result in faster hits.
+        if not any((chain in c for c in reversed(filtered_evo_chains))):
+            filtered_evo_chains.append(chain)
+
+    filtered_evo_chains = [chain.split(">") for chain in filtered_evo_chains]
+
+    return filtered_evo_chains
 
 
 def get_evolution_dict(full_evo_paths: list[list[str]]) -> dict:
@@ -94,7 +139,7 @@ def get_evolution_dict(full_evo_paths: list[list[str]]) -> dict:
 
 
 def main():
-    csv_path = Path("pokemon_dv_calculator/data/evolution_families.csv")
+    csv_path = Path("pokemon_dv_calculator/data/evo_families.csv")
     csv_rows = get_csv_rows(csv_path)
 
     # for row in csv_rows:
@@ -102,15 +147,20 @@ def main():
 
     evo_paths = get_full_evolution_paths(csv_rows)
 
+    # for path in evo_paths:
+    #     print(path)
+
+    evo_paths = get_gen_1_evo_chains(evo_paths)
+
     for path in evo_paths:
         print(path)
 
-    evo_dict = get_evolution_dict(evo_paths)
+    # evo_dict = get_evolution_dict(evo_paths)
 
-    json_path = Path("evolution_families.json")
-    with json_path.open("w", encoding="utf-8") as f:
-        json_str = json.dumps(evo_dict, indent=4, ensure_ascii=False)
-        f.write(json_str)
+    # json_path = Path("evolution_families.json")
+    # with json_path.open("w", encoding="utf-8") as f:
+    #     json_str = json.dumps(evo_dict, indent=4, ensure_ascii=False)
+    #     f.write(json_str)
 
 
 if __name__ == "__main__":
