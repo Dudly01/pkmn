@@ -27,10 +27,10 @@ ndex,pokemon,types,hp,attack,defense,speed,special,total
 26,Raichu,Electric,60,90,55,100,90,395
 27,Sandshrew,Ground,50,75,85,40,30,280
 28,Sandslash,Ground,75,100,110,65,55,405
-29,Nidoran ,Poison,55,47,52,41,40,235
+29,Nidoran♀,Poison,55,47,52,41,40,235
 30,Nidorina,Poison,70,62,67,56,55,310
 31,Nidoqueen,Poison/Ground,90,82,87,76,75,410
-32,Nidoran ,Poison,46,57,40,50,40,233
+32,Nidoran♂,Poison,46,57,40,50,40,233
 33,Nidorino,Poison,61,72,57,65,55,310
 34,Nidoking,Poison/Ground,81,92,77,85,75,410
 35,Clefairy,Normal,70,45,48,35,60,258
