@@ -1,3 +1,4 @@
+pub mod evos;
 pub mod gameboy;
 pub mod learnset;
 pub mod ocr;
