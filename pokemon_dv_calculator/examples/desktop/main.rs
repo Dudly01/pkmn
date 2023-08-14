@@ -26,6 +26,7 @@ fn main() -> Result<()> {
     let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
     let pkmn_base_stats = pkmn::stats::load_base_stats();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
+    let pkmn_evo_chains = pkmn::evos::load_evos();
     let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
     let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
 
@@ -120,13 +121,55 @@ fn main() -> Result<()> {
 
             let ndex: usize = content.pkmn_no.parse().unwrap();
 
-            let learnset = &pkmn_learnsets[ndex];
-            let result = pkmn::learnset::get_pretty_learnset_table(learnset).unwrap();
+            let pkmn_name = &pkmn_base_stats[ndex - 1].pokemon;
+            let evo_chains: Vec<_> = pkmn_evo_chains
+                .iter()
+                .filter(|x| x.contains(pkmn_name))
+                .collect();
+
+            let mut pkmn_names: Vec<&str> = Vec::new();
+            for chain in &evo_chains {
+                let pkmn = chain.split(">").step_by(2);
+                for name in pkmn {
+                    if !pkmn_names.contains(&name) {
+                        pkmn_names.push(name);
+                    }
+                }
+            }
+
+            let learnset = &pkmn_learnsets[ndex - 1];
+
+            let evo_chain_learnsets = pkmn_names
+                .iter()
+                .map(|name| pkmn_base_stats.iter().find(|r| r.pokemon == *name).unwrap())
+                .map(|r| r.ndex)
+                .map(|ndex| &pkmn_learnsets[ndex as usize - 1])
+                .collect::<Vec<&pkmn::learnset::Learnset>>();
 
             stdout
                 .execute(Clear(terminal::ClearType::All))?
                 .execute(cursor::MoveTo(0, 0))?;
-            println!("{}", result);
+
+            println!("{} learnset", learnset.pokemon);
+            println!(
+                "{}",
+                pkmn::learnset::get_pretty_learnset_table(learnset).unwrap()
+            );
+
+            println!("");
+            println!("Evo chains:");
+            for chain in evo_chains {
+                println!("{}", chain.replace(">", "   >   "));
+            }
+
+            println!("");
+            for learnset in &evo_chain_learnsets {
+                println!("{} learnset", learnset.pokemon);
+                println!(
+                    "{}",
+                    pkmn::learnset::get_pretty_learnset_table(learnset).unwrap()
+                );
+            }
         }
     }
 }
