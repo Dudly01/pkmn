@@ -22,6 +22,10 @@ To view the examples it's best to start a local webserver from the repo's direct
 python -m http.server
 ```
 
+## Hard reload Firefox
+
+Ctrl + F5
+
 Afterwards, one can visit http://localhost:8000/ which will show `index.html` by default. Other `.html` files can be accessed with their relative paths.
 
 [Source](https://emscripten.org/docs/getting_started/FAQ.html#faq-local-webserver)
