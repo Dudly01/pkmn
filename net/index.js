@@ -3,9 +3,9 @@ import init, * as wasm from './pkg/net.js';
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 
-const start_btn = document.getElementById("button_start");
-const stop_btn = document.getElementById("button_stop");
-const gameboy_btn = document.getElementById("button_gameboy");
+const button_start = document.getElementById("button_start");
+const button_stop = document.getElementById("button_stop");
+const button_gameboy = document.getElementById("button_gameboy");
 
 const text_output = document.getElementById("output");
 text_output.style.cssText =
@@ -21,13 +21,13 @@ var displayMediaOptions = {
     audio: false,
 };
 
-start_btn.onclick = function (e) {
+button_start.onclick = function (e) {
     startSharing();
 };
-stop_btn.onclick = function (e) {
+button_stop.onclick = function (e) {
     stopSharing();
 };
-gameboy_btn.onclick = function (e) {
+button_gameboy.onclick = function (e) {
     gameboy();
 };
 
