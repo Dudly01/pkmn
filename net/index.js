@@ -8,7 +8,6 @@ const stop_btn = document.getElementById("stop_button");
 const snapshot_btn = document.getElementById("snapshot_button");
 const draw_btn = document.getElementById("draw_button");
 const draw_wasm_btn = document.getElementById("draw_wasm_button");
-const test_wasm_btn = document.getElementById("test_wasm_button");
 const gameboy_btn = document.getElementById("gameboy_button");
 
 const text_output = document.getElementById("output");
@@ -39,9 +38,6 @@ draw_btn.onclick = function (e) {
 };
 draw_wasm_btn.onclick = function (e) {
     drawWasm();
-};
-test_wasm_btn.onclick = function (e) {
-    testWasm();
 };
 gameboy_btn.onclick = function (e) {
     gameboy();
@@ -102,16 +98,6 @@ async function drawWasm() {
     wasm.draw(pixelData);
 
     canvas.getContext('2d').putImageData(imageData, 0, 0);
-}
-
-async function testWasm() {
-    // Instantiate the WebAssembly module
-    await init();
-
-    wasm.greet("Bulbasaur");
-
-    let result = wasm.add(4, 5);
-    console.log("Result of add(4, 5):", result);
 }
 
 async function gameboy() {
