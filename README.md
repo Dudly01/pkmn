@@ -4,6 +4,16 @@ A tool for estimating the DVs of a Pokémon.
 
 # Troubleshooting
 
+## Build WASM code
+
+https://rustwasm.github.io/docs/book/game-of-life/setup.html
+
+cargo install wasm-pack
+
+```
+wasm-pack build --target web
+```
+
 ## Local webserver
 
 To view the examples it's best to start a local webserver from the repo's directory. In Python3, this can be done with:
