@@ -1,7 +1,7 @@
 use image::{DynamicImage, GrayImage, Luma};
 use imageproc::contrast::threshold;
 
-use crate::utils::Position;
+use crate::position::Position;
 
 /// A bitmap of 7x7 pixels depicting the individual symbols in Pokemon RBY.
 pub struct SymbolBitmap {

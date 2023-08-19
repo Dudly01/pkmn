@@ -121,67 +121,13 @@ pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<Js
 
     let img_screen = DynamicImage::ImageRgba8(img_screen);
 
-    let gameboy_pos = pkmn::gameboy::locate_screen(&img_screen);
-    let Some(gameboy_pos) = gameboy_pos else {
-            return Err(JsValue::from_str("No GameBoy screen was found!"));
+    let scan_result = pkmn::utils::scan_img(img_screen);
+
+    let text_output = match scan_result {
+        Ok(text_output) => text_output,
+        Err(error) => error,
     };
+    let text_output = text_output.replace("\n", "<br>");
 
-    let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
-    let pkmn_base_stats = pkmn::stats::load_base_stats();
-    let pkmn_learnsets = pkmn::learnset::load_learnsets();
-    let stats_screen_layout = pkmn::gameboy::StatScreen1Layout::new();
-
-    let img_gameboy = img_screen
-        .clone()
-        .crop(
-            gameboy_pos.x,
-            gameboy_pos.y,
-            gameboy_pos.width,
-            gameboy_pos.height,
-        )
-        .resize_exact(
-            stats_screen_layout.width as u32,
-            stats_screen_layout.height as u32,
-            image::imageops::FilterType::Nearest,
-        );
-
-    if stats_screen_layout.verify_screen(&img_gameboy) == false {
-        return Err(JsValue::from_str("Not showing summary screen 1!"));
-    };
-
-    let content = stats_screen_layout.read_content(&img_gameboy, &symbol_bitmaps);
-    let Ok(content) = content else {
-        return Err(JsValue::from_str("Could not read summary screen content!"));
-    };
-
-    let ndex: usize = content.pkmn_no.parse().unwrap();
-    let level: i32 = content.level.parse().unwrap();
-    let stats = pkmn::stats::Stats::from_screen_content(&content);
-    let record = &pkmn_base_stats[ndex - 1]; // -1 as Dex number starts with 1
-    let base_stats = pkmn::stats::BaseStats::from_record(&record);
-
-    let exp = pkmn::stats::Experience::with_no_experience();
-
-    let dv_stats_table = pkmn::stats::DvTable::new(&level, &base_stats, &exp);
-
-    let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
-
-    let stat_result = pkmn::stats::summarize_pkmn_stats(
-        record,
-        &base_stats,
-        level,
-        &stats,
-        &dv_stats_table,
-        &dv_ranges,
-    )
-    .replace("\n", "<br>");
-
-    let learnset = &pkmn_learnsets[ndex];
-    let learnset_result = pkmn::learnset::get_pretty_learnset_table(learnset)
-        .unwrap()
-        .replace("\n", "<br>");
-
-    let result = format!("{}\n{}", stat_result, learnset_result);
-
-    Ok(JsValue::from_str(&result))
+    Ok(JsValue::from_str(&text_output))
 }

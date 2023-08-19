@@ -5,7 +5,7 @@ use std::cmp::{max, min};
 
 use crate::ocr;
 use crate::ocr::read_image_section;
-use crate::utils::Position;
+use crate::position::Position;
 
 /// Returns the inclusive bounding box of a contour.
 fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
