@@ -3,9 +3,9 @@ import init, * as wasm from './pkg/net.js';
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
 
-const start_btn = document.getElementById("start_button");
-const stop_btn = document.getElementById("stop_button");
-const gameboy_btn = document.getElementById("gameboy_button");
+const start_btn = document.getElementById("button_start");
+const stop_btn = document.getElementById("button_stop");
+const gameboy_btn = document.getElementById("button_gameboy");
 
 const text_output = document.getElementById("output");
 text_output.style.cssText =
