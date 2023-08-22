@@ -1,3 +1,24 @@
-body {
-  background-color: #b4b4b4;
+main {
+    position: absolute;
+    width: 960px;
+    left: calc(50% - 480px);
+    overflow: scroll;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px);
+    /* Adjust the size as needed */
+    grid-gap: 10px;
+    /* Space between grid items */
+    margin: auto;
+    /* Center the grid horizontally */
+}
+
+.grid-item {
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }

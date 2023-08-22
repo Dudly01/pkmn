@@ -91,3 +91,42 @@ async function gameboy() {
         return;
     }
 }
+
+function init_background_grid() {
+    // Get the grid container and calculate its dimensions
+    const gridContainer = document.getElementById('gridContainer');
+    const gridItemSize = 100; // Adjust the size to match your grid item size
+    const gridGap = 10; // Adjust the gap between grid items
+
+    // Calculate the number of rows and columns based on window dimensions
+    const windowWidth = window.innerWidth;
+    const windowHeight = window.innerHeight;
+    const availableWidth = windowWidth - gridGap; // Adjust for margins or padding
+    const availableHeight = windowHeight - gridGap; // Adjust for margins or padding
+    const columns = Math.floor(availableWidth / (gridItemSize + gridGap));
+    const rows = Math.floor(availableHeight / (gridItemSize + gridGap));
+    const numberOfItems = columns * rows;
+
+    // https://bulbapedia.bulbagarden.net/wiki/Game_Boy_Color
+    const colors = [
+        "FF69B4",  // Strawberry
+        "3E2F84",  // Grape
+        "78C850",  // Kiwi
+        "FFD733",  // Dandelion
+        "008080",  // Teal
+    ];
+
+    // Create and fill the grid items
+    for (let i = 0; i < numberOfItems; i++) {
+        const gridItem = document.createElement('div');
+        gridItem.classList.add('grid-item');
+
+        // Apply random background image
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        gridItem.style.backgroundColor = `#${randomColor}`;
+
+        // Append the grid item to the container
+        gridContainer.appendChild(gridItem);
+    }
+}
+init_background_grid();
