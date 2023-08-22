@@ -5,7 +5,8 @@ const canvas = document.getElementById("canvas");
 
 const button_start = document.getElementById("button_start");
 const button_stop = document.getElementById("button_stop");
-const button_gameboy = document.getElementById("button_gameboy");
+const button_scan = document.getElementById("button_scan");
+const button_interval_scan = document.getElementById("button_interval_scan");
 
 const text_output = document.getElementById("output");
 text_output.style.cssText =
@@ -27,9 +28,28 @@ button_start.onclick = function (e) {
 button_stop.onclick = function (e) {
     stopSharing();
 };
-button_gameboy.onclick = function (e) {
+button_scan.onclick = function (e) {
     gameboy();
 };
+button_interval_scan.onclick = function (e) {
+    periodic_gameboy();
+};
+
+let intervalId;
+
+// Function to toggle the periodic calling
+function periodic_gameboy() {
+    if (intervalId) {
+        // If intervalId is set, clear the interval and reset the variable
+        clearInterval(intervalId);
+        intervalId = undefined;
+        button_interval_scan.textContent = "Start scanning";
+    } else {
+        // If intervalId is not set, start the interval and store the interval ID
+        intervalId = setInterval(gameboy, 1000); // Call every 1000 milliseconds (1 second)
+        button_interval_scan.textContent = "Stop scanning";
+    }
+}
 
 async function startSharing() {
     try {
