@@ -1,3 +1,17 @@
 body {
-  background-color: #b4b4b4;
+    background-color: dimgray;
+}
+
+main {
+    overflow: scroll;
+    padding: 20px;
+    background-color: darkgray;
+}
+
+@media (min-width: 960px) {
+    main {
+        position: absolute;
+        left: calc(50% - 480px);
+        width: 960px;
+    }
 }
