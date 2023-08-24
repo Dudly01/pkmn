@@ -14,7 +14,10 @@ from pathlib import Path
 
 
 def main():
-    json_path = Path("pokemon_dv_calculator/data/moves.json")
+    script_dir = Path(__file__).parent
+
+    json_path = Path(script_dir, "../data_manual/moves.json").absolute()
+    print(f"Loading JSON from {json_path}")
     with json_path.open("r") as json_file:
         json_content = json_file.read()
         json_content = json.loads(json_content)
@@ -36,7 +39,8 @@ def main():
 
     moves.sort(key=lambda x: x[0])  # Sort moves by name
 
-    csv_path = Path("moves.csv")
+    csv_path = Path(script_dir, "../data/moves.csv")
+    print(f"Writing result to {json_path}")
     with csv_path.open("w", encoding="utf-8") as f:
         csv_writer = csv.writer(f)
 
