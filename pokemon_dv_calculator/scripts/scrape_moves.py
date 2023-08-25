@@ -16,7 +16,7 @@ from pathlib import Path
 def main():
     script_dir = Path(__file__).parent
 
-    json_path = Path(script_dir, "../data_manual/moves.json").absolute()
+    json_path = Path(script_dir, "../data_manual/smogon_rb.json").absolute()
     print(f"Loading JSON from {json_path}")
     with json_path.open("r") as json_file:
         json_content = json_file.read()
