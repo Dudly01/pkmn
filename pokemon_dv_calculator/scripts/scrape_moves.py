@@ -13,14 +13,8 @@ import csv
 from pathlib import Path
 
 
-def main():
-    script_dir = Path(__file__).parent
-
-    json_path = Path(script_dir, "../data_manual/smogon_rb.json").absolute()
-    print(f"Loading JSON from {json_path}")
-    with json_path.open("r") as json_file:
-        json_content = json_file.read()
-        json_content = json.loads(json_content)
+def export_moves(smogon_json: dict, dst_path: Path) -> None:
+    """Exports the move data to a CSV file."""
 
     header = [
         "name",
@@ -32,21 +26,33 @@ def main():
         "description",
     ]
 
-    moves = []
-    for move_dict in json_content["injectRpcs"][1][1]["moves"]:
-        move = [move_dict[col] for col in header]
-        moves.append(move)
+    rows = []
+    for move_dict in smogon_json["injectRpcs"][1][1]["moves"]:
+        row = [move_dict[col] for col in header]
+        rows.append(row)
 
-    moves.sort(key=lambda x: x[0])  # Sort moves by name
+    rows.sort(key=lambda x: x[0])  # Sort moves by name
 
-    csv_path = Path(script_dir, "../data/moves.csv")
-    print(f"Writing result to {json_path}")
-    with csv_path.open("w", encoding="utf-8") as f:
+    with dst_path.open("w", encoding="utf-8") as f:
         csv_writer = csv.writer(f)
 
         csv_writer.writerow(header)
-        for move in moves:
-            csv_writer.writerow(move)
+        for row in rows:
+            csv_writer.writerow(row)
+
+
+def main():
+    script_dir = Path(__file__).parent
+
+    json_path = Path(script_dir, "../data_manual/smogon_rb.json").absolute()
+    print(f"Loading JSON from {json_path}")
+    with json_path.open("r") as json_file:
+        json_content = json_file.read()
+    json_content = json.loads(json_content)
+
+    csv_path = Path(script_dir, "../data/moves.csv")
+    print(f"Writing moves to {json_path}")
+    export_moves(smogon_json=json_content, dst_path=csv_path)
 
     return
 
