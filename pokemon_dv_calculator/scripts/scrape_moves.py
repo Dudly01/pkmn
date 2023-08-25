@@ -41,6 +41,52 @@ def export_moves(smogon_json: dict, dst_path: Path) -> None:
             csv_writer.writerow(row)
 
 
+def export_pokemon(smogon_json: dict, dst_path: Path) -> None:
+    """Exports the Pokemon data to a CSV file.
+
+    May be enough to export Spc., instead of Spc. Att. abd Spc. Def..
+    """
+
+    header = [
+        "name",
+        "dex_number",
+        "type1",
+        "type2",
+        "hp",
+        "atk",
+        "def",
+        "spa",
+        "spd",
+        "spe",
+    ]
+
+    rows = []
+    for pkmn_dict in smogon_json["injectRpcs"][1][1]["pokemon"]:
+        row = [
+            pkmn_dict["name"],
+            pkmn_dict["oob"]["dex_number"],
+            pkmn_dict["types"][0],
+            pkmn_dict["types"][1] if len(pkmn_dict["types"]) == 2 else "",
+            pkmn_dict["hp"],
+            pkmn_dict["atk"],
+            pkmn_dict["def"],
+            pkmn_dict["spa"],
+            pkmn_dict["spd"],
+            pkmn_dict["spe"],
+        ]
+
+        rows.append(row)
+
+    rows.sort(key=lambda x: x[1])  # Sort by dex number
+
+    with dst_path.open("w", encoding="utf-8") as f:
+        csv_writer = csv.writer(f)
+
+        csv_writer.writerow(header)
+        for row in rows:
+            csv_writer.writerow(row)
+
+
 def main():
     script_dir = Path(__file__).parent
 
@@ -50,9 +96,13 @@ def main():
         json_content = json_file.read()
     json_content = json.loads(json_content)
 
-    csv_path = Path(script_dir, "../data/moves.csv")
-    print(f"Writing moves to {json_path}")
+    csv_path = Path(script_dir, "../data/smogon_rb_moves.csv")
+    print(f"Writing moves to {csv_path}")
     export_moves(smogon_json=json_content, dst_path=csv_path)
+
+    csv_path = Path(script_dir, "../data/smogon_rb_pokemon.csv")
+    print(f"Writing pokemon to {csv_path}")
+    export_pokemon(smogon_json=json_content, dst_path=csv_path)
 
     return
 
