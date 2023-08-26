@@ -10,6 +10,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let pkmn_base_stats = pkmn::stats::load_base_stats();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let pkmn_evo_chains = pkmn::evos::load_evos();
+    let pkmn_moves = pkmn::moves::load_moves();
+
     let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
     let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
 
