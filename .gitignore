@@ -16,3 +16,7 @@ net/bin/
 net/pkg/
 net/wasm-pack.log
 
+# Data files
+# Ignored until resolved format
+pokemon_dv_calculator/data/
+pokemon_dv_calculator/data_manual/
