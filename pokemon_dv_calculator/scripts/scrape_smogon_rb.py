@@ -1,9 +1,9 @@
 """
-Creates a CSV with the move data taken from SMOGON.
+Scrapes the source of the Smogon website.
 
 Steps to create the source JSON:
- - Open the page https://www.smogon.com/dex/rb/moves/
- - Look at the source
+ - Open the page https://www.smogon.com/dex/rb/pokemon/
+ - Look at the Page source
  - Find the <script type="text/javascript"> tag
  - Put the contents (without the variable assignment) into a JSON file
 """
