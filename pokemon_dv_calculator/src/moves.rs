@@ -1,14 +1,20 @@
 use std::collections::HashMap;
 
-/// Base stats csv records, containing the information about Pokemons.
+/// CSV record containing info from Smogon moves.
 #[derive(Debug, serde::Deserialize)]
 pub struct Record {
     pub name: String,
+    #[serde(rename = "type")]
+    pub type_: String,
+    pub category: String,
+    pub power: String,
+    pub accuracy: String,
+    pub pp: String,
     pub description: String,
 }
 
 /// Loads the base stats from the CSV file.
-pub fn load_moves() -> HashMap<String, String> {
+pub fn load_moves() -> HashMap<String, Record> {
     let mut moves = HashMap::new();
 
     const CSV_DATA: &str = include_str!("../data/smogon_rb_moves.csv");
@@ -18,7 +24,7 @@ pub fn load_moves() -> HashMap<String, String> {
 
     for result in csv_reader.deserialize() {
         let record: Record = result.unwrap();
-        moves.insert(record.name, record.description);
+        moves.insert(record.name.clone(), record);
     }
 
     moves
