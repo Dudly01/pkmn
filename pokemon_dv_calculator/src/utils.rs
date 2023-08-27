@@ -1,5 +1,95 @@
 use crate as pkmn;
 use image::DynamicImage;
+use pkmn::learnset::Learnset;
+use std::collections::HashMap;
+
+/// Returns a formatted "By leveling up" learnset table.
+/// For the cases when the learnset is the same among game versions.
+fn pretty_learnset_table(
+    learnset: &Learnset,
+    moves: &HashMap<String, pkmn::moves::Record>,
+) -> Result<String, String> {
+    for row in &learnset.by_leveling_up {
+        if row.len() != 6 {
+            return Err("Found row with not exactly 6 elements".to_owned());
+        }
+    }
+
+    let mut result = String::with_capacity(256);
+
+    let header = &learnset.by_leveling_up[0];
+    result.push_str(&format!(
+        "{:^5} {:^15} {:^7} {:^5} {:^8} {:^3} Description\n",
+        header[0], header[1], header[2], header[3], header[4], header[5]
+    ));
+
+    for row in learnset.by_leveling_up.iter().skip(1) {
+        let move_name = &row[1];
+        let description = moves.get(move_name);
+        let description = match description {
+            Some(record) => record.description.clone(),
+            None => "NO DESCRIPTION".to_string(),
+        };
+
+        result.push_str(&format!(
+            "{:<5} {:<15} {:^7} {:<5} {:<8} {:<3} {}\n",
+            row[0], row[1], row[2], row[3], row[4], row[5], description
+        ));
+    }
+
+    Ok(result)
+}
+
+/// Returns a formatted "By leveling up" learnset table.
+/// For the cases when the learnset differs among game versions.
+fn pretty_diff_learnset_table(
+    learnset: &Learnset,
+    moves: &HashMap<String, pkmn::moves::Record>,
+) -> Result<String, String> {
+    for row in &learnset.by_leveling_up {
+        if row.len() != 7 {
+            return Err("Found row with not exactly 7 elements".to_owned());
+        }
+    }
+
+    let mut result = String::with_capacity(256);
+
+    let header = &learnset.by_leveling_up[0];
+    result.push_str(&format!(
+        "{:^3} {:^3} {:^15} {:^7} {:^5} {:^8} {:^3} Description\n",
+        header[0], header[1], header[2], header[3], header[4], header[5], header[6]
+    ));
+
+    for row in learnset.by_leveling_up.iter().skip(1) {
+        let move_name = &row[1];
+        let description = moves.get(move_name);
+        let description = match description {
+            Some(record) => record.description.clone(),
+            None => "NO DESCRIPTION".to_string(),
+        };
+
+        result.push_str(&format!(
+            "{:<3} {:<3} {:<15} {:^7} {:<5} {:<8} {:<3} {}\n",
+            row[0], row[1], row[2], row[3], row[4], row[5], row[6], description
+        ));
+    }
+
+    Ok(result)
+}
+
+/// Returns the string with the formatted "By leveling up" learnset.
+pub fn get_pretty_learnset_table(
+    entry: &Learnset,
+    moves: &HashMap<String, pkmn::moves::Record>,
+) -> Result<String, String> {
+    let same_learnset = entry.by_leveling_up[0].len() == 6;
+    let result = match same_learnset {
+        true => pretty_learnset_table(entry, moves),
+        false => pretty_diff_learnset_table(entry, moves),
+    };
+
+    result
+}
 
 /// Scans the image and returns the printable text.
 /// The summary screen 1 is for printing the stat DVs.
@@ -10,6 +100,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let pkmn_base_stats = pkmn::stats::load_base_stats();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let pkmn_evo_chains = pkmn::evos::load_evos();
+    let pkmn_moves = pkmn::moves::load_moves();
+
     let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
     let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
 
@@ -108,7 +200,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         text_result.push_str(&format!("{} learnset:\n", learnset.pokemon));
         text_result.push_str(&format!(
             "{}\n",
-            pkmn::learnset::get_pretty_learnset_table(learnset).unwrap()
+            get_pretty_learnset_table(learnset, &pkmn_moves).unwrap()
         ));
 
         text_result.push_str(&"Evo chain(s):\n");
@@ -122,7 +214,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             text_result.push_str(&format!("{} learnset:\n", learnset.pokemon));
             text_result.push_str(&format!(
                 "{}\n",
-                pkmn::learnset::get_pretty_learnset_table(learnset).unwrap()
+                get_pretty_learnset_table(learnset, &pkmn_moves).unwrap()
             ));
         }
 
