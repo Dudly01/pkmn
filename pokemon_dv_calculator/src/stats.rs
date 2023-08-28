@@ -3,22 +3,28 @@ use crate::gameboy::StatsSreen1Content;
 /// Base stats csv records, containing the information about Pokemons.
 #[derive(Debug, serde::Deserialize)]
 pub struct Record {
+    #[serde(rename = "dex_number")]
     pub ndex: i32,
+    #[serde(rename = "name")]
     pub pokemon: String,
-    pub types: String,
+    pub type1: String,
+    pub type2: String,
     pub hp: i32,
+    #[serde(rename = "atk")]
     pub attack: i32,
+    #[serde(rename = "def")]
     pub defense: i32,
+    #[serde(rename = "spe")]
     pub speed: i32,
+    #[serde(rename = "spa")]
     pub special: i32,
-    pub total: i32,
 }
 
 /// Loads the base stats from the CSV file.
 pub fn load_base_stats() -> Vec<Record> {
     let mut records: Vec<Record> = Vec::with_capacity(151);
 
-    const CSV_DATA: &str = include_str!("../data/base_stats.csv");
+    const CSV_DATA: &str = include_str!("../data/smogon_rb_pokemon.csv");
     let mut csv_reader = csv::ReaderBuilder::new()
         .has_headers(true)
         .from_reader(CSV_DATA.as_bytes());
@@ -306,17 +312,16 @@ pub fn summarize_pkmn_stats(
     text_result.push_str(&format!("\n"));
     text_result.push_str(&format!("Base stats\n"));
     text_result.push_str(&format!(
-        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}\n",
-        " HP", "ATT", "DEF", "SPC", "SPD", "SUM"
+        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}\n",
+        " HP", "ATT", "DEF", "SPC", "SPD"
     ));
     text_result.push_str(&format!(
-        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  {: >3}\n",
+        "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  \n",
         base_stats.hp,
         base_stats.attack,
         base_stats.defense,
         base_stats.speed,
         base_stats.special,
-        record.total,
     ));
 
     text_result.push_str(&format!("\n"));
