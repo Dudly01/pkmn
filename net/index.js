@@ -82,12 +82,16 @@ async function gameboy() {
     let imageData = canvas.getContext('2d').getImageData(0, 0, target_width, target_height);
     let pixelData = imageData.data;
 
+    const t0 = performance.now();
+
     // Try locating the GameBoy
     try {
         var results = wasm.read_stats_from_screen(pixelData, target_width, target_height);
         text_output.innerHTML = results;
     } catch (error) {
         text_output.textContent = error;
-        return;
     }
+
+    const t1 = performance.now();
+    console.log(`Scanning took ${t1 - t0} ms.`);
 }
