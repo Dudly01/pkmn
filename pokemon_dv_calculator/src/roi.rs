@@ -6,22 +6,32 @@ use crate::position::Position;
 use image::{GrayImage, Luma};
 
 /// The Region of Interest of a GreyImage.
-struct Roi<'a> {
-    img: &'a GrayImage,
-    pos: Position,
+pub struct Roi<'a> {
+    pub img: &'a GrayImage,
+    pub pos: Position,
 }
 
 impl<'a> Roi<'a> {
-    fn iter(&self) -> RoiIter<'_> {
+    pub fn iter(&self) -> RoiIter<'_> {
         RoiIter {
             roi: self,
             x: 0,
             y: 0,
         }
     }
+
+    /// Returns a reference to the grayscale image.
+    pub fn img(&self) -> &'a GrayImage {
+        self.img
+    }
+
+    /// Returns the section of the grayscale image that is of interest.
+    pub fn pos(&self) -> &Position {
+        &self.pos
+    }
 }
 
-struct RoiIter<'a> {
+pub struct RoiIter<'a> {
     roi: &'a Roi<'a>,
     x: u32,
     y: u32,
