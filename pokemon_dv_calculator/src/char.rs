@@ -7,6 +7,7 @@
 //! https://bulbapedia.bulbagarden.net/wiki/Text_entry_in_the_Pok%C3%A9mon_games
 //! https://bulbapedia.bulbagarden.net/wiki/Text_entry_(Generation_II)
 
+use crate::roi::Roi;
 use std::collections::HashMap;
 
 /// Stores the 7x7 binary image of a character as a u64 value.
@@ -26,13 +27,37 @@ impl CharBitmap {
             return Err("Expected exactly 49 items in the sequence.");
         }
 
-        let code = pixels
+        let bitmap = pixels
             .iter()
             .enumerate()
             .map(|(idx, x)| ((*x != 0) as u64) << idx) // Shift left by idx
             .fold(0, |acc, x| acc | x); // Bitwise OR
 
-        Ok(CharBitmap(code))
+        Ok(CharBitmap(bitmap))
+    }
+
+    pub fn from_roi(roi: &Roi) -> Result<CharBitmap, String> {
+        let pos = roi.pos();
+        if pos.width != 7 || pos.height != 7 {
+            let msg = format!("Width and height needs to be 7. Got {:?}", pos);
+            return Err(msg);
+        }
+
+        let bitmap = roi
+            .iter()
+            .enumerate()
+            .map(|(idx, x)| ((*x != 0) as u64) << idx) // Shift left by idx
+            .fold(0, |acc, x| acc | x); // Bitwise OR
+
+        Ok(CharBitmap(bitmap))
+    }
+
+    /// Returns the Hamming distance of two CharBitmaps.
+    /// It is the number of positions the bits differ.
+    pub fn hamming_dist(&self, rhs: &CharBitmap) -> u32 {
+        let diff = self.0 ^ rhs.0;
+        let hamming_dist = diff.count_ones();
+        hamming_dist
     }
 }
 
