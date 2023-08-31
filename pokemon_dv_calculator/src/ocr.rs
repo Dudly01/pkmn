@@ -178,6 +178,19 @@ pub fn create_symbol_bitmaps() -> (Vec<String>, Vec<SymbolBitmap>) {
     symbols.push(symbol);
     bitmaps.push(bitmap);
 
+    let symbol = "/".to_string();
+    let bitmap = SymbolBitmap::from_lazy_array(&[
+        0, 0, 0, 0, 0, 0, 1, //
+        0, 0, 0, 0, 0, 1, 0, //
+        0, 0, 0, 0, 1, 0, 0, //
+        0, 0, 0, 1, 0, 0, 0, //
+        0, 0, 1, 0, 0, 0, 0, //
+        0, 1, 0, 0, 0, 0, 0, //
+        1, 0, 0, 0, 0, 0, 0, //
+    ]);
+    symbols.push(symbol);
+    bitmaps.push(bitmap);
+
     (symbols, bitmaps)
 }
 
