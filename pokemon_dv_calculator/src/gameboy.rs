@@ -285,9 +285,12 @@ impl StatScreen1Layout {
                 pos: pos.clone(),
             };
 
-            let char = read_character(&roi, chars).unwrap();
+            let char = read_character(&roi, chars);
+            let Ok(char) = char else {
+                return false;  // Char not recognised
+            };
             if char != "/" {
-                return false;
+                return false; // Not the char we want
             }
         }
         true
@@ -485,10 +488,14 @@ impl StatScreen2Layout {
                 height: 7,
             },
         };
-        let char = read_character(&roi, chars).unwrap();
-
-        let result = char == "/";
-        result
+        let char = read_character(&roi, chars);
+        let Ok(char) = char else {
+            return false;  // Char not recognised
+        };
+        if char != "/" {
+            return false; // Not the char we want
+        }
+        true
     }
 
     pub fn read_content(
