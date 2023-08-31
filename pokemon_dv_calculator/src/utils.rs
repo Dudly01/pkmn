@@ -1,4 +1,5 @@
 use crate as pkmn;
+use image::imageops::invert;
 use image::DynamicImage;
 use imageproc::contrast::threshold_mut;
 use pkmn::learnset::Learnset;
@@ -129,6 +130,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
     let mut img_gameboy = img_gameboy.to_luma8();
     threshold_mut(&mut img_gameboy, 200);
+    invert(&mut img_gameboy);
 
     let is_summary_screen_1 = stats_screen_1_layout.verify_layout(&img_gameboy, &chars);
     let is_summary_screen_2 = stats_screen_2_layout.verify_layout(&img_gameboy, &chars);
