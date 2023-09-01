@@ -98,7 +98,6 @@ pub fn get_pretty_learnset_table(
 /// The summary screen 2 us for printing the learnset and evolution chain.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
-    let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
     let chars = pkmn::char::init_chars();
     let pkmn_base_stats = pkmn::stats::load_base_stats();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
