@@ -208,5 +208,18 @@ pub fn init_chars() -> HashMap<CharBitmap, &'static str> {
     .unwrap();
     chars.insert(code, char);
 
+    let char = "/";
+    let code = CharBitmap::from_pixels(&[
+        0, 0, 0, 0, 0, 0, 1, //
+        0, 0, 0, 0, 0, 1, 0, //
+        0, 0, 0, 0, 1, 0, 0, //
+        0, 0, 0, 1, 0, 0, 0, //
+        0, 0, 1, 0, 0, 0, 0, //
+        0, 1, 0, 0, 0, 0, 0, //
+        1, 0, 0, 0, 0, 0, 0, //
+    ])
+    .unwrap();
+    chars.insert(code, char);
+
     chars
 }
