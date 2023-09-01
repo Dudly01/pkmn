@@ -45,14 +45,54 @@ impl<'a> Iterator for RoiIter<'a> {
             return None;
         }
 
-        let Luma([pixel_intensity]) = self.roi.img.get_pixel(self.x, self.y);
+        let offset_x = &self.roi.pos.x;
+        let offset_y = &self.roi.pos.y;
+
+        let Luma([pixel_intensity]) = self.roi.img.get_pixel(offset_x + self.x, offset_y + self.y);
 
         self.x += 1;
-        if self.x == self.roi.img.width() {
+        if self.x == self.roi.pos.width {
             self.x = 0;
             self.y += 1;
         }
 
         Some(pixel_intensity)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use image::GrayImage;
+
+    use super::Roi;
+    use crate::position::Position;
+
+    #[test]
+    fn roi_iteration() {
+        // Arrange
+        let width = 4;
+        let height = 3;
+        let mut data = Vec::<u8>::with_capacity(width * height);
+        for i in 0..(width * height) {
+            data.push(i as u8);
+        }
+        let img = GrayImage::from_raw(width as u32, height as u32, data).unwrap();
+        let pos = Position {
+            x: 1,
+            y: 2,
+            width: 2,
+            height: 1,
+        };
+        let roi = Roi {
+            img: &img,
+            pos: pos,
+        };
+        let expected_pixels: Vec<u8> = vec![9, 10];
+
+        // Act
+        let pixels: Vec<u8> = roi.iter().cloned().collect();
+
+        // Assert
+        assert_eq!(pixels, expected_pixels);
     }
 }
