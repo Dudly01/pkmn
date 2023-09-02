@@ -76,6 +76,41 @@ def get_color_info(type_description: str) -> tuple[str, str]:
     return color_space, elem_type
 
 
+def get_vec_type(type_description: str) -> str:
+    """Returns the type of the Vec.
+
+    Example:
+
+    Input:
+    ```
+    struct alloc::vec::Vec<u8, alloc::alloc::Global> {
+        buf: alloc::raw_vec::RawVec<u8, alloc::alloc::Global>,
+        len: usize
+    }
+    ```
+
+    Output:
+    ```
+    u8
+    ```
+    """
+    type_description = str(type_description)
+
+    target_substring = "alloc::vec::Vec<"
+    pos = type_description.find(target_substring)
+    if pos == -1:
+        raise RuntimeError(f"{target_substring} not found within description")
+    start = pos + len(target_substring)
+
+    end = type_description.find(",", start)
+    if end == -1:
+        raise RuntimeError("Generic separating ',' not found.")
+
+    elem_type = type_description[start:end]
+
+    return elem_type
+
+
 def show():
     """Shows all open pyplot figures in a VSCode tab."""
     image_bytes = io.BytesIO()
@@ -123,6 +158,38 @@ def plot_img(image):
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
 
     # cmap is ignored for RGB(A) data
+    plt.imshow(data, cmap="gist_gray", interpolation="nearest")
+    show()
+    print("width: {}".format(width))
+    print("height: {}".format(height))
+    print("color space: {}".format(color_space))
+    print("item type: {}".format(rust_type))
+
+
+def plot_vec(image_vec, width, height, color_space):
+    """Plots an an image from a Vec<_>."""
+    image_vec = debugger.unwrap(image_vec)
+    image_addr = image_vec.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
+
+    rust_type = get_vec_type(image_vec.type)
+    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    elem_size = np.dtype(numpy_dtype).itemsize  # Bytes
+
+    if color_space.lower() == "luma":
+        shape = (height, width)
+        byte_count = height * width * elem_size
+    elif color_space.lower() == "rgb":
+        shape = (height, width, 3)
+        byte_count = height * width * 3 * elem_size
+    elif color_space.lower() == "rgba":
+        shape = (height, width, 4)
+        byte_count = height * width * 4 * elem_size
+    else:
+        raise RuntimeError(f"Color space {color_space} is unsupported.")
+
+    data = lldb.process.ReadMemory(image_addr, byte_count, lldb.SBError())
+    data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
+
     plt.imshow(data, cmap="gist_gray", interpolation="nearest")
     show()
     print("width: {}".format(width))

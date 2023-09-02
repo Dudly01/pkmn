@@ -1,7 +1,11 @@
+use std::collections::HashMap;
+
 use image::{DynamicImage, GrayImage, Luma};
 use imageproc::contrast::threshold;
 
+use crate::char::CharBitmap;
 use crate::position::Position;
+use crate::roi::Roi;
 
 /// A bitmap of 7x7 pixels depicting the individual symbols in Pokemon RBY.
 pub struct SymbolBitmap {
@@ -174,6 +178,19 @@ pub fn create_symbol_bitmaps() -> (Vec<String>, Vec<SymbolBitmap>) {
     symbols.push(symbol);
     bitmaps.push(bitmap);
 
+    let symbol = "/".to_string();
+    let bitmap = SymbolBitmap::from_lazy_array(&[
+        0, 0, 0, 0, 0, 0, 1, //
+        0, 0, 0, 0, 0, 1, 0, //
+        0, 0, 0, 0, 1, 0, 0, //
+        0, 0, 0, 1, 0, 0, 0, //
+        0, 0, 1, 0, 0, 0, 0, //
+        0, 1, 0, 0, 0, 0, 0, //
+        1, 0, 0, 0, 0, 0, 0, //
+    ]);
+    symbols.push(symbol);
+    bitmaps.push(bitmap);
+
     (symbols, bitmaps)
 }
 
@@ -192,12 +209,12 @@ pub fn match_symbol(img: &GrayImage, bitmap: &SymbolBitmap) -> Result<i32, &'sta
 }
 
 /// Reads and returns the symbol present on the 7x7 image.
-/// 
+///
 /// The input image is converted to grayscale and thresholded right away.
 /// Therefore multiple image types are accepted.
-/// 
+///
 /// Uses a naive matching algorithm.
-/// The symbol with the 
+/// The symbol with the
 pub fn read_symbol(
     img: DynamicImage,
     symbol_bitmaps: &(Vec<String>, Vec<SymbolBitmap>),
@@ -281,4 +298,57 @@ pub fn read_image_section(
     let img_section = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
     let symbols = read_line(&img_section, symbol_bitmaps);
     symbols
+}
+
+/// Reads a character from the 7x7 large Roi.
+pub fn read_character(
+    roi: &Roi,
+    chars: &HashMap<CharBitmap, &'static str>,
+) -> Result<&'static str, String> {
+    let pos = roi.pos();
+    if pos.width != 7 || pos.height != 7 {
+        return Err("Invalid Roi dimensions.".to_string());
+    }
+
+    let bitmap = CharBitmap::from_roi(roi)?;
+
+    let char = chars.get(&bitmap);
+    let Some(char) = char else {
+        return Err("Did not find exact match".to_string());
+    };
+
+    Ok(*char)
+}
+
+/// Reads the characters from the field.
+pub fn read_field(roi: &Roi, chars: &HashMap<CharBitmap, &'static str>) -> Result<String, String> {
+    let pos = roi.pos();
+    if pos.height != 7 || (pos.width + 1) % 8 != 0 {
+        return Err("Input dimensions are incorrect.".to_string());
+    }
+
+    let char_count = (pos.width + 1) / 8;
+    let mut result = String::with_capacity(char_count as usize);
+
+    for i in 0..char_count {
+        let pos = roi.pos();
+
+        let offset_x = i * (7 + 1);
+        let pos = Position {
+            x: pos.x + offset_x,
+            y: pos.y,
+            width: 7,
+            height: 7,
+        };
+
+        let roi = Roi {
+            img: roi.img(),
+            pos: pos,
+        };
+
+        let char = read_character(&roi, chars)?;
+        result.extend(char.chars());
+    }
+
+    Ok(result)
 }

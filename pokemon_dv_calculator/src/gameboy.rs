@@ -1,11 +1,13 @@
-use image::{DynamicImage, ImageBuffer, Luma};
+use crate::char::CharBitmap;
+use crate::ocr::{self, read_field};
+use crate::ocr::{read_character, read_image_section};
+use crate::position::Position;
+use crate::roi::Roi;
+use image::{DynamicImage, GrayImage, ImageBuffer, Luma};
 use imageproc::contours::Contour;
 use imageproc::contrast::threshold;
 use std::cmp::{max, min};
-
-use crate::ocr;
-use crate::ocr::read_image_section;
-use crate::position::Position;
+use std::collections::HashMap;
 
 /// Returns the inclusive bounding box of a contour.
 fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
@@ -268,6 +270,32 @@ impl StatScreen1Layout {
         true
     }
 
+    pub fn verify_layout(
+        &self,
+        img: &GrayImage,
+        chars: &HashMap<CharBitmap, &'static str>,
+    ) -> bool {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return false;
+        }
+
+        for pos in &self.slash_positions {
+            let roi = Roi {
+                img: img,
+                pos: pos.clone(),
+            };
+
+            let char = read_character(&roi, chars);
+            let Ok(char) = char else {
+                return false;  // Char not recognised
+            };
+            if char != "/" {
+                return false; // Not the char we want
+            }
+        }
+        true
+    }
+
     /// Returns the content of the screen.
     /// Multiple image types are accepted.
     pub fn read_content(
@@ -300,6 +328,69 @@ impl StatScreen1Layout {
         let special = read_image_section(img, &self.special_field_pos, symbol_bitmaps)?
             .trim()
             .to_string();
+
+        let content = StatsSreen1Content {
+            pkmn_no,
+            level,
+            hp,
+            attack,
+            defense,
+            speed,
+            special,
+        };
+        Ok(content)
+    }
+
+    pub fn read_fields(
+        &self,
+        img: &GrayImage,
+        chars: &HashMap<CharBitmap, &'static str>,
+    ) -> Result<StatsSreen1Content, String> {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return Err("Mismatch in image and layout dimensions.".to_string());
+        }
+
+        let roi = Roi {
+            img: img,
+            pos: self.pkmn_ndex_pos.clone(),
+        };
+        let pkmn_no = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.level_field_pos.clone(),
+        };
+        let level = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.hp_field_pos.clone(),
+        };
+        let hp = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.attack_field_pos.clone(),
+        };
+        let attack = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.defense_field_pos.clone(),
+        };
+        let defense = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.speed_field_pos.clone(),
+        };
+        let speed = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.special_field_pos.clone(),
+        };
+        let special = read_field(&roi, chars).unwrap().trim().to_string();
 
         let content = StatsSreen1Content {
             pkmn_no,
@@ -379,6 +470,34 @@ impl StatScreen2Layout {
         is_match
     }
 
+    pub fn verify_layout(
+        &self,
+        img: &GrayImage,
+        chars: &HashMap<CharBitmap, &'static str>,
+    ) -> bool {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return false;
+        }
+
+        let roi = Roi {
+            img: img,
+            pos: Position {
+                x: 128,
+                y: 81,
+                width: 7,
+                height: 7,
+            },
+        };
+        let char = read_character(&roi, chars);
+        let Ok(char) = char else {
+            return false;  // Char not recognised
+        };
+        if char != "/" {
+            return false; // Not the char we want
+        }
+        true
+    }
+
     pub fn read_content(
         &self,
         img: &DynamicImage,
@@ -391,6 +510,25 @@ impl StatScreen2Layout {
         let pkmn_no = read_image_section(img, &self.pkmn_ndex_pos, symbol_bitmaps)?
             .trim()
             .to_string();
+
+        let content = StatsSreen2Content { pkmn_no };
+        Ok(content)
+    }
+
+    pub fn read_fields(
+        &self,
+        img: &GrayImage,
+        chars: &HashMap<CharBitmap, &'static str>,
+    ) -> Result<StatsSreen2Content, String> {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return Err("Mismatch in image and layout dimensions.".to_string());
+        }
+
+        let roi = Roi {
+            img: img,
+            pos: self.pkmn_ndex_pos,
+        };
+        let pkmn_no = read_field(&roi, chars).unwrap().trim().to_string();
 
         let content = StatsSreen2Content { pkmn_no };
         Ok(content)
