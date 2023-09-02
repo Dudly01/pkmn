@@ -98,7 +98,7 @@ pub fn get_pretty_learnset_table(
 /// The summary screen 2 us for printing the learnset and evolution chain.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
-    let chars = pkmn::char::init_chars();
+    let symbol_bitmaps = pkmn::ocr::create_symbol_bitmaps();
     let pkmn_base_stats = pkmn::stats::load_base_stats();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let pkmn_evo_chains = pkmn::evos::load_evos();
@@ -127,19 +127,15 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             image::imageops::FilterType::Nearest,
         );
 
-    let mut img_gameboy = img_gameboy.to_luma8();
-    threshold_mut(&mut img_gameboy, 200);
-    invert(&mut img_gameboy);
-
-    let is_summary_screen_1 = stats_screen_1_layout.verify_layout(&img_gameboy, &chars);
-    let is_summary_screen_2 = stats_screen_2_layout.verify_layout(&img_gameboy, &chars);
+    let is_summary_screen_1 = stats_screen_1_layout.verify_screen(&img_gameboy);
+    let is_summary_screen_2 = stats_screen_2_layout.verify_screen(&img_gameboy);
 
     if !is_summary_screen_1 && !is_summary_screen_2 {
         return Err("Not showing summary screen 1 nor 2!".to_string());
     }
 
     if is_summary_screen_1 {
-        let content = stats_screen_1_layout.read_fields(&img_gameboy, &chars);
+        let content = stats_screen_1_layout.read_content(&img_gameboy, &symbol_bitmaps);
         let Ok(content) = content else {
                 return Err("Could not read summary screen 1 content!".to_string());
             };
@@ -169,7 +165,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     if is_summary_screen_2 {
-        let content = stats_screen_2_layout.read_fields(&img_gameboy, &chars);
+        let content = stats_screen_2_layout.read_content(&img_gameboy, &symbol_bitmaps);
         let Ok(content) = content else {
             return Err("Could not read summary screen 2 content!".to_string());
         };
