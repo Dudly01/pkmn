@@ -11,7 +11,7 @@ fn scan_img(img_path: &str) -> Result<String, String> {
 
 fn criterion_benchmark(c: &mut Criterion) {
     let mut group = c.benchmark_group("flat-sampling-example");
-    group.sampling_mode(SamplingMode::Flat);
+    group.significance_level(0.1).sample_size(500);
 
     group.bench_function("Summary Screen 1", |b| {
         b.iter(|| scan_img(black_box("../Yellow_summary_1.png")))
