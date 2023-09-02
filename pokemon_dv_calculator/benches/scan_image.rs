@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::*;
 
 use image::io::Reader as ImageReader;
 use pokemon_dv_calculator as pkmn;
@@ -10,12 +10,16 @@ fn scan_img(img_path: &str) -> Result<String, String> {
 }
 
 fn criterion_benchmark(c: &mut Criterion) {
-    c.bench_function("Summary Screen 1", |b| {
+    let mut group = c.benchmark_group("flat-sampling-example");
+    group.sampling_mode(SamplingMode::Flat);
+
+    group.bench_function("Summary Screen 1", |b| {
         b.iter(|| scan_img(black_box("../Yellow_summary_1.png")))
     });
-    c.bench_function("Summary Screen 2", |b| {
+    group.bench_function("Summary Screen 2", |b| {
         b.iter(|| scan_img(black_box("../Yellow_summary_2.png")))
     });
+    group.finish();
 }
 
 criterion_group!(benches, criterion_benchmark);
