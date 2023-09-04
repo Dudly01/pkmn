@@ -22,9 +22,5 @@ criterion = { version = "0.5", features = ["html_reports"] }
 bench = false  # Workaround for "Unrecognized Option" Errors for Valid Command-line Options
 
 [[bench]]
-name = "my_benchmark"
-harness = false
-
-[[bench]]
 name = "scan_image"
 harness = false
