@@ -1,6 +1,5 @@
 use crate::char::CharBitmap;
-use crate::ocr::{self, read_field};
-use crate::ocr::{read_character, read_image_section};
+use crate::ocr::{read_character, read_field};
 use crate::position::Position;
 use crate::roi::Roi;
 use image::{DynamicImage, GrayImage, ImageBuffer, Luma};
@@ -243,33 +242,6 @@ impl StatScreen1Layout {
         }
     }
 
-    /// Returns true if the image is the stats screen 1.
-    /// Multiple image types are accepted.
-    /// Uses naive approach.
-    pub fn verify_screen(&self, img: &DynamicImage) -> bool {
-        let bitmap = ocr::SymbolBitmap::from_lazy_array(&[
-            0, 0, 0, 0, 0, 0, 1, //
-            0, 0, 0, 0, 0, 1, 0, //
-            0, 0, 0, 0, 1, 0, 0, //
-            0, 0, 0, 1, 0, 0, 0, //
-            0, 0, 1, 0, 0, 0, 0, //
-            0, 1, 0, 0, 0, 0, 0, //
-            1, 0, 0, 0, 0, 0, 0, //
-        ]);
-
-        for pos in &self.slash_positions {
-            let img_symbol = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
-            let img_symbol = img_symbol.to_luma8();
-            let img_symbol = threshold(&img_symbol, 200);
-
-            let diff = ocr::match_symbol(&img_symbol, &bitmap).unwrap();
-            if diff != 0 {
-                return false;
-            }
-        }
-        true
-    }
-
     pub fn verify_layout(
         &self,
         img: &GrayImage,
@@ -294,51 +266,6 @@ impl StatScreen1Layout {
             }
         }
         true
-    }
-
-    /// Returns the content of the screen.
-    /// Multiple image types are accepted.
-    pub fn read_content(
-        &self,
-        img: &DynamicImage,
-        symbol_bitmaps: &(Vec<String>, Vec<ocr::SymbolBitmap>),
-    ) -> Result<StatsSreen1Content, String> {
-        if img.width() as i32 != self.width || img.height() as i32 != self.height {
-            return Err("Mismatch in image and layout dimensions.".to_string());
-        }
-
-        let pkmn_no = read_image_section(img, &self.pkmn_ndex_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-        let level = read_image_section(img, &self.level_field_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-        let hp = read_image_section(img, &self.hp_field_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-        let attack = read_image_section(img, &self.attack_field_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-        let defense = read_image_section(img, &self.defense_field_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-        let speed = read_image_section(img, &self.speed_field_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-        let special = read_image_section(img, &self.special_field_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-
-        let content = StatsSreen1Content {
-            pkmn_no,
-            level,
-            hp,
-            attack,
-            defense,
-            speed,
-            special,
-        };
-        Ok(content)
     }
 
     pub fn read_fields(
@@ -443,33 +370,6 @@ impl StatScreen2Layout {
         }
     }
 
-    pub fn verify_screen(&self, img: &DynamicImage) -> bool {
-        let bitmap = ocr::SymbolBitmap::from_lazy_array(&[
-            0, 0, 0, 0, 0, 0, 1, //
-            0, 0, 0, 0, 0, 1, 0, //
-            0, 0, 0, 0, 1, 0, 0, //
-            0, 0, 0, 1, 0, 0, 0, //
-            0, 0, 1, 0, 0, 0, 0, //
-            0, 1, 0, 0, 0, 0, 0, //
-            1, 0, 0, 0, 0, 0, 0, //
-        ]);
-
-        let pos = Position {
-            x: 128,
-            y: 81,
-            width: 7,
-            height: 7,
-        };
-
-        let img_symbol = img.clone().crop(pos.x, pos.y, pos.width, pos.height);
-        let img_symbol = img_symbol.to_luma8();
-        let img_symbol = threshold(&img_symbol, 200);
-
-        let diff = ocr::match_symbol(&img_symbol, &bitmap).unwrap();
-        let is_match = diff == 0;
-        is_match
-    }
-
     pub fn verify_layout(
         &self,
         img: &GrayImage,
@@ -496,23 +396,6 @@ impl StatScreen2Layout {
             return false; // Not the char we want
         }
         true
-    }
-
-    pub fn read_content(
-        &self,
-        img: &DynamicImage,
-        symbol_bitmaps: &(Vec<String>, Vec<ocr::SymbolBitmap>),
-    ) -> Result<StatsSreen2Content, String> {
-        if img.width() as i32 != self.width || img.height() as i32 != self.height {
-            return Err("Mismatch in image and layout dimensions.".to_string());
-        }
-
-        let pkmn_no = read_image_section(img, &self.pkmn_ndex_pos, symbol_bitmaps)?
-            .trim()
-            .to_string();
-
-        let content = StatsSreen2Content { pkmn_no };
-        Ok(content)
     }
 
     pub fn read_fields(
