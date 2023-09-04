@@ -78,23 +78,5 @@ fn read_screen(c: &mut Criterion) {
     group.finish();
 }
 
-fn utils(c: &mut Criterion) {
-    let mut group = c.benchmark_group("utils");
-
-    group.bench_function("scan-screen", |b| {
-        let img = ImageReader::open(SUMMARY_SCREEN_1_PATH)
-            .unwrap()
-            .decode()
-            .unwrap();
-        // Resize or no GB screen will be found
-        let img = img.resize_exact(
-            img.width() * 2,
-            img.height() * 2,
-            image::imageops::FilterType::Nearest,
-        );
-        b.iter(|| pkmn::utils::scan_img(img.clone()));
-    });
-}
-
-criterion_group!(benches, locate_screen, verify_layout, read_screen, utils);
+criterion_group!(benches, locate_screen, verify_layout, read_screen);
 criterion_main!(benches);
