@@ -1,5 +1,4 @@
 /// Benchmark for the lib.
-
 use criterion::*;
 
 use image::{io::Reader as ImageReader, GrayImage};
@@ -44,6 +43,7 @@ fn init_img_for_layout_tests(img_path: &str) -> GrayImage {
 
 fn verify_layout(c: &mut Criterion) {
     let mut group = c.benchmark_group("verify-layout");
+    group.significance_level(0.1).sample_size(1000);
 
     group.bench_function("summary-screen-1", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_1_PATH);
@@ -78,5 +78,23 @@ fn read_screen(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, locate_screen, verify_layout, read_screen);
+fn utils(c: &mut Criterion) {
+    let mut group = c.benchmark_group("utils");
+
+    group.bench_function("scan-screen", |b| {
+        let img = ImageReader::open(SUMMARY_SCREEN_1_PATH)
+            .unwrap()
+            .decode()
+            .unwrap();
+        // Resize or no GB screen will be found
+        let img = img.resize_exact(
+            img.width() * 2,
+            img.height() * 2,
+            image::imageops::FilterType::Nearest,
+        );
+        b.iter(|| pkmn::utils::scan_img(img.clone()));
+    });
+}
+
+criterion_group!(benches, locate_screen, verify_layout, read_screen, utils);
 criterion_main!(benches);
