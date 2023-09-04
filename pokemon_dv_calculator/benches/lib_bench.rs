@@ -78,46 +78,5 @@ fn read_screen(c: &mut Criterion) {
     group.finish();
 }
 
-fn ocr(c: &mut Criterion) {
-    let mut group = c.benchmark_group("ocr-approaches");
-    group.significance_level(0.1).sample_size(500);
-
-    group.bench_function("summary-screen-1-new", |b| {
-        let img = init_img_for_layout_tests(SUMMARY_SCREEN_1_PATH);
-        let chars = pkmn::char::init_chars();
-        let screen_layout = pkmn::gameboy::StatScreen1Layout::new();
-        b.iter(|| screen_layout.read_fields(&img, &chars));
-    });
-
-    group.bench_function("summary-screen-1-old", |b| {
-        let symbols = pkmn::ocr::create_symbol_bitmaps();
-        let screen_layout = pkmn::gameboy::StatScreen1Layout::new();
-        let img = ImageReader::open(SUMMARY_SCREEN_1_PATH)
-            .unwrap()
-            .decode()
-            .unwrap();
-        b.iter(|| screen_layout.read_content(&img, &symbols));
-    });
-
-    group.bench_function("summary-screen-2-new", |b| {
-        let img = init_img_for_layout_tests(SUMMARY_SCREEN_2_PATH);
-        let chars = pkmn::char::init_chars();
-        let screen_layout = pkmn::gameboy::StatScreen2Layout::new();
-        b.iter(|| screen_layout.read_fields(&img, &chars));
-    });
-
-    group.bench_function("summary-screen-2-old", |b| {
-        let img = ImageReader::open(SUMMARY_SCREEN_2_PATH)
-            .unwrap()
-            .decode()
-            .unwrap();
-        let symbols = pkmn::ocr::create_symbol_bitmaps();
-        let screen_layout = pkmn::gameboy::StatScreen2Layout::new();
-        b.iter(|| screen_layout.read_content(&img, &symbols));
-    });
-
-    group.finish();
-}
-
-criterion_group!(benches, locate_screen, verify_layout, read_screen, ocr);
+criterion_group!(benches, locate_screen, verify_layout, read_screen);
 criterion_main!(benches);
