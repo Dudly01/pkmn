@@ -115,7 +115,7 @@ def get_channel_count(color_space: str) -> int:
     }
 
     if color_space.lower() not in channel_counts:
-        raise RuntimeError(f"Color space {color_space} is unsupported.")
+        raise ValueError(f"Color space {color_space} is unsupported.")
 
     channel_count = channel_counts[color_space.lower()]
     return channel_count
