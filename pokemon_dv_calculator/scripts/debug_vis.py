@@ -25,8 +25,8 @@ import numpy as np
 matplotlib.use("agg")
 
 
-def rust_to_numpy_dtype(rust_type: str):
-    """Returns the numpy dtype alias from the Rust type.
+def get_rust_numpy_equiv(rust_type: str):
+    """Returns the numpy dtype equivalent of a primitive Rust type.
 
     Example:
         "u8" -> np.uint8
@@ -43,6 +43,10 @@ def rust_to_numpy_dtype(rust_type: str):
         "f32": np.float32,
         "f64": np.float64,
     }
+
+    if rust_type not in rust_to_numpy_type:
+        raise ValueError(f"The Rust type {rust_type} has no numpy dtype equivalent.")
+
     result = rust_to_numpy_type[rust_type]
     return result
 
@@ -141,7 +145,7 @@ def plot_roi(roi):
     image_buffer = image.GetChildAtIndex(0) if "DynamicImage" in image_type else image
 
     color_space, rust_type = get_image_color_info(image_type)
-    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    numpy_dtype = get_rust_numpy_equiv(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # The array elements in bytes
 
     width = image_buffer.GetChildMemberWithName("width").GetValueAsUnsigned()
@@ -183,7 +187,7 @@ def plot_img(image):
     image_buffer = image.GetChildAtIndex(0) if "DynamicImage" in image_type else image
 
     color_space, rust_type = get_image_color_info(image_type)
-    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    numpy_dtype = get_rust_numpy_equiv(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # The array elements in bytes
 
     width = image_buffer.GetChildMemberWithName("width").GetValueAsUnsigned()
@@ -214,7 +218,7 @@ def plot_vec(vec, width, height, color_space):
     image_addr = vec.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
 
     rust_type = get_vec_type(vec.type)
-    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    numpy_dtype = get_rust_numpy_equiv(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # Bytes
 
     channel_count = get_channel_count(color_space.lower())
