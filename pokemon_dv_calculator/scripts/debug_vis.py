@@ -47,8 +47,8 @@ def rust_to_numpy_dtype(rust_type: str):
     return result
 
 
-def get_color_info(type_description: str) -> tuple[str, str]:
-    """Returns the color space and elem type from the type description.
+def get_image_color_info(type_description: str) -> tuple[str, str]:
+    """Returns the color space and elem type from the Image type description.
 
     Example:
         [...]image::color::LumaA<u16>[...] -> (LumaA, u16),
@@ -80,19 +80,8 @@ def get_vec_type(type_description: str) -> str:
     """Returns the type of the Vec.
 
     Example:
-
-    Input:
-    ```
-    struct alloc::vec::Vec<u8, alloc::alloc::Global> {
-        buf: alloc::raw_vec::RawVec<u8, alloc::alloc::Global>,
-        len: usize
-    }
-    ```
-
-    Output:
-    ```
-    u8
-    ```
+        [...]alloc::vec::Vec<u8,[...] -> u8,
+        where [...] means text without the substring "alloc::vec::".
     """
     type_description = str(type_description)
 
@@ -130,7 +119,7 @@ def plot_roi(roi):
     image_type = str(image.type)
     image_buffer = image.GetChildAtIndex(0) if "DynamicImage" in image_type else image
 
-    color_space, rust_type = get_color_info(image_type)
+    color_space, rust_type = get_image_color_info(image_type)
     numpy_dtype = rust_to_numpy_dtype(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # The array elements in bytes
 
@@ -170,7 +159,7 @@ def plot_roi(roi):
 
 
 def plot_img(image):
-    """Plots an image.DynamicImage or image.ImageBuffer instance.
+    """Plots an image::DynamicImage or image::ImageBuffer instance.
 
     Only Luma, Rgb, Rgba color spaces are supported.
     """
@@ -182,7 +171,7 @@ def plot_img(image):
     else:
         image_buffer = image
 
-    color_space, rust_type = get_color_info(image_type)
+    color_space, rust_type = get_image_color_info(image_type)
     numpy_dtype = rust_to_numpy_dtype(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # The array elements in bytes
 
