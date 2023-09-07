@@ -211,12 +211,12 @@ def plot_img(image):
     print("item type: {}".format(rust_type))
 
 
-def plot_vec(image_vec, width, height, color_space):
+def plot_vec(vec, width, height, color_space):
     """Plots an an image from a Vec<_>."""
-    image_vec = debugger.unwrap(image_vec)
-    image_addr = image_vec.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
+    vec = debugger.unwrap(vec)
+    image_addr = vec.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
 
-    rust_type = get_vec_type(image_vec.type)
+    rust_type = get_vec_type(vec.type)
     numpy_dtype = rust_to_numpy_dtype(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # Bytes
 
