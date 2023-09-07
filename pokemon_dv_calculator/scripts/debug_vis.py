@@ -100,6 +100,27 @@ def get_vec_type(type_description: str) -> str:
     return elem_type
 
 
+def get_channel_count(color_space: str) -> int:
+    """Returns the number of channels for the given color space.
+
+    Only luma, rgb and rgba color spaces are supported, due to the pyplot dependency.
+    The "color_space" argument is converted to a string and lowercased.
+    """
+    color_space = str(color_space)
+
+    channel_counts = {
+        "luma": 1,
+        "rgb": 3,
+        "rgba": 4,
+    }
+
+    if color_space.lower() not in channel_counts:
+        raise RuntimeError(f"Color space {color_space} is unsupported.")
+
+    channel_count = channel_counts[color_space.lower()]
+    return channel_count
+
+
 def show():
     """Shows all open pyplot figures in a VSCode tab."""
     image_bytes = io.BytesIO()
@@ -128,17 +149,10 @@ def plot_roi(roi):
     data = image_buffer.GetChildMemberWithName("data")
     addr = data.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
 
-    if color_space.lower() == "luma":
-        shape = (height, width)
-        byte_count = height * width * elem_size
-    elif color_space.lower() == "rgb":
-        shape = (height, width, 3)
-        byte_count = height * width * 3 * elem_size
-    elif color_space.lower() == "rgba":
-        shape = (height, width, 4)
-        byte_count = height * width * 4 * elem_size
-    else:
-        raise RuntimeError(f"Color space {color_space} is unsupported.")
+    channel_count = get_channel_count(color_space.lower())
+
+    shape = (height, width, channel_count)
+    byte_count = height * width * channel_count * elem_size
 
     data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
@@ -180,17 +194,10 @@ def plot_img(image):
     data = image_buffer.GetChildMemberWithName("data")
     addr = data.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
 
-    if color_space.lower() == "luma":
-        shape = (height, width)
-        byte_count = height * width * elem_size
-    elif color_space.lower() == "rgb":
-        shape = (height, width, 3)
-        byte_count = height * width * 3 * elem_size
-    elif color_space.lower() == "rgba":
-        shape = (height, width, 4)
-        byte_count = height * width * 4 * elem_size
-    else:
-        raise RuntimeError(f"Color space {color_space} is unsupported.")
+    channel_count = get_channel_count(color_space.lower())
+
+    shape = (height, width, channel_count)
+    byte_count = height * width * channel_count * elem_size
 
     data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
@@ -213,17 +220,10 @@ def plot_vec(image_vec, width, height, color_space):
     numpy_dtype = rust_to_numpy_dtype(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # Bytes
 
-    if color_space.lower() == "luma":
-        shape = (height, width)
-        byte_count = height * width * elem_size
-    elif color_space.lower() == "rgb":
-        shape = (height, width, 3)
-        byte_count = height * width * 3 * elem_size
-    elif color_space.lower() == "rgba":
-        shape = (height, width, 4)
-        byte_count = height * width * 4 * elem_size
-    else:
-        raise RuntimeError(f"Color space {color_space} is unsupported.")
+    channel_count = get_channel_count(color_space.lower())
+
+    shape = (height, width, channel_count)
+    byte_count = height * width * channel_count * elem_size
 
     data = lldb.process.ReadMemory(image_addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
