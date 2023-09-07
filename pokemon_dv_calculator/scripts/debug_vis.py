@@ -120,6 +120,55 @@ def show():
     debugger.display_html(document, position=2)
 
 
+def plot_roi(roi):
+    """Plots a crate::roi::Roi instance."""
+    roi = debugger.unwrap(roi)
+
+    image = roi.GetChildMemberWithName("img")
+    position = roi.GetChildMemberWithName("pos")
+
+    image_type = str(image.type)
+    image_buffer = image.GetChildAtIndex(0) if "DynamicImage" in image_type else image
+
+    color_space, rust_type = get_color_info(image_type)
+    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    elem_size = np.dtype(numpy_dtype).itemsize  # The array elements in bytes
+
+    width = image_buffer.GetChildMemberWithName("width").GetValueAsUnsigned()
+    height = image_buffer.GetChildMemberWithName("height").GetValueAsUnsigned()
+    data = image_buffer.GetChildMemberWithName("data")
+    addr = data.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
+
+    if color_space.lower() == "luma":
+        shape = (height, width)
+        byte_count = height * width * elem_size
+    elif color_space.lower() == "rgb":
+        shape = (height, width, 3)
+        byte_count = height * width * 3 * elem_size
+    elif color_space.lower() == "rgba":
+        shape = (height, width, 4)
+        byte_count = height * width * 4 * elem_size
+    else:
+        raise RuntimeError(f"Color space {color_space} is unsupported.")
+
+    data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
+    data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
+
+    x_pos = position.GetChildMemberWithName("x").GetValueAsUnsigned()
+    y_pos = position.GetChildMemberWithName("y").GetValueAsUnsigned()
+    width_pos = position.GetChildMemberWithName("width").GetValueAsUnsigned()
+    height_pos = position.GetChildMemberWithName("height").GetValueAsUnsigned()
+
+    data_of_interest = data[y_pos : y_pos + height_pos, x_pos : x_pos + width_pos]
+
+    plt.imshow(data_of_interest, cmap="gist_gray", interpolation="nearest")
+    show()
+    print("width: {}".format(width_pos))
+    print("height: {}".format(height_pos))
+    print("color space: {}".format(color_space))
+    print("item type: {}".format(rust_type))
+
+
 def plot_img(image):
     """Plots an image.DynamicImage or image.ImageBuffer instance.
 
