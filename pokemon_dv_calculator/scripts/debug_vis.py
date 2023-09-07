@@ -25,8 +25,8 @@ import numpy as np
 matplotlib.use("agg")
 
 
-def rust_to_numpy_dtype(rust_type: str):
-    """Returns the numpy dtype alias from the Rust type.
+def get_rust_numpy_equiv(rust_type: str):
+    """Returns the numpy dtype equivalent of a primitive Rust type.
 
     Example:
         "u8" -> np.uint8
@@ -43,12 +43,16 @@ def rust_to_numpy_dtype(rust_type: str):
         "f32": np.float32,
         "f64": np.float64,
     }
+
+    if rust_type not in rust_to_numpy_type:
+        raise ValueError(f"The Rust type {rust_type} has no numpy dtype equivalent.")
+
     result = rust_to_numpy_type[rust_type]
     return result
 
 
-def get_color_info(type_description: str) -> tuple[str, str]:
-    """Returns the color space and elem type from the type description.
+def get_image_color_info(type_description: str) -> tuple[str, str]:
+    """Returns the color space and elem type from the Image type description.
 
     Example:
         [...]image::color::LumaA<u16>[...] -> (LumaA, u16),
@@ -80,19 +84,8 @@ def get_vec_type(type_description: str) -> str:
     """Returns the type of the Vec.
 
     Example:
-
-    Input:
-    ```
-    struct alloc::vec::Vec<u8, alloc::alloc::Global> {
-        buf: alloc::raw_vec::RawVec<u8, alloc::alloc::Global>,
-        len: usize
-    }
-    ```
-
-    Output:
-    ```
-    u8
-    ```
+        [...]alloc::vec::Vec<u8,[...] -> u8,
+        where [...] means text without the substring "alloc::vec::".
     """
     type_description = str(type_description)
 
@@ -109,6 +102,27 @@ def get_vec_type(type_description: str) -> str:
     elem_type = type_description[start:end]
 
     return elem_type
+
+
+def get_channel_count(color_space: str) -> int:
+    """Returns the number of channels for the given color space.
+
+    Only luma, rgb and rgba color spaces are supported, due to the pyplot dependency.
+    The "color_space" argument is converted to a string and lowercased.
+    """
+    color_space = str(color_space)
+
+    channel_counts = {
+        "luma": 1,
+        "rgb": 3,
+        "rgba": 4,
+    }
+
+    if color_space.lower() not in channel_counts:
+        raise ValueError(f"Color space {color_space} is unsupported.")
+
+    channel_count = channel_counts[color_space.lower()]
+    return channel_count
 
 
 def show():
@@ -130,8 +144,8 @@ def plot_roi(roi):
     image_type = str(image.type)
     image_buffer = image.GetChildAtIndex(0) if "DynamicImage" in image_type else image
 
-    color_space, rust_type = get_color_info(image_type)
-    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    color_space, rust_type = get_image_color_info(image_type)
+    numpy_dtype = get_rust_numpy_equiv(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # The array elements in bytes
 
     width = image_buffer.GetChildMemberWithName("width").GetValueAsUnsigned()
@@ -139,17 +153,10 @@ def plot_roi(roi):
     data = image_buffer.GetChildMemberWithName("data")
     addr = data.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
 
-    if color_space.lower() == "luma":
-        shape = (height, width)
-        byte_count = height * width * elem_size
-    elif color_space.lower() == "rgb":
-        shape = (height, width, 3)
-        byte_count = height * width * 3 * elem_size
-    elif color_space.lower() == "rgba":
-        shape = (height, width, 4)
-        byte_count = height * width * 4 * elem_size
-    else:
-        raise RuntimeError(f"Color space {color_space} is unsupported.")
+    channel_count = get_channel_count(color_space.lower())
+
+    shape = (height, width, channel_count)
+    byte_count = height * width * channel_count * elem_size
 
     data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
@@ -170,20 +177,17 @@ def plot_roi(roi):
 
 
 def plot_img(image):
-    """Plots an image.DynamicImage or image.ImageBuffer instance.
+    """Plots an image::DynamicImage or image::ImageBuffer instance.
 
     Only Luma, Rgb, Rgba color spaces are supported.
     """
     image = debugger.unwrap(image)
 
     image_type = str(image.type)
-    if "DynamicImage" in image_type:
-        image_buffer = image.GetChildAtIndex(0)
-    else:
-        image_buffer = image
+    image_buffer = image.GetChildAtIndex(0) if "DynamicImage" in image_type else image
 
-    color_space, rust_type = get_color_info(image_type)
-    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    color_space, rust_type = get_image_color_info(image_type)
+    numpy_dtype = get_rust_numpy_equiv(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # The array elements in bytes
 
     width = image_buffer.GetChildMemberWithName("width").GetValueAsUnsigned()
@@ -191,17 +195,10 @@ def plot_img(image):
     data = image_buffer.GetChildMemberWithName("data")
     addr = data.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
 
-    if color_space.lower() == "luma":
-        shape = (height, width)
-        byte_count = height * width * elem_size
-    elif color_space.lower() == "rgb":
-        shape = (height, width, 3)
-        byte_count = height * width * 3 * elem_size
-    elif color_space.lower() == "rgba":
-        shape = (height, width, 4)
-        byte_count = height * width * 4 * elem_size
-    else:
-        raise RuntimeError(f"Color space {color_space} is unsupported.")
+    channel_count = get_channel_count(color_space.lower())
+
+    shape = (height, width, channel_count)
+    byte_count = height * width * channel_count * elem_size
 
     data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
@@ -215,26 +212,19 @@ def plot_img(image):
     print("item type: {}".format(rust_type))
 
 
-def plot_vec(image_vec, width, height, color_space):
+def plot_vec(vec, width, height, color_space):
     """Plots an an image from a Vec<_>."""
-    image_vec = debugger.unwrap(image_vec)
-    image_addr = image_vec.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
+    vec = debugger.unwrap(vec)
+    image_addr = vec.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
 
-    rust_type = get_vec_type(image_vec.type)
-    numpy_dtype = rust_to_numpy_dtype(rust_type)
+    rust_type = get_vec_type(vec.type)
+    numpy_dtype = get_rust_numpy_equiv(rust_type)
     elem_size = np.dtype(numpy_dtype).itemsize  # Bytes
 
-    if color_space.lower() == "luma":
-        shape = (height, width)
-        byte_count = height * width * elem_size
-    elif color_space.lower() == "rgb":
-        shape = (height, width, 3)
-        byte_count = height * width * 3 * elem_size
-    elif color_space.lower() == "rgba":
-        shape = (height, width, 4)
-        byte_count = height * width * 4 * elem_size
-    else:
-        raise RuntimeError(f"Color space {color_space} is unsupported.")
+    channel_count = get_channel_count(color_space.lower())
+
+    shape = (height, width, channel_count)
+    byte_count = height * width * channel_count * elem_size
 
     data = lldb.process.ReadMemory(image_addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
@@ -245,59 +235,6 @@ def plot_vec(image_vec, width, height, color_space):
     print("height: {}".format(height))
     print("color space: {}".format(color_space))
     print("item type: {}".format(rust_type))
-
-
-def plot_rgb8_dyn_img(image_dynamic):
-    """Plots a image.DynamicImage instance."""
-    image_dynamic = debugger.unwrap(image_dynamic)
-    image_buffer = image_dynamic.GetChildAtIndex(0)
-
-    width = image_buffer.GetChildMemberWithName("width").GetValueAsUnsigned()
-    height = image_buffer.GetChildMemberWithName("height").GetValueAsUnsigned()
-    data = image_buffer.GetChildMemberWithName("data")
-    addr = data.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
-
-    data = lldb.process.ReadMemory(addr, int(height * width) * 3, lldb.SBError())
-    data = np.frombuffer(data, dtype=np.uint8).reshape((height, width, 3))
-    plt.imshow(data, interpolation="nearest")
-    show()
-
-
-def plot_rgb8_img_buff(image_buffer):
-    """Plots an image.ImageBuffer instance."""
-    image_buffer = debugger.unwrap(image_buffer)
-
-    width = image_buffer.GetChildMemberWithName("width").GetValueAsUnsigned()
-    height = image_buffer.GetChildMemberWithName("height").GetValueAsUnsigned()
-    data = image_buffer.GetChildMemberWithName("data")
-    addr = data.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
-
-    data = lldb.process.ReadMemory(addr, int(height * width) * 3, lldb.SBError())
-    data = np.frombuffer(data, dtype=np.uint8).reshape((height, width, 3))
-    plt.imshow(data, interpolation="nearest")
-    show()
-
-
-def plot_rgb8_vec(image_vec, xdim, ydim):
-    """Plots an RGB8 image from a vector and dimensions."""
-    image_vec = debugger.unwrap(image_vec)
-    image_addr = image_vec.GetChildAtIndex(0).AddressOf().GetValueAsUnsigned()
-
-    data = lldb.process.ReadMemory(image_addr, int(xdim * ydim) * 3, lldb.SBError())
-    data = np.frombuffer(data, dtype=np.uint8).reshape((ydim, xdim, 3))
-    plt.imshow(data, interpolation="nearest")
-    show()
-
-
-def plot_rgb8_ptr(image_ptr, xdim, ydim):
-    """Plots an RGB8 image from a pointer and dimensions."""
-    image_ptr = debugger.unwrap(image_ptr)
-    image_addr = image_ptr.GetValueAsUnsigned()
-
-    data = lldb.process.ReadMemory(image_addr, int(xdim * ydim) * 3, lldb.SBError())
-    data = np.frombuffer(data, dtype=np.uint8).reshape((ydim, xdim, 3))
-    plt.imshow(data, interpolation="nearest")
-    show()
 
 
 def info(value):
