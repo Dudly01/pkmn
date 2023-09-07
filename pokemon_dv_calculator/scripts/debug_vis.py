@@ -180,10 +180,7 @@ def plot_img(image):
     image = debugger.unwrap(image)
 
     image_type = str(image.type)
-    if "DynamicImage" in image_type:
-        image_buffer = image.GetChildAtIndex(0)
-    else:
-        image_buffer = image
+    image_buffer = image.GetChildAtIndex(0) if "DynamicImage" in image_type else image
 
     color_space, rust_type = get_image_color_info(image_type)
     numpy_dtype = rust_to_numpy_dtype(rust_type)
