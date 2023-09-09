@@ -167,7 +167,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let ndex: usize = content.pkmn_no.parse().unwrap();
 
-        let pkmn_name = &pokedex[ndex - 1].pokemon;
+        let pkmn_name = &pokedex[ndex - 1].name;
         let evo_chains: Vec<_> = pkmn_evo_chains
             .iter()
             .filter(|x| x.contains(pkmn_name))
@@ -187,7 +187,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let evo_chain_learnsets = pkmn_names
             .iter()
-            .map(|name| pokedex.iter().find(|r| r.pokemon == *name).unwrap())
+            .map(|name| pokedex.iter().find(|r| r.name == *name).unwrap())
             .map(|r| r.ndex)
             .map(|ndex| &pkmn_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();

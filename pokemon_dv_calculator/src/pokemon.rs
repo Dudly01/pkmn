@@ -8,7 +8,7 @@ pub struct Pokemon {
     #[serde(rename = "dex_number")]
     pub ndex: i32,
     #[serde(rename = "name")]
-    pub pokemon: String,
+    pub name: String,
     pub type1: String,
     pub type2: String,
     pub hp: i32,

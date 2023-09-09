@@ -262,7 +262,7 @@ pub fn summarize_pkmn_stats(
 
     text_result.push_str(&format!(
         "{: <} No.{: >03} :L{: <3}\n",
-        record.pokemon, record.ndex, level
+        record.name, record.ndex, level
     ));
 
     text_result.push_str(&format!("\n"));
