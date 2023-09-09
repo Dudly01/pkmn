@@ -91,7 +91,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
     let chars = pkmn::char::init_chars();
     let pokedex = pkmn::pokemon::Pokedex::new();
-    let pkmn_learnsets = pkmn::learnset::load_learnsets();
+    let pkmn_learnsets = pkmn::learnset::Learnsets::new();
     let pkmn_evo_chains = pkmn::evos::load_evos();
     let pkmn_moves = pkmn::moves::Moves::new();
 
