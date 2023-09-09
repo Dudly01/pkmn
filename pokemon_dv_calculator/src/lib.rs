@@ -4,6 +4,7 @@ pub mod gameboy;
 pub mod learnset;
 pub mod moves;
 pub mod ocr;
+pub mod pokemon;
 pub mod position;
 pub mod roi;
 pub mod stats;
