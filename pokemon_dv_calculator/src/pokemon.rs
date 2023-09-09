@@ -1,5 +1,7 @@
 //! Module containing the data of the Pokémon.
 
+use std::ops::Deref;
+
 /// Pokémon
 #[derive(Debug, serde::Deserialize)]
 pub struct Pokemon {
@@ -20,19 +22,34 @@ pub struct Pokemon {
     pub special: i32,
 }
 
-/// Loads the Pokemon from the CSV file.
-pub fn load_pokemon() -> Vec<Pokemon> {
-    let mut records: Vec<Pokemon> = Vec::with_capacity(151);
+pub struct Pokedex {
+    pokemon: Vec<Pokemon>,
+}
 
-    const CSV_DATA: &str = include_str!("../data/smogon_rb_pokemon.csv");
-    let mut csv_reader = csv::ReaderBuilder::new()
-        .has_headers(true)
-        .from_reader(CSV_DATA.as_bytes());
+impl Pokedex {
+    pub fn new() -> Pokedex {
+        let mut pokedex: Vec<Pokemon> = Vec::with_capacity(151);
 
-    for result in csv_reader.deserialize() {
-        let record: Pokemon = result.unwrap();
-        records.push(record);
+        const CSV_DATA: &str = include_str!("../data/smogon_rb_pokemon.csv");
+        let mut csv_reader = csv::ReaderBuilder::new()
+            .has_headers(true)
+            .from_reader(CSV_DATA.as_bytes());
+
+        for result in csv_reader.deserialize() {
+            let record: Pokemon = result.unwrap();
+            pokedex.push(record);
+        }
+
+        Pokedex { pokemon: pokedex }
     }
+}
 
-    records
+/// To have every method the inner tyoe has.
+/// https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types
+impl Deref for Pokedex {
+    type Target = Vec<Pokemon>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.pokemon
+    }
 }

@@ -90,7 +90,7 @@ pub fn get_pretty_learnset_table(entry: &Learnset, moves: &Moves) -> Result<Stri
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
     let chars = pkmn::char::init_chars();
-    let pkmn_base_stats = pkmn::pokemon::load_pokemon();
+    let pokedex = pkmn::pokemon::Pokedex::new();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let pkmn_evo_chains = pkmn::evos::load_evos();
     let pkmn_moves = pkmn::moves::Moves::new();
@@ -138,7 +138,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         let ndex: usize = content.pkmn_no.parse().unwrap();
         let level: i32 = content.level.parse().unwrap();
         let stats = pkmn::stats::Stats::from_screen_content(&content);
-        let record = &pkmn_base_stats[ndex - 1]; // -1 as Dex number starts with 1
+        let record = &pokedex[ndex - 1]; // -1 as Dex number starts with 1
         let base_stats = pkmn::stats::BaseStats::from_record(&record);
 
         let exp = pkmn::stats::Experience::with_no_experience();
@@ -167,7 +167,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let ndex: usize = content.pkmn_no.parse().unwrap();
 
-        let pkmn_name = &pkmn_base_stats[ndex - 1].pokemon;
+        let pkmn_name = &pokedex[ndex - 1].pokemon;
         let evo_chains: Vec<_> = pkmn_evo_chains
             .iter()
             .filter(|x| x.contains(pkmn_name))
@@ -187,7 +187,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let evo_chain_learnsets = pkmn_names
             .iter()
-            .map(|name| pkmn_base_stats.iter().find(|r| r.pokemon == *name).unwrap())
+            .map(|name| pokedex.iter().find(|r| r.pokemon == *name).unwrap())
             .map(|r| r.ndex)
             .map(|ndex| &pkmn_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();
