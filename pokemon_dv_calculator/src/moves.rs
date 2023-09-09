@@ -1,8 +1,9 @@
 use std::collections::HashMap;
 
-/// CSV record containing info from Smogon moves.
+/// A move is the skill Pokémon primarily use in battle.
+/// Also known as an attack or technique.
 #[derive(Debug, serde::Deserialize)]
-pub struct Record {
+pub struct Move {
     pub name: String,
     #[serde(rename = "type")]
     pub type_: String,
@@ -14,7 +15,7 @@ pub struct Record {
 }
 
 /// Loads the base stats from the CSV file.
-pub fn load_moves() -> HashMap<String, Record> {
+pub fn load_moves() -> HashMap<String, Move> {
     let mut moves = HashMap::new();
 
     const CSV_DATA: &str = include_str!("../data/smogon_rb_moves.csv");
@@ -23,7 +24,7 @@ pub fn load_moves() -> HashMap<String, Record> {
         .from_reader(CSV_DATA.as_bytes());
 
     for result in csv_reader.deserialize() {
-        let record: Record = result.unwrap();
+        let record: Move = result.unwrap();
         moves.insert(record.name.clone(), record);
     }
 
