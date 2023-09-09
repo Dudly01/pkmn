@@ -1,14 +1,9 @@
-use std::collections::HashMap;
-
-use crate::char::CharBitmap;
+use crate::char::{CharBitmap, Charset};
 use crate::position::Position;
 use crate::roi::Roi;
 
 /// Reads a character from the 7x7 large Roi.
-pub fn read_character(
-    roi: &Roi,
-    chars: &HashMap<CharBitmap, &'static str>,
-) -> Result<&'static str, String> {
+pub fn read_character(roi: &Roi, chars: &Charset) -> Result<&'static str, String> {
     let pos = roi.pos();
     if pos.width != 7 || pos.height != 7 {
         return Err("Invalid Roi dimensions.".to_string());
@@ -25,7 +20,7 @@ pub fn read_character(
 }
 
 /// Reads the characters from the field.
-pub fn read_field(roi: &Roi, chars: &HashMap<CharBitmap, &'static str>) -> Result<String, String> {
+pub fn read_field(roi: &Roi, chars: &Charset) -> Result<String, String> {
     let pos = roi.pos();
     if pos.height != 7 || (pos.width + 1) % 8 != 0 {
         return Err("Input dimensions are incorrect.".to_string());

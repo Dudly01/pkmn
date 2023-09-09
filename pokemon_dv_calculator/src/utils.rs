@@ -89,7 +89,7 @@ pub fn get_pretty_learnset_table(entry: &Learnset, moves: &Moves) -> Result<Stri
 /// The summary screen 2 us for printing the learnset and evolution chain.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
-    let chars = pkmn::char::init_chars();
+    let chars = pkmn::char::Charset::new();
     let pokedex = pkmn::pokemon::Pokedex::new();
     let pkmn_learnsets = pkmn::learnset::Learnsets::new();
     let pkmn_evo_chains = pkmn::evos::load_evos();
