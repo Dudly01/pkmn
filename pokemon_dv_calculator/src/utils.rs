@@ -1,16 +1,13 @@
 use crate as pkmn;
+use crate::moves::Moves;
 use image::imageops::invert;
 use image::DynamicImage;
 use imageproc::contrast::threshold_mut;
 use pkmn::learnset::Learnset;
-use std::collections::HashMap;
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset is the same among game versions.
-fn pretty_learnset_table(
-    learnset: &Learnset,
-    moves: &HashMap<String, pkmn::moves::Record>,
-) -> Result<String, String> {
+fn pretty_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
     for row in &learnset.by_leveling_up {
         if row.len() != 6 {
             return Err("Found row with not exactly 6 elements".to_owned());
@@ -44,10 +41,7 @@ fn pretty_learnset_table(
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset differs among game versions.
-fn pretty_diff_learnset_table(
-    learnset: &Learnset,
-    moves: &HashMap<String, pkmn::moves::Record>,
-) -> Result<String, String> {
+fn pretty_diff_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
     for row in &learnset.by_leveling_up {
         if row.len() != 7 {
             return Err("Found row with not exactly 7 elements".to_owned());
@@ -80,10 +74,7 @@ fn pretty_diff_learnset_table(
 }
 
 /// Returns the string with the formatted "By leveling up" learnset.
-pub fn get_pretty_learnset_table(
-    entry: &Learnset,
-    moves: &HashMap<String, pkmn::moves::Record>,
-) -> Result<String, String> {
+pub fn get_pretty_learnset_table(entry: &Learnset, moves: &Moves) -> Result<String, String> {
     let same_learnset = entry.by_leveling_up[0].len() == 6;
     let result = match same_learnset {
         true => pretty_learnset_table(entry, moves),
@@ -102,7 +93,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let pkmn_base_stats = pkmn::stats::load_base_stats();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let pkmn_evo_chains = pkmn::evos::load_evos();
-    let pkmn_moves = pkmn::moves::load_moves();
+    let pkmn_moves = pkmn::moves::Moves::new();
 
     let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
     let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
