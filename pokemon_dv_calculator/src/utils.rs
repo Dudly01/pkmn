@@ -1,16 +1,13 @@
 use crate as pkmn;
+use crate::moves::Moves;
 use image::imageops::invert;
 use image::DynamicImage;
 use imageproc::contrast::threshold_mut;
 use pkmn::learnset::Learnset;
-use std::collections::HashMap;
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset is the same among game versions.
-fn pretty_learnset_table(
-    learnset: &Learnset,
-    moves: &HashMap<String, pkmn::moves::Record>,
-) -> Result<String, String> {
+fn pretty_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
     for row in &learnset.by_leveling_up {
         if row.len() != 6 {
             return Err("Found row with not exactly 6 elements".to_owned());
@@ -44,10 +41,7 @@ fn pretty_learnset_table(
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset differs among game versions.
-fn pretty_diff_learnset_table(
-    learnset: &Learnset,
-    moves: &HashMap<String, pkmn::moves::Record>,
-) -> Result<String, String> {
+fn pretty_diff_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
     for row in &learnset.by_leveling_up {
         if row.len() != 7 {
             return Err("Found row with not exactly 7 elements".to_owned());
@@ -80,10 +74,7 @@ fn pretty_diff_learnset_table(
 }
 
 /// Returns the string with the formatted "By leveling up" learnset.
-pub fn get_pretty_learnset_table(
-    entry: &Learnset,
-    moves: &HashMap<String, pkmn::moves::Record>,
-) -> Result<String, String> {
+pub fn get_pretty_learnset_table(entry: &Learnset, moves: &Moves) -> Result<String, String> {
     let same_learnset = entry.by_leveling_up[0].len() == 6;
     let result = match same_learnset {
         true => pretty_learnset_table(entry, moves),
@@ -98,11 +89,11 @@ pub fn get_pretty_learnset_table(
 /// The summary screen 2 us for printing the learnset and evolution chain.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
-    let chars = pkmn::char::init_chars();
-    let pkmn_base_stats = pkmn::stats::load_base_stats();
-    let pkmn_learnsets = pkmn::learnset::load_learnsets();
+    let chars = pkmn::char::Charset::new();
+    let pokedex = pkmn::pokemon::Pokedex::new();
+    let pkmn_learnsets = pkmn::learnset::Learnsets::new();
     let pkmn_evo_chains = pkmn::evos::load_evos();
-    let pkmn_moves = pkmn::moves::load_moves();
+    let pkmn_moves = pkmn::moves::Moves::new();
 
     let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
     let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
@@ -147,7 +138,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         let ndex: usize = content.pkmn_no.parse().unwrap();
         let level: i32 = content.level.parse().unwrap();
         let stats = pkmn::stats::Stats::from_screen_content(&content);
-        let record = &pkmn_base_stats[ndex - 1]; // -1 as Dex number starts with 1
+        let record = &pokedex[ndex - 1]; // -1 as Dex number starts with 1
         let base_stats = pkmn::stats::BaseStats::from_record(&record);
 
         let exp = pkmn::stats::Experience::with_no_experience();
@@ -176,7 +167,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let ndex: usize = content.pkmn_no.parse().unwrap();
 
-        let pkmn_name = &pkmn_base_stats[ndex - 1].pokemon;
+        let pkmn_name = &pokedex[ndex - 1].name;
         let evo_chains: Vec<_> = pkmn_evo_chains
             .iter()
             .filter(|x| x.contains(pkmn_name))
@@ -196,7 +187,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let evo_chain_learnsets = pkmn_names
             .iter()
-            .map(|name| pkmn_base_stats.iter().find(|r| r.pokemon == *name).unwrap())
+            .map(|name| pokedex.iter().find(|r| r.name == *name).unwrap())
             .map(|r| r.ndex)
             .map(|ndex| &pkmn_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();

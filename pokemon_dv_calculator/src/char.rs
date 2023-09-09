@@ -9,6 +9,7 @@
 
 use crate::roi::Roi;
 use std::collections::HashMap;
+use std::ops::Deref;
 
 /// Stores the 7x7 binary image of a character as a u64 value.
 ///
@@ -61,165 +62,179 @@ impl CharBitmap {
     }
 }
 
-/// Initializes the map connecting the bitmaps to the chars.
-pub fn init_chars() -> HashMap<CharBitmap, &'static str> {
-    let mut chars = HashMap::<CharBitmap, &str>::new();
+/// A map from the CharBitmaps to the characters.
+pub struct Charset {
+    chars: HashMap<CharBitmap, &'static str>,
+}
 
-    let char = "0";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 1, 1, 1, 0, 0, //
-        0, 1, 0, 0, 1, 1, 0, //
-        1, 1, 0, 0, 0, 1, 1, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 1, 1, 0, 0, 1, 0, //
-        0, 0, 1, 1, 1, 0, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+impl Charset {
+    pub fn new() -> Charset {
+        let mut chars = HashMap::<CharBitmap, &str>::new();
 
-    let char = "1";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 1, 1, 0, 0, //
-        0, 0, 1, 1, 1, 0, 0, //
-        0, 0, 0, 1, 1, 0, 0, //
-        0, 0, 0, 1, 1, 0, 0, //
-        0, 0, 0, 1, 1, 0, 0, //
-        0, 1, 1, 1, 1, 1, 1, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "0";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 1, 1, 1, 0, 0, //
+            0, 1, 0, 0, 1, 1, 0, //
+            1, 1, 0, 0, 0, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 0, 0, 1, 0, //
+            0, 0, 1, 1, 1, 0, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "2";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 1, 1, 1, 1, 1, 0, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 0, 0, 0, 1, 1, 1, //
-        0, 1, 1, 1, 1, 0, 0, //
-        1, 1, 1, 0, 0, 0, 0, //
-        1, 1, 1, 1, 1, 1, 1, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "1";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 1, 1, 0, 0, //
+            0, 0, 1, 1, 1, 0, 0, //
+            0, 0, 0, 1, 1, 0, 0, //
+            0, 0, 0, 1, 1, 0, 0, //
+            0, 0, 0, 1, 1, 0, 0, //
+            0, 1, 1, 1, 1, 1, 1, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "3";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 1, 1, 1, 1, 1, 1, //
-        0, 0, 0, 0, 1, 1, 0, //
-        0, 0, 1, 1, 1, 0, 0, //
-        0, 0, 0, 0, 0, 1, 1, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 1, 1, 1, 1, 1, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "2";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 0, 0, 0, 1, 1, 1, //
+            0, 1, 1, 1, 1, 0, 0, //
+            1, 1, 1, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 1, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "4";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 1, 1, 1, 0, //
-        0, 0, 1, 1, 1, 1, 0, //
-        0, 1, 1, 0, 1, 1, 0, //
-        1, 1, 0, 0, 1, 1, 0, //
-        1, 1, 1, 1, 1, 1, 1, //
-        0, 0, 0, 0, 1, 1, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "3";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 1, 1, 1, 1, 1, 1, //
+            0, 0, 0, 0, 1, 1, 0, //
+            0, 0, 1, 1, 1, 0, 0, //
+            0, 0, 0, 0, 0, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "5";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        1, 1, 1, 1, 1, 1, 0, //
-        1, 1, 0, 0, 0, 0, 0, //
-        1, 1, 1, 1, 1, 1, 0, //
-        0, 0, 0, 0, 0, 1, 1, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 1, 1, 1, 1, 1, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "4";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 1, 1, 1, 0, //
+            0, 0, 1, 1, 1, 1, 0, //
+            0, 1, 1, 0, 1, 1, 0, //
+            1, 1, 0, 0, 1, 1, 0, //
+            1, 1, 1, 1, 1, 1, 1, //
+            0, 0, 0, 0, 1, 1, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "6";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 1, 1, 1, 1, 1, 0, //
-        1, 1, 0, 0, 0, 0, 0, //
-        1, 1, 1, 1, 1, 1, 0, //
-        1, 1, 0, 0, 0, 1, 1, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 1, 1, 1, 1, 1, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "5";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 0, //
+            0, 0, 0, 0, 0, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "7";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        1, 1, 1, 1, 1, 1, 1, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 0, 0, 0, 1, 1, 0, //
-        0, 0, 0, 1, 1, 0, 0, //
-        0, 0, 1, 1, 0, 0, 0, //
-        0, 0, 1, 1, 0, 0, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "6";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "8";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 1, 1, 1, 1, 1, 0, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 1, 1, 1, 1, 1, 0, //
-        1, 1, 0, 0, 0, 1, 1, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 1, 1, 1, 1, 1, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "7";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 0, 0, 0, 1, 1, 0, //
+            0, 0, 0, 1, 1, 0, 0, //
+            0, 0, 1, 1, 0, 0, 0, //
+            0, 0, 1, 1, 0, 0, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "9";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 1, 1, 1, 1, 1, 0, //
-        1, 1, 0, 0, 0, 1, 1, //
-        1, 1, 0, 0, 0, 1, 1, //
-        0, 1, 1, 1, 1, 1, 1, //
-        0, 0, 0, 0, 0, 1, 1, //
-        0, 1, 1, 1, 1, 1, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "8";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = " ";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 0, 0, 0, 0, //
-        0, 0, 0, 0, 0, 0, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = "9";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 1, //
+            0, 0, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    let char = "/";
-    let code = CharBitmap::from_pixels(&[
-        0, 0, 0, 0, 0, 0, 1, //
-        0, 0, 0, 0, 0, 1, 0, //
-        0, 0, 0, 0, 1, 0, 0, //
-        0, 0, 0, 1, 0, 0, 0, //
-        0, 0, 1, 0, 0, 0, 0, //
-        0, 1, 0, 0, 0, 0, 0, //
-        1, 0, 0, 0, 0, 0, 0, //
-    ])
-    .unwrap();
-    chars.insert(code, char);
+        let char = " ";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 0, 0, 0, 0, 0, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
 
-    chars
+        let char = "/";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 1, //
+            0, 0, 0, 0, 0, 1, 0, //
+            0, 0, 0, 0, 1, 0, 0, //
+            0, 0, 0, 1, 0, 0, 0, //
+            0, 0, 1, 0, 0, 0, 0, //
+            0, 1, 0, 0, 0, 0, 0, //
+            1, 0, 0, 0, 0, 0, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
+
+        Charset { chars: chars }
+    }
+}
+
+impl Deref for Charset {
+    type Target = HashMap<CharBitmap, &'static str>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.chars
+    }
 }

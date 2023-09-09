@@ -1,4 +1,4 @@
-use crate::char::CharBitmap;
+use crate::char::Charset;
 use crate::ocr::{read_character, read_field};
 use crate::position::Position;
 use crate::roi::Roi;
@@ -6,7 +6,6 @@ use image::{DynamicImage, GrayImage, ImageBuffer, Luma};
 use imageproc::contours::Contour;
 use imageproc::contrast::threshold;
 use std::cmp::{max, min};
-use std::collections::HashMap;
 
 /// Returns the inclusive bounding box of a contour.
 fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
@@ -242,11 +241,7 @@ impl StatScreen1Layout {
         }
     }
 
-    pub fn verify_layout(
-        &self,
-        img: &GrayImage,
-        chars: &HashMap<CharBitmap, &'static str>,
-    ) -> bool {
+    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
         }
@@ -271,7 +266,7 @@ impl StatScreen1Layout {
     pub fn read_fields(
         &self,
         img: &GrayImage,
-        chars: &HashMap<CharBitmap, &'static str>,
+        chars: &Charset,
     ) -> Result<StatsSreen1Content, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return Err("Mismatch in image and layout dimensions.".to_string());
@@ -370,11 +365,7 @@ impl StatScreen2Layout {
         }
     }
 
-    pub fn verify_layout(
-        &self,
-        img: &GrayImage,
-        chars: &HashMap<CharBitmap, &'static str>,
-    ) -> bool {
+    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
         }
@@ -401,7 +392,7 @@ impl StatScreen2Layout {
     pub fn read_fields(
         &self,
         img: &GrayImage,
-        chars: &HashMap<CharBitmap, &'static str>,
+        chars: &Charset,
     ) -> Result<StatsSreen2Content, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return Err("Mismatch in image and layout dimensions.".to_string());
