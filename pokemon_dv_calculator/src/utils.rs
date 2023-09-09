@@ -90,7 +90,7 @@ pub fn get_pretty_learnset_table(entry: &Learnset, moves: &Moves) -> Result<Stri
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
     let chars = pkmn::char::init_chars();
-    let pkmn_base_stats = pkmn::stats::load_base_stats();
+    let pkmn_base_stats = pkmn::stats::load_pokemon();
     let pkmn_learnsets = pkmn::learnset::load_learnsets();
     let pkmn_evo_chains = pkmn::evos::load_evos();
     let pkmn_moves = pkmn::moves::Moves::new();

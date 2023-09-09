@@ -1,8 +1,8 @@
 use crate::gameboy::StatsSreen1Content;
 
-/// Base stats csv records, containing the information about Pokemons.
+/// Pokémon
 #[derive(Debug, serde::Deserialize)]
-pub struct Record {
+pub struct Pokemon {
     #[serde(rename = "dex_number")]
     pub ndex: i32,
     #[serde(rename = "name")]
@@ -20,9 +20,9 @@ pub struct Record {
     pub special: i32,
 }
 
-/// Loads the base stats from the CSV file.
-pub fn load_base_stats() -> Vec<Record> {
-    let mut records: Vec<Record> = Vec::with_capacity(151);
+/// Loads the Pokemon from the CSV file.
+pub fn load_pokemon() -> Vec<Pokemon> {
+    let mut records: Vec<Pokemon> = Vec::with_capacity(151);
 
     const CSV_DATA: &str = include_str!("../data/smogon_rb_pokemon.csv");
     let mut csv_reader = csv::ReaderBuilder::new()
@@ -30,7 +30,7 @@ pub fn load_base_stats() -> Vec<Record> {
         .from_reader(CSV_DATA.as_bytes());
 
     for result in csv_reader.deserialize() {
-        let record: Record = result.unwrap();
+        let record: Pokemon = result.unwrap();
         records.push(record);
     }
 
@@ -74,7 +74,7 @@ pub struct BaseStats {
 }
 
 impl BaseStats {
-    pub fn from_record(record: &Record) -> BaseStats {
+    pub fn from_record(record: &Pokemon) -> BaseStats {
         BaseStats {
             hp: record.hp,
             attack: record.attack,
@@ -262,7 +262,7 @@ pub fn find_dv_range(stat_val: &i32, dv_stat_pairs: &[i32; 16]) -> Option<(usize
 /// The result is formatted with line breaks ('\n') and spaces (' ').
 /// It terminal printable.
 pub fn summarize_pkmn_stats(
-    record: &Record,
+    record: &Pokemon,
     base_stats: &BaseStats,
     level: i32,
     stats: &Stats,
@@ -317,11 +317,7 @@ pub fn summarize_pkmn_stats(
     ));
     text_result.push_str(&format!(
         "{: >3}  {: >3}  {: >3}  {: >3}  {: >3}  \n",
-        base_stats.hp,
-        base_stats.attack,
-        base_stats.defense,
-        base_stats.speed,
-        base_stats.special,
+        base_stats.hp, base_stats.attack, base_stats.defense, base_stats.speed, base_stats.special,
     ));
 
     text_result.push_str(&format!("\n"));
