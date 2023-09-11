@@ -183,8 +183,6 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             }
         }
 
-        let learnset = &pkmn_learnsets[ndex - 1];
-
         let evo_chain_learnsets = pkmn_names
             .iter()
             .map(|name| pokedex.iter().find(|r| r.name == *name).unwrap())
@@ -194,13 +192,12 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let mut text_result = String::with_capacity(256);
 
-        text_result.push_str(&format!("{} learnset:\n", learnset.pokemon));
-        text_result.push_str(&format!(
-            "{}\n",
-            get_pretty_learnset_table(learnset, &pkmn_moves).unwrap()
-        ));
+        text_result.push_str(&format!("{}\n", content.attack_1));
+        text_result.push_str(&format!("{}\n", content.attack_2));
+        text_result.push_str(&format!("{}\n", content.attack_3));
+        text_result.push_str(&format!("{}\n", content.attack_4));
 
-        text_result.push_str(&"Evo chain(s):\n");
+        text_result.push_str(&"\nEvo chain(s):\n");
         println!("Evo chains:\n");
         for chain in evo_chains {
             text_result.push_str(&format!("{}\n", chain.replace(">", "   >   ")));
