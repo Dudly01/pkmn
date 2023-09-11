@@ -130,13 +130,12 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     if is_summary_screen_1 {
-        let content = stats_screen_1_layout.read_fields(&img_gameboy, &chars);
-        let Ok(content) = content else {
-                return Err("Could not read summary screen 1 content!".to_string());
-            };
+        let content = stats_screen_1_layout
+            .read_fields(&img_gameboy, &chars)
+            .expect("Failed to read Summary 1");
 
-        let ndex: usize = content.pkmn_no.parse().unwrap();
-        let level: i32 = content.level.parse().unwrap();
+        let ndex: usize = content.pkmn_no as usize;
+        let level: i32 = content.level;
         let stats = pkmn::stats::Stats::from_screen_content(&content);
         let record = &pokedex[ndex - 1]; // -1 as Dex number starts with 1
         let base_stats = pkmn::stats::BaseStats::from_record(&record);

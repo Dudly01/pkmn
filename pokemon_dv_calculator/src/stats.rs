@@ -12,18 +12,12 @@ pub struct Stats {
 
 impl Stats {
     pub fn from_screen_content(content: &StatsSreen1Content) -> Stats {
-        let hp: i32 = content.hp.parse().unwrap();
-        let attack: i32 = content.attack.parse().unwrap();
-        let defense: i32 = content.defense.parse().unwrap();
-        let speed: i32 = content.speed.parse().unwrap();
-        let special: i32 = content.special.parse().unwrap();
-
         Stats {
-            hp,
-            attack,
-            defense,
-            speed,
-            special,
+            hp: content.hp,
+            attack: content.attack,
+            defense: content.defense,
+            speed: content.speed,
+            special: content.special,
         }
     }
 }
