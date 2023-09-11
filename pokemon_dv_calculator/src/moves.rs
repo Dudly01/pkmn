@@ -27,7 +27,7 @@ pub struct Move {
 /// E.g. PoisonPowder -> Poison Powder
 pub struct Moves {
     data: HashMap<String, Move>,
-    modified_names: HashMap<&'static str, &'static str>,
+    modified_names: HashMap<String, String>,
 }
 
 impl Moves {
@@ -41,34 +41,37 @@ impl Moves {
 
         for result in csv_reader.deserialize() {
             let m: Move = result.unwrap();
-            moves.insert(m.name.clone(), m);
+            moves.insert(m.name.to_lowercase(), m);
         }
 
-        let modified_names = HashMap::from([
-            ("AncientPower", "Ancient Power"),
-            ("BubbleBeam", "Bubble Beam"),
-            ("DoubleSlap", "Double Slap"),
-            ("DragonBreath", "Dragon Breath"),
-            ("DynamicPunch", "Dynamic Punch"),
-            ("ExtremeSpeed", "Extreme Speed"),
-            ("Faint Attack", "Feint Attack"),
-            ("FeatherDance", "Feather Dance"),
-            ("GrassWhistle", "Grass Whistle"),
-            ("Hi Jump Kick", "High Jump Kick"),
-            ("PoisonPowder", "Poison Powder"),
-            ("Sand-Attack", "Sand Attack"),
-            ("Selfdestruct", "Self-Destruct"),
-            ("SmellingSalt", "Smelling Salts"),
-            ("SmokeScreen", "Smokescreen"),
-            ("Softboiled", "Soft-Boiled"),
-            ("SolarBeam", "Solar Beam"),
-            ("SonicBoom", "Sonic Boom"),
-            ("ThunderPunch", "Thunder Punch"),
-            ("ThunderShock", "Thunder Shock"),
-            ("ViceGrip", "Vice Grip"),
-            ("Vice Grip", "Vise Grip"),      // Gen VII to VIII
-            ("Conversion2", "Conversion 2"), // Crystal to Stadium 2
-        ]);
+        let modified_names = HashMap::from(
+            [
+                ("AncientPower", "Ancient Power"),
+                ("BubbleBeam", "Bubble Beam"),
+                ("DoubleSlap", "Double Slap"),
+                ("DragonBreath", "Dragon Breath"),
+                ("DynamicPunch", "Dynamic Punch"),
+                ("ExtremeSpeed", "Extreme Speed"),
+                ("Faint Attack", "Feint Attack"),
+                ("FeatherDance", "Feather Dance"),
+                ("GrassWhistle", "Grass Whistle"),
+                ("Hi Jump Kick", "High Jump Kick"),
+                ("PoisonPowder", "Poison Powder"),
+                ("Sand-Attack", "Sand Attack"),
+                ("Selfdestruct", "Self-Destruct"),
+                ("SmellingSalt", "Smelling Salts"),
+                ("SmokeScreen", "Smokescreen"),
+                ("Softboiled", "Soft-Boiled"),
+                ("SolarBeam", "Solar Beam"),
+                ("SonicBoom", "Sonic Boom"),
+                ("ThunderPunch", "Thunder Punch"),
+                ("ThunderShock", "Thunder Shock"),
+                ("ViceGrip", "Vice Grip"),
+                ("Vice Grip", "Vise Grip"),      // Gen VII to VIII
+                ("Conversion2", "Conversion 2"), // Crystal to Stadium 2
+            ]
+            .map(|(k, v)| (k.to_lowercase(), v.to_lowercase())),
+        );
 
         Moves {
             data: moves,
@@ -78,12 +81,13 @@ impl Moves {
 
     /// Returns a reference to the Move corresponding to the name.
     pub fn get(&self, name: &str) -> Option<&Move> {
-        let move_ = self.data.get(name);
+        let name = name.to_lowercase();
+        let move_ = self.data.get(&name);
 
         if move_.is_none() {
-            let new_name = self.modified_names.get(name);
+            let new_name = self.modified_names.get(&name);
             if let Some(new_name) = new_name {
-                let move_ = self.data.get(*new_name);
+                let move_ = self.data.get(new_name);
                 return move_;
             }
         }
