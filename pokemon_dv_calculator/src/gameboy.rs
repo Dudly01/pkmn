@@ -343,6 +343,10 @@ pub struct StatScreen2Layout {
     pub width: i32,
     pub height: i32,
     pub pkmn_ndex_pos: Position,
+    pub attack_1: Position,
+    pub attack_2: Position,
+    pub attack_3: Position,
+    pub attack_4: Position,
 }
 
 impl StatScreen2Layout {
@@ -361,6 +365,30 @@ impl StatScreen2Layout {
                 y: y_pkmn_no,
                 width: field_width,
                 height: field_height,
+            },
+            attack_1: Position {
+                x: 16,
+                y: 72,
+                width: 95,
+                height: 7,
+            },
+            attack_2: Position {
+                x: 16,
+                y: 88,
+                width: 95,
+                height: 7,
+            },
+            attack_3: Position {
+                x: 16,
+                y: 104,
+                width: 95,
+                height: 7,
+            },
+            attack_4: Position {
+                x: 16,
+                y: 120,
+                width: 95,
+                height: 7,
             },
         }
     }
@@ -404,7 +432,37 @@ impl StatScreen2Layout {
         };
         let pkmn_no = read_field(&roi, chars).unwrap().trim().to_string();
 
-        let content = StatsSreen2Content { pkmn_no };
+        let roi = Roi {
+            img: img,
+            pos: self.attack_1,
+        };
+        let attack_1 = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.attack_2,
+        };
+        let attack_2 = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.attack_3,
+        };
+        let attack_3 = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let roi = Roi {
+            img: img,
+            pos: self.attack_4,
+        };
+        let attack_4 = read_field(&roi, chars).unwrap().trim().to_string();
+
+        let content = StatsSreen2Content {
+            pkmn_no,
+            attack_1,
+            attack_2,
+            attack_3,
+            attack_4,
+        };
         Ok(content)
     }
 }
@@ -412,4 +470,8 @@ impl StatScreen2Layout {
 #[derive(PartialEq, PartialOrd, Clone)]
 pub struct StatsSreen2Content {
     pub pkmn_no: String,
+    pub attack_1: String,
+    pub attack_2: String,
+    pub attack_3: String,
+    pub attack_4: String,
 }
