@@ -200,7 +200,24 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         ] {
             match attack_name.as_str() {
                 "-" => text_result.push_str("-\n"),
-                _ => text_result.push_str(&format!("{}\n", attack_name)),
+                _ => {
+                    let move_ = pkmn_moves.get(&attack_name);
+                    match move_ {
+                        Some(move_) => text_result.push_str(&format!(
+                            "{}\t{}\t{}\t{}\t{}\t{}\t{}\n",
+                            move_.name,
+                            move_.type_,
+                            move_.category,
+                            move_.power,
+                            move_.accuracy,
+                            move_.pp,
+                            move_.description,
+                        )),
+                        None => {
+                            text_result.push_str(&format!("{} - NOT RECOGNISED\n", attack_name))
+                        }
+                    }
+                }
             }
         }
 
