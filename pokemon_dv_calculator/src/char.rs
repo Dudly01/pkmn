@@ -110,6 +110,7 @@ impl Charset {
             ("Y", 2, 6),
             ("Z", 2, 7),
             (" ", 2, 8),
+            ("-", 4, 0),
         ];
         for (char, row, col) in char_positions {
             let char_pos = Position {
