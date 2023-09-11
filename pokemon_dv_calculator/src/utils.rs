@@ -192,10 +192,17 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let mut text_result = String::with_capacity(256);
 
-        text_result.push_str(&format!("{}\n", content.attack_1));
-        text_result.push_str(&format!("{}\n", content.attack_2));
-        text_result.push_str(&format!("{}\n", content.attack_3));
-        text_result.push_str(&format!("{}\n", content.attack_4));
+        for attack_name in [
+            &content.attack_1,
+            &content.attack_2,
+            &content.attack_3,
+            &content.attack_4,
+        ] {
+            match attack_name.as_str() {
+                "-" => text_result.push_str("-\n"),
+                _ => text_result.push_str(&format!("{}\n", attack_name)),
+            }
+        }
 
         text_result.push_str(&"\nEvo chain(s):\n");
         println!("Evo chains:\n");
