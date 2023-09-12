@@ -276,43 +276,78 @@ impl StatScreen1Layout {
             img: img,
             pos: self.pkmn_ndex_pos.clone(),
         };
-        let pkmn_no = read_field(&roi, chars).unwrap().trim().to_string();
+        let pkmn_no = read_field(&roi, chars)
+            .expect("Failed to read ndex")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse ndex to an i32");
 
         let roi = Roi {
             img: img,
             pos: self.level_field_pos.clone(),
         };
-        let level = read_field(&roi, chars).unwrap().trim().to_string();
+        let level = read_field(&roi, chars)
+            .expect("Failed to read level")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse ndex to an i32");
 
         let roi = Roi {
             img: img,
             pos: self.hp_field_pos.clone(),
         };
-        let hp = read_field(&roi, chars).unwrap().trim().to_string();
+        let hp = read_field(&roi, chars)
+            .expect("Failed to read HP")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse HP to an i32");
 
         let roi = Roi {
             img: img,
             pos: self.attack_field_pos.clone(),
         };
-        let attack = read_field(&roi, chars).unwrap().trim().to_string();
+        let attack = read_field(&roi, chars)
+            .expect("Failed to read Attack")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse Attack to an i32");
 
         let roi = Roi {
             img: img,
             pos: self.defense_field_pos.clone(),
         };
-        let defense = read_field(&roi, chars).unwrap().trim().to_string();
+        let defense = read_field(&roi, chars)
+            .expect("Failed to read Defense")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse Defense to an i32");
 
         let roi = Roi {
             img: img,
             pos: self.speed_field_pos.clone(),
         };
-        let speed = read_field(&roi, chars).unwrap().trim().to_string();
+        let speed = read_field(&roi, chars)
+            .expect("Failed to read Speed")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse Speed to an i32");
 
         let roi = Roi {
             img: img,
             pos: self.special_field_pos.clone(),
         };
-        let special = read_field(&roi, chars).unwrap().trim().to_string();
+        let special = read_field(&roi, chars)
+            .expect("Failed to read Special")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse Special to an i32");
 
         let content = StatsSreen1Content {
             pkmn_no,
@@ -330,13 +365,13 @@ impl StatScreen1Layout {
 /// The content of the fields present on stats screen 1.
 #[derive(PartialEq, PartialOrd, Clone)]
 pub struct StatsSreen1Content {
-    pub pkmn_no: String,
-    pub level: String,
-    pub hp: String,
-    pub attack: String,
-    pub defense: String,
-    pub speed: String,
-    pub special: String,
+    pub pkmn_no: i32,
+    pub level: i32,
+    pub hp: i32,
+    pub attack: i32,
+    pub defense: i32,
+    pub speed: i32,
+    pub special: i32,
 }
 
 pub struct StatScreen2Layout {
