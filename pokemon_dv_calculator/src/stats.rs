@@ -1,5 +1,3 @@
-use crate::gameboy::StatsSreen1Content;
-use crate::pokemon::Pokemon;
 use std::ops::Deref;
 
 /// Stores the possible stat values corresponding to the possible DV values.
@@ -33,6 +31,9 @@ impl Deref for StatVariation {
     }
 }
 
+/// Stores the minimum and maximum (inclusive) DV values of a Pokemon.
+/// 
+/// A stat value may not determine an exact DV value due to rounding.
 pub struct DvRange {
     pub min: i32,
     pub max: i32,
