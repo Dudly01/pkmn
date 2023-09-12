@@ -1,5 +1,6 @@
 use crate as pkmn;
 use crate::moves::Moves;
+use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
 use image::DynamicImage;
 use imageproc::contrast::threshold_mut;
@@ -135,27 +136,113 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .expect("Failed to read Summary 1");
 
         let ndex: usize = content.pkmn_no as usize;
-        let level: i32 = content.level;
-        let stats = pkmn::stats::Stats::from_screen_content(&content);
-        let record = &pokedex[ndex - 1]; // -1 as Dex number starts with 1
-        let base_stats = pkmn::stats::BaseStats::from_record(&record);
+        let pokemon = &pokedex[ndex - 1];
 
-        let exp = pkmn::stats::Experience::with_no_experience();
+        let var_hp = StatVariation::init(&content.level, &pokemon.hp, &0, &true);
+        let var_attack = StatVariation::init(&content.level, &pokemon.attack, &0, &false);
+        let var_defense = StatVariation::init(&content.level, &pokemon.defense, &0, &false);
+        let var_speed = StatVariation::init(&content.level, &pokemon.speed, &0, &false);
+        let var_special = StatVariation::init(&content.level, &pokemon.special, &0, &false);
 
-        let dv_stats_table = pkmn::stats::DvTable::new(&level, &base_stats, &exp);
+        let range_hp = DvRange::init(&content.hp, &var_hp).unwrap();
+        let range_attack = DvRange::init(&content.attack, &var_attack).unwrap();
+        let range_defense = DvRange::init(&content.defense, &var_defense).unwrap();
+        let range_speed = DvRange::init(&content.speed, &var_speed).unwrap();
+        let range_special = DvRange::init(&content.special, &var_special).unwrap();
 
-        let dv_ranges = pkmn::stats::DvRanges::new(&stats, &dv_stats_table);
+        let mut t = String::new();
 
-        let result = pkmn::stats::summarize_pkmn_stats(
-            record,
-            &base_stats,
-            level,
-            &stats,
-            &dv_stats_table,
-            &dv_ranges,
-        );
+        t.push_str(&format!(
+            "#{} {} :L{}\n\n",
+            pokemon.ndex, pokemon.name, content.level
+        ));
 
-        return Ok(result);
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}  {}\n",
+            "Stat", "Base", "Value", "DV [min-max]"
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "HP", pokemon.hp, content.hp, range_hp.min, range_hp.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "ATT", pokemon.attack, content.attack, range_attack.min, range_attack.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "DEF", pokemon.defense, content.defense, range_defense.min, range_defense.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "SPD", pokemon.speed, content.speed, range_speed.min, range_speed.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "SPC", pokemon.special, content.special, range_special.min, range_special.max
+        ));
+
+        t.push_str("\n\nDV-Value Table\n");
+
+        t.push_str(&format!(
+            "{:>3}  {:>3}  {:>3}  {:>3}  {:>3}  {:>3}\n",
+            "DV", "HP", "ATT", "DEF", "SPD", "SPC",
+        ));
+
+        let notif_hp: [char; 16] =
+            std::array::from_fn(|i| if var_hp[i] == content.hp { '-' } else { ' ' });
+        let notif_attack: [char; 16] = std::array::from_fn(|i| {
+            if var_attack[i] == content.attack {
+                '-'
+            } else {
+                ' '
+            }
+        });
+        let notif_defense: [char; 16] = std::array::from_fn(|i| {
+            if var_defense[i] == content.defense {
+                '-'
+            } else {
+                ' '
+            }
+        });
+        let notif_speed: [char; 16] = std::array::from_fn(|i| {
+            if var_speed[i] == content.speed {
+                '-'
+            } else {
+                ' '
+            }
+        });
+        let notif_special: [char; 16] = std::array::from_fn(|i| {
+            if var_special[i] == content.special {
+                '-'
+            } else {
+                ' '
+            }
+        });
+
+        for i in 0..16 {
+            t.push_str(&format!(
+                "{:>3} {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
+                i,
+                var_hp[i],
+                notif_hp[i],
+                var_attack[i],
+                notif_attack[i],
+                var_defense[i],
+                notif_defense[i],
+                var_speed[i],
+                notif_speed[i],
+                var_special[i],
+                notif_special[i],
+            ));
+        }
+
+        return Ok(t);
     }
 
     if is_summary_screen_2 {
