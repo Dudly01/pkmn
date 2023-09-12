@@ -1,5 +1,72 @@
 use crate::gameboy::StatsSreen1Content;
 use crate::pokemon::Pokemon;
+use std::ops::Deref;
+
+/// Stores the possible stat values corresponding to the possible DV values.
+pub struct StatVariation {
+    values: [i32; 16],
+}
+
+impl StatVariation {
+    pub fn init(level: &i32, base: &i32, exp: &i32, is_hp: &bool) -> StatVariation {
+        let offset = if *is_hp { level + 10 } else { 5 };
+
+        let effort_gain = ((exp - 1) as f32).sqrt() + 1.0 / 4.0;
+        let effort_gain = effort_gain as i32;
+
+        let variation = std::array::from_fn(|i| {
+            let dv = i as i32;
+            let val = (((base + dv) * 2 + effort_gain) * level) as f32 / 100.0;
+            let val = val as i32 + offset;
+            val
+        });
+
+        StatVariation { values: variation }
+    }
+}
+
+impl Deref for StatVariation {
+    type Target = [i32; 16];
+
+    fn deref(&self) -> &Self::Target {
+        &self.values
+    }
+}
+
+pub struct DvRange {
+    pub min: i32,
+    pub max: i32,
+}
+
+impl DvRange {
+    pub fn init(current_stat: &i32, variation: &StatVariation) -> Option<DvRange> {
+        let mut first = -1;
+        let mut last = -1;
+
+        for (i, val) in variation.values.iter().enumerate() {
+            if *val == *current_stat as i32 {
+                first = i as i32;
+                break;
+            }
+        }
+
+        if first == -1 {
+            return None;
+        }
+
+        for (i, val) in variation.values.iter().enumerate().rev() {
+            if *val == *current_stat as i32 {
+                last = i as i32;
+                break;
+            }
+        }
+
+        Some(DvRange {
+            min: first,
+            max: last,
+        })
+    }
+}
 
 /// The stats of a Pokemon.
 pub struct Stats {
