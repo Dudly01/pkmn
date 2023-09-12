@@ -40,31 +40,16 @@ pub struct DvRange {
 
 impl DvRange {
     pub fn init(current_stat: &i32, variation: &StatVariation) -> Option<DvRange> {
-        let mut first = -1;
-        let mut last = -1;
+        let first = variation.iter().position(|i| i == current_stat);
+        let last = variation.iter().rev().position(|i| i == current_stat);
 
-        for (i, val) in variation.values.iter().enumerate() {
-            if *val == *current_stat as i32 {
-                first = i as i32;
-                break;
-            }
+        match (first, last) {
+            (Some(a), Some(b)) => Some(DvRange {
+                min: a as i32,
+                max: b as i32,
+            }),
+            _ => None,
         }
-
-        if first == -1 {
-            return None;
-        }
-
-        for (i, val) in variation.values.iter().enumerate().rev() {
-            if *val == *current_stat as i32 {
-                last = i as i32;
-                break;
-            }
-        }
-
-        Some(DvRange {
-            min: first,
-            max: last,
-        })
     }
 }
 
