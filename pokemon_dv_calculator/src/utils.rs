@@ -194,36 +194,24 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             "DV", "HP", "ATT", "DEF", "SPD", "SPC",
         ));
 
-        let notif_hp: [char; 16] =
-            std::array::from_fn(|i| if var_hp[i] == content.hp { '-' } else { ' ' });
-        let notif_attack: [char; 16] = std::array::from_fn(|i| {
-            if var_attack[i] == content.attack {
+        // Returns the notification char upon equality, space otherwise.
+        let notif_char = |eq: bool| -> char {
+            if eq {
                 '-'
             } else {
                 ' '
             }
-        });
-        let notif_defense: [char; 16] = std::array::from_fn(|i| {
-            if var_defense[i] == content.defense {
-                '-'
-            } else {
-                ' '
-            }
-        });
-        let notif_speed: [char; 16] = std::array::from_fn(|i| {
-            if var_speed[i] == content.speed {
-                '-'
-            } else {
-                ' '
-            }
-        });
-        let notif_special: [char; 16] = std::array::from_fn(|i| {
-            if var_special[i] == content.special {
-                '-'
-            } else {
-                ' '
-            }
-        });
+        };
+
+        let notif_hp: [char; 16] = std::array::from_fn(|i| notif_char(var_hp[i] == content.hp));
+        let notif_attack: [char; 16] =
+            std::array::from_fn(|i| notif_char(var_attack[i] == content.attack));
+        let notif_defense: [char; 16] =
+            std::array::from_fn(|i| notif_char(var_defense[i] == content.defense));
+        let notif_speed: [char; 16] =
+            std::array::from_fn(|i| notif_char(var_speed[i] == content.speed));
+        let notif_special: [char; 16] =
+            std::array::from_fn(|i| notif_char(var_special[i] == content.special));
 
         for i in 0..16 {
             t.push_str(&format!(
