@@ -1,16 +1,41 @@
 """
 Scrapes the source of the Smogon website.
-
-Steps to create the source JSON:
- - Open the page https://www.smogon.com/dex/rb/pokemon/
- - Look at the Page source
- - Find the <script type="text/javascript"> tag
- - Put the contents (without the variable assignment) into a JSON file
 """
 
-import json
 import csv
+import json
 from pathlib import Path
+
+import requests
+
+
+def get_smogon_url() -> str:
+    """Returns the URL to the Smogon Gen I website."""
+    return "https://www.smogon.com/dex/rb/pokemon/"
+
+
+def get_smogon_json_string(url: str) -> str:
+    """Returns the JSON-like data from the source of the Smogon webpage."""
+    response = requests.get(url)
+    if response.status_code != 200:
+        raise Exception(
+            "Failed to fetch the webpage.", f"Status code: {response.status_code}"
+        )
+    html_text = response.text
+
+    lines = html_text.splitlines()
+    json_text = None
+    for line in lines:
+        if "dexSettings = " not in line:
+            continue
+        start = line.find("{")  # Skip "dexSettings = "
+        json_text = line[start:]
+        break
+
+    if json_text is None:
+        raise RuntimeError("Did not find JSON-like data in SMOGON html.")
+
+    return json_text
 
 
 def export_moves(smogon_json: dict, dst_path: Path) -> None:
@@ -88,19 +113,20 @@ def export_pokemon(smogon_json: dict, dst_path: Path) -> None:
 
 
 def main():
+    smogon_url = get_smogon_url()
+    smogon_json = get_smogon_json_string(smogon_url)
+    json_content = json.loads(smogon_json)
+
     script_dir = Path(__file__).parent
+    dst_dir = Path(script_dir.parent, "data")
+    if not dst_dir.is_dir():
+        dst_dir.mkdir()
 
-    json_path = Path(script_dir, "../data_manual/smogon_rb.json").absolute()
-    print(f"Loading JSON from {json_path}")
-    with json_path.open("r") as json_file:
-        json_content = json_file.read()
-    json_content = json.loads(json_content)
-
-    csv_path = Path(script_dir, "../data/smogon_rb_moves.csv")
+    csv_path = Path(dst_dir, "smogon_rb_moves.csv")
     print(f"Writing moves to {csv_path}")
     export_moves(smogon_json=json_content, dst_path=csv_path)
 
-    csv_path = Path(script_dir, "../data/smogon_rb_pokemon.csv")
+    csv_path = Path(dst_dir, "smogon_rb_pokemon.csv")
     print(f"Writing pokemon to {csv_path}")
     export_pokemon(smogon_json=json_content, dst_path=csv_path)
 
