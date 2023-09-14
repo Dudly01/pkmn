@@ -202,7 +202,11 @@ def main():
         }
         pkmn_entries.append(entry)
 
-    result_json_path = Path("learnset.json")
+    dst_dir = Path(__file__).parent
+    if not dst_dir.is_dir:
+        dst_dir.mkdir()
+
+    result_json_path = Path(dst_dir, "learnset.json")
     with result_json_path.open("w", encoding="utf-8") as f:
         json_str = json.dumps(pkmn_entries, indent=4, ensure_ascii=False)
         f.write(json_str)
