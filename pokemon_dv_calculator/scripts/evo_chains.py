@@ -1,8 +1,9 @@
-"""Exports the evo chains to a txt file from the evo families CSV file.
+"""Cleans the evo_chains.csv into evo_chains.txt
 
-The CSV file is created from copy-pasting the corresponding Bulbapedia page
-into a spreadsheet editor and saving as CSV.
-https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family
+To create the input file, visit the Bulbapedia "List of Pokémon by evolution family"
+page at https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family.
+Copy the table into a spreadsheet editor, then export it into a CSV file.
+(Make sure that the cells are correct for Sylveon.)
 
 The exported file contains the evolution chains line by line.
 E.g. Eevee take up three lines in Gen 1.
@@ -12,23 +13,16 @@ import csv
 from pathlib import Path
 
 
-def get_clean_row(row: list[str]) -> list[str]:
-    """Returns the cleaned evolutionary CSV row.
+JOIN_STR = "->"
 
-    Removes the always empty cells (where the images would be).
-    Removes unwanted characters, including leading and trailing whitespaces.
+
+def list_clean_rows(csv_path: Path) -> list[list[str]]:
+    """Returns the cleaned rows of the evolution families CSV file in a list.
+
+    The cleaning removes unwanted characters and always empty columns.
+
+    Raises RuntimeError if the column count is not 8.
     """
-    # Remove always empty columns
-    clean_row = [r for r in row[0:3] + row[4:6] + row[7:]]
-
-    # Remove unwanted characters
-    clean_row = [r.replace("→", "").replace("*", "").strip() for r in clean_row]
-
-    return clean_row
-
-
-def get_csv_rows(csv_path: Path):
-    """Returns the rows of the evolution families CSV file as-is."""
     column_count = 8
     csv_rows: list[list[str]] = []
     with csv_path.open("r") as csv_file:
@@ -36,12 +30,20 @@ def get_csv_rows(csv_path: Path):
         for row in csv_reader:
             if len(row) != column_count:
                 raise RuntimeError(f"Expected {column_count} columns, got {len(row)}")
-            csv_rows.append(row)
+
+            # Remove always empty columns
+            clean_row = [r for r in row[0:3] + row[4:6] + row[7:]]
+
+            # Remove unwanted characters
+            clean_row = [r.replace("→", "").replace("*", "").strip() for r in clean_row]
+
+            csv_rows.append(clean_row)
+
     return csv_rows
 
 
-def get_full_evolution_paths(csv_rows: list[list[str]]) -> list[list[str]]:
-    """Returns the full evolution paths from the CSV rows.
+def get_full_evo_paths(clean_rows: list[list[str]]) -> list[list[str]]:
+    """Returns the full evolution paths from the clean CSV rows.
 
     Pikachu family full evo path example:
     - [Pikachu family, Pichu, Friendship, Pikachu, Thunder Stone, Raichu (Kantonian)]
@@ -49,8 +51,12 @@ def get_full_evolution_paths(csv_rows: list[list[str]]) -> list[list[str]]:
     """
     paths = []
     path = None
-    for row in csv_rows:
-        row = get_clean_row(row)
+    for row in clean_rows:
+        if len(row) != 6:
+            raise RuntimeError(
+                f"Expected 6 columns, got {len(row)}.",
+                "Make sure to pass the cleaned CSV rows.",
+            )
 
         # Check if its a new family
         if row[0]:
@@ -63,38 +69,101 @@ def get_full_evolution_paths(csv_rows: list[list[str]]) -> list[list[str]]:
         if indent is None:
             raise ValueError("Found empty row.")
 
-        # Reuse path up until current cell.
-        # Because its the same as for the previous CSV row.
-        path = path[:indent]
-
-        # Gather non-empty cells, because rows are only equal long due to CSV format
-        elements = [cell for cell in row if cell]
-
-        for cell in elements:
-            path.append(cell)
+        # Update path with relative path from the current row
+        path = path[:indent] + row[indent:]
 
         paths.append(path)
     return paths
 
 
-def get_gen_1_evo_chains(full_evo_paths: list[list[str]]):
-    base_stats_path = Path("pokemon_dv_calculator/data/base_stats.csv")
-    with base_stats_path.open("r") as f:
-        csv_reader = csv.reader(f, delimiter=",", quotechar='"')
-        next(csv_reader)  # Skipping header
-        gen_1_pkmn = [row[1] for row in csv_reader]
-    gen_1_pkmn = set(gen_1_pkmn)
+def get_smogon_rb_pokemon() -> set[str]:
+    """Returns the Pokemon available in Gen I from the Smogon CSV.
 
-    filtered_evo_chains: list[str] = []
+    Note the difference in names:
+        Nidoran♀ -> Nidoran-F
+        Nidoran♂ -> Nidoran-M
+    The smogon_rb_pokemon.csv needs to exist.
+    """
+    script_dir = Path(__file__).parent
+    pokedex_path = Path(script_dir.parent, "data", "smogon_rb_pokemon.csv")
+    if not pokedex_path.is_file():
+        raise RuntimeError(f"Did not find Smogon Pokedex at {pokedex_path}")
+
+    target_header = "name"
+    target_col = 0
+
+    pokedex = set()
+    with pokedex_path.open("r") as f:
+        csv_reader = csv.reader(f, delimiter=",", quotechar='"')
+
+        header = next(csv_reader)
+        if (n := header[target_col]) != target_header:
+            raise RuntimeError(
+                "Unexpected column header at position 0.",
+                f"Expected '{target_header}', found '{n}'.",
+            )
+
+        for pokemon in (row[target_col] for row in csv_reader):
+            pokedex.add(pokemon)
+
+    if (n := len(pokedex)) != 151:
+        raise RuntimeError(f"Expected 151 pokemon, found {n}")
+
+    return pokedex
+
+
+def swap_bulba_to_smogon_names(evo_paths: list[list[str]]) -> list[list[str]]:
+    """Swaps the Bulbapedia Pokemon names with the Smogon names.
+
+    "(Kantonian)" suffix is removed.
+
+    Only Gen I names:
+        Nidoran♀ -> Nidoran-F
+    No region swap:
+        Raichu (Alolan) -> Raichu-alola
+    """
+
+    name_diffs = (
+        (" (Kantonian)", ""),
+        ("Nidoran♀", "Nidoran-F"),
+        ("Nidoran♂", "Nidoran-M"),
+    )
+
+    evo_strings: list[str] = []
+    for evo in evo_paths:
+        string = JOIN_STR.join(p for p in evo)
+        evo_strings.append(string)
+
+    swapped_evo_strings: list[str] = []
+    for evo in evo_strings:
+        for old, new in name_diffs:
+            evo = evo.replace(old, new)
+        swapped_evo_strings.append(evo)
+
+    swapped_evo_paths: list[list[str]] = []
+    for evo in swapped_evo_strings:
+        evo = evo.split(JOIN_STR)
+        swapped_evo_paths.append(evo)
+
+    return swapped_evo_paths
+
+
+def filter_pokemon(
+    full_evo_paths: list[list[str]], pokedex: set[str]
+) -> list[list[str]]:
+    """Filters the evos to only include the desired pokemon.
+
+    It does not guarantee that every pokemon will have an evolution.
+    """
+    evo_chain_strings: list[str] = []
     for row in full_evo_paths:
         # The range of columns to keep, [start, stop)
         valid_path_range = None
 
         for col_idx in range(1, len(row), 2):  # Only look at the PKMN
             pkmn = row[col_idx]
-            pkmn.removesuffix(" (Kantonian)")
 
-            if pkmn in gen_1_pkmn:
+            if pkmn in pokedex:
                 if valid_path_range is None:
                     valid_path_range = (col_idx, col_idx + 1)
                 valid_path_range = (valid_path_range[0], col_idx + 1)
@@ -103,16 +172,19 @@ def get_gen_1_evo_chains(full_evo_paths: list[list[str]]):
             continue  # This row is not needed.
 
         start, stop = valid_path_range
-        chain = ">".join(row[start:stop])
+
+        # Make a string to check for duplicated (sub)chains.
+        # Add pre- and postfix to avoid Mew/Mewtwo filtering.
+        chain = JOIN_STR + JOIN_STR.join(row[start:stop]) + JOIN_STR
 
         # O(n+m) solution to make sure no (sub)chain duplications
         # Going in reverse should result in faster hits.
-        if not any((chain in c for c in reversed(filtered_evo_chains))):
-            filtered_evo_chains.append(chain)
+        if not any((chain in c for c in reversed(evo_chain_strings))):
+            evo_chain_strings.append(chain)
 
-    filtered_evo_chains = [chain.split(">") for chain in filtered_evo_chains]
+    evo_chains = [chain.split(JOIN_STR)[1:-1] for chain in evo_chain_strings]
 
-    return filtered_evo_chains
+    return evo_chains
 
 
 def get_evolution_dict(full_evo_paths: list[list[str]]) -> dict:
@@ -139,31 +211,33 @@ def get_evolution_dict(full_evo_paths: list[list[str]]) -> dict:
 
 
 def main():
-    csv_path = Path("pokemon_dv_calculator/data/evo_families.csv")
-    csv_rows = get_csv_rows(csv_path)
+    script_dir = Path(__file__).parent
+    csv_path = Path(script_dir.parent, "data", "evo_chains.csv")
+    clean_csv_rows = list_clean_rows(csv_path)
 
-    # for row in csv_rows:
-    #     print(row)
+    evo_paths = get_full_evo_paths(clean_csv_rows)
 
-    evo_paths = get_full_evolution_paths(csv_rows)
+    pokedex = get_smogon_rb_pokemon()
 
-    # for path in evo_paths:
-    #     print(path)
+    renamed_paths = swap_bulba_to_smogon_names(evo_paths)
 
-    evo_paths = get_gen_1_evo_chains(evo_paths)
+    filtered_paths = filter_pokemon(renamed_paths, pokedex)
 
-    # for path in evo_paths:
-    #     print(path)
+    unique_pokemon = set()
+    for path in filtered_paths:
+        for pokemon in path[::2]:
+            unique_pokemon.add(pokemon)
 
-    evo_paths = [">".join(p) for p in evo_paths]
+    if (a := len(unique_pokemon)) != (b := len(pokedex)):
+        raise RuntimeError(f"Expected {b} Pokemon to have evos, got {a}")
 
-    for path in evo_paths:
-        print(path)
+    filtered_paths = [JOIN_STR.join(p) for p in filtered_paths]
 
-    evo_chain_path = Path("evo_chain.txt")
+    evo_chain_path = Path(script_dir.parent, "data", "rb_evo_chains.txt")
     with evo_chain_path.open("w", encoding="utf-8") as f:
-        for evo in evo_paths:
+        for evo in filtered_paths:
             f.write(evo + "\n")
+    print(f"Createdfile at  {evo_chain_path}")
 
 
 if __name__ == "__main__":

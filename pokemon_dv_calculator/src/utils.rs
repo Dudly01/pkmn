@@ -1,10 +1,13 @@
+use std::io::Write;
+
 use crate as pkmn;
-use crate::moves::Moves;
+use crate::moves::{Moves, Move};
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
 use image::DynamicImage;
 use imageproc::contrast::threshold_mut;
 use pkmn::learnset::Learnset;
+use tabwriter::TabWriter;
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset is the same among game versions.
@@ -84,6 +87,43 @@ pub fn get_pretty_learnset_table(entry: &Learnset, moves: &Moves) -> Result<Stri
 
     result
 }
+
+/// Formats the Learnset into a nice table.
+pub fn fmt_learnset(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
+    let mut t = String::new();
+
+    t.push_str(&format!("#{} {}\n", learnset.ndex, learnset.pokemon));
+    
+    let column_count = learnset.by_leveling_up.len();
+    
+    Ok(t)
+}
+
+
+
+pub fn fmt_move_header(move_: Move) -> Result<String, String> {
+    let mut tw = TabWriter::new(vec![]).minwidth(3).padding(2);
+    write!(&mut tw ,["Move", "Type", "Category", "Power", "Accuracy", "PP", "Description"].join("\t"));
+
+    let t = format!("{}\t{}\t{}\t{}\t{}\t{}\t{}", "Move", "Type", "Category", "Power", "Accuracy", )
+}
+
+pub fn fmt_move_row(move_: Move) -> Result<String, String> {
+    let t = format!("{}\t{}\t{}\t{}\t{}\t{}\t{}",
+                            move_.name,
+                            move_.type_,
+                            move_.category,
+                            move_.power,
+                            move_.accuracy,
+                            move_.pp,
+                            move_.description,);
+    t
+}
+
+
+
+
+
 
 /// Scans the image and returns the printable text.
 /// The summary screen 1 is for printing the stat DVs.
@@ -249,7 +289,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let mut pkmn_names: Vec<&str> = Vec::new();
         for chain in &evo_chains {
-            let pkmn = chain.split(">").step_by(2);
+            let pkmn = chain.split("->").step_by(2);
             for name in pkmn {
                 if !pkmn_names.contains(&name) {
                     pkmn_names.push(name);
