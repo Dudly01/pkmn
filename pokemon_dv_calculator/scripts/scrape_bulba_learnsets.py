@@ -13,8 +13,8 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 
-def get_learnset_article_urls() -> list[str]:
-    """Returns the URLs of the Gen1 learnset articles for each 151 Pokemon."""
+def get_gen_1_learnset_article_urls() -> list[str]:
+    """Returns the URLs of the Gen 1 learnset articles for each 151 Pokemon."""
 
     # The category website
     category_url = "https://bulbapedia.bulbagarden.net/wiki/Category:Pok%C3%A9mon_learnsets_(Generation_I)"
@@ -38,6 +38,9 @@ def get_learnset_article_urls() -> list[str]:
                         "https://bulbapedia.bulbagarden.net", relative_url
                     )
                     article_urls.append(category_url)
+
+    if (n := len(article_urls)) != 151:
+        raise RuntimeError(f"Expected 151 URLs, found {n}.")
 
     return article_urls
 
@@ -84,7 +87,7 @@ def get_wiki_article_markdown_source(url: str) -> str:
     return text
 
 
-def get_pkmn(markdown_source: str) -> tuple[str, str]:
+def get_pokemon_name_and_ndex(markdown_source: str) -> tuple[str, str]:
     """Returns the Pokemon Ndex number and name from the Wiki markdown source."""
     ndex = None
     pkmn = None
@@ -102,7 +105,7 @@ def get_pkmn(markdown_source: str) -> tuple[str, str]:
     return ndex, pkmn
 
 
-def get_level_learnset(markdown_source: str) -> list[list[str]]:
+def get_learnset_leveling_up(markdown_source: str) -> list[list[str]]:
     """Extracts the "By leveling up" learnset table from the WIKI markdown source.
 
     The returned table contains the header and the rows, column by column.
@@ -179,10 +182,30 @@ def get_level_learnset(markdown_source: str) -> list[list[str]]:
     return table
 
 
+def norm_learnset_table(table: list[list[str]]) -> list[list[str]]:
+    """Splits the Level column into RGB and Y columns if present."""
+    if table[0][0] == "RGB" and table[0][1] == "Y":
+        return table
+
+    if table[0][0] != "Level":
+        raise ValueError(f"Got unexpected header in learnset table: {table[0]}")
+
+    normed_header = ["RGB", "Y"] + table[0][1:]
+
+    normed_rows = []
+    for row in table[1:]:
+        normed_row = [row[0]] + row
+        normed_rows.append(normed_row)
+
+    normed_table = normed_header + normed_rows
+
+    return normed_table
+
+
 def main():
     print("Collecting Gen 1 learnset articles.")
 
-    article_urls = get_learnset_article_urls()
+    article_urls = get_gen_1_learnset_article_urls()
     if len(article_urls) != 151:
         raise RuntimeError(f"Expected URLs for 151 Pokemon. Found {len(article_urls)}.")
 
@@ -192,8 +215,9 @@ def main():
     for url in tqdm(article_urls):
         markdown_source = get_wiki_article_markdown_source(url=url)
 
-        ndex, pkmn = get_pkmn(markdown_source)
-        table = get_level_learnset(markdown_source)
+        ndex, pkmn = get_pokemon_name_and_ndex(markdown_source)
+        table = get_learnset_leveling_up(markdown_source)
+        normed_table = norm_learnset_table(table)
 
         entry = {
             "ndex": ndex,
@@ -202,7 +226,11 @@ def main():
         }
         pkmn_entries.append(entry)
 
-    result_json_path = Path("learnset.json")
+    dst_dir = Path(__file__).parent.parent / "data"
+    if not dst_dir.is_dir:
+        dst_dir.mkdir()
+
+    result_json_path = Path(dst_dir, "geni_learnsets.json")
     with result_json_path.open("w", encoding="utf-8") as f:
         json_str = json.dumps(pkmn_entries, indent=4, ensure_ascii=False)
         f.write(json_str)

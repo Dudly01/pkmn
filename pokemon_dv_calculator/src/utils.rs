@@ -249,7 +249,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let mut pkmn_names: Vec<&str> = Vec::new();
         for chain in &evo_chains {
-            let pkmn = chain.split(">").step_by(2);
+            let pkmn = chain.split("->").step_by(2);
             for name in pkmn {
                 if !pkmn_names.contains(&name) {
                     pkmn_names.push(name);
