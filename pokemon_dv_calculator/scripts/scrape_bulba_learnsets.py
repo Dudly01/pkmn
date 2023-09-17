@@ -224,6 +224,7 @@ def main():
             pokemon = smogon_names[pokemon]
 
         table = get_learnset_leveling_up(markdown_source)
+        table = [row[:-4] for row in table]  # Remove Type, Powr, Acc and PP
         normed_table = norm_learnset_table(table)
 
         entry = {
