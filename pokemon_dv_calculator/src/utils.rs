@@ -8,81 +8,91 @@ use pkmn::learnset::Learnset;
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset is the same among game versions.
-fn pretty_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
-    for row in &learnset.by_leveling_up {
-        if row.len() != 6 {
-            return Err("Found row with not exactly 6 elements".to_owned());
-        }
-    }
+fn fmt_shared_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
+    let mut t = String::with_capacity(256);
 
-    let mut result = String::with_capacity(256);
-
-    let header = &learnset.by_leveling_up[0];
-    result.push_str(&format!(
-        "{:^5} {:^15} {:^7} {:^5} {:^8} {:^3} Description\n",
-        header[0], header[1], header[2], header[3], header[4], header[5]
+    // Pokemon
+    t.push_str(&format!(
+        "#{} {} learnset:\n",
+        learnset.ndex, learnset.pokemon
     ));
 
+    // Header
+    t.push_str(&format!(
+        "{:<3}  {}\n",
+        "Lvl",
+        pkmn::moves::fmt_move_header()
+    ));
+
+    // Moves
     for row in learnset.by_leveling_up.iter().skip(1) {
         let move_name = &row[1];
-        let description = moves.get(move_name);
-        let description = match description {
-            Some(record) => record.description.clone(),
-            None => "NO DESCRIPTION".to_string(),
-        };
+        let move_ = moves.get(move_name);
 
-        result.push_str(&format!(
-            "{:<5} {:<15} {:^7} {:<5} {:<8} {:<3} {}\n",
-            row[0], row[1], row[2], row[3], row[4], row[5], description
-        ));
+        let rt = format!("{:<3}  {}\n", row[0], pkmn::moves::fmt_move(move_));
+        t.push_str(&rt);
     }
 
-    Ok(result)
+    Ok(t)
 }
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset differs among game versions.
-fn pretty_diff_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
-    for row in &learnset.by_leveling_up {
-        if row.len() != 7 {
-            return Err("Found row with not exactly 7 elements".to_owned());
-        }
-    }
+fn fmt_divering_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
+    let mut t = String::with_capacity(256);
 
-    let mut result = String::with_capacity(256);
-
-    let header = &learnset.by_leveling_up[0];
-    result.push_str(&format!(
-        "{:^3} {:^3} {:^15} {:^7} {:^5} {:^8} {:^3} Description\n",
-        header[0], header[1], header[2], header[3], header[4], header[5], header[6]
+    // Pokemon
+    t.push_str(&format!(
+        "#{} {} learnset:\n",
+        learnset.ndex, learnset.pokemon
     ));
 
+    // Header
+    t.push_str(&format!(
+        "{:<3}  {:<3}  {}\n",
+        "RB",
+        "Y",
+        pkmn::moves::fmt_move_header()
+    ));
+
+    // Moves
     for row in learnset.by_leveling_up.iter().skip(1) {
         let move_name = &row[1];
-        let description = moves.get(move_name);
-        let description = match description {
-            Some(record) => record.description.clone(),
-            None => "NO DESCRIPTION".to_string(),
-        };
+        let move_ = moves.get(move_name);
 
-        result.push_str(&format!(
-            "{:<3} {:<3} {:<15} {:^7} {:<5} {:<8} {:<3} {}\n",
-            row[0], row[1], row[2], row[3], row[4], row[5], row[6], description
-        ));
+        let rt = format!(
+            "{:<3}  {:<3}  {}\n",
+            row[0],
+            row[1],
+            pkmn::moves::fmt_move(move_)
+        );
+
+        t.push_str(&rt);
     }
 
-    Ok(result)
+    Ok(t)
 }
 
 /// Returns the string with the formatted "By leveling up" learnset.
-pub fn get_pretty_learnset_table(entry: &Learnset, moves: &Moves) -> Result<String, String> {
-    let same_learnset = entry.by_leveling_up[0].len() == 6;
-    let result = match same_learnset {
-        true => pretty_learnset_table(entry, moves),
-        false => pretty_diff_learnset_table(entry, moves),
+pub fn fmt_learnset(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
+    let level_up_table = &learnset.by_leveling_up;
+    let col_count = level_up_table[0].len();
+    for row in level_up_table {
+        if row.len() != col_count {
+            return Err(format!("Mismatching column count for {}", learnset.pokemon));
+        }
+    }
+
+    let t = match col_count {
+        2 => fmt_shared_learnset_table(learnset, moves),
+        3 => fmt_divering_learnset_table(learnset, moves),
+        _ => Err(format!(
+            "Expected column count of 2 or 3, got {}",
+            col_count
+        )),
     };
 
-    result
+    t
 }
 
 /// Scans the image and returns the printable text.
@@ -266,6 +276,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let mut text_result = String::with_capacity(256);
 
+        text_result.push_str(&format!("{}\n", &pkmn::moves::fmt_move_header()));
         for attack_name in [
             &content.attack_1,
             &content.attack_2,
@@ -276,21 +287,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
                 "-" => text_result.push_str("-\n"),
                 _ => {
                     let move_ = pkmn_moves.get(&attack_name);
-                    match move_ {
-                        Some(move_) => text_result.push_str(&format!(
-                            "{}\t{}\t{}\t{}\t{}\t{}\t{}\n",
-                            move_.name,
-                            move_.type_,
-                            move_.category,
-                            move_.power,
-                            move_.accuracy,
-                            move_.pp,
-                            move_.description,
-                        )),
-                        None => {
-                            text_result.push_str(&format!("{} - NOT RECOGNISED\n", attack_name))
-                        }
-                    }
+                    text_result.push_str(&format!("{}\n", pkmn::moves::fmt_move(move_)));
                 }
             }
         }
@@ -303,10 +300,9 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         text_result.push_str(&"\n");
         for learnset in &evo_chain_learnsets {
-            text_result.push_str(&format!("{} learnset:\n", learnset.pokemon));
             text_result.push_str(&format!(
                 "{}\n",
-                get_pretty_learnset_table(learnset, &pkmn_moves).unwrap()
+                fmt_learnset(learnset, &pkmn_moves).unwrap()
             ));
         }
 

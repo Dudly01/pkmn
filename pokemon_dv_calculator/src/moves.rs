@@ -20,6 +20,30 @@ pub struct Move {
     pub description: String,
 }
 
+pub fn fmt_move_header() -> String {
+    format!(
+        "{:<15}  {:<6}  {:<12}  {:>3}  {:>4}  {:>2}  {}",
+        "Name", "Type", "Cat", "Pow", "Acc", "PP", "Desc"
+    )
+}
+
+pub fn fmt_move(move_: Option<&Move>) -> String {
+    match move_ {
+        Some(m) => {
+            format!(
+                "{:<15}  {:<6}  {:<12}  {:>3}  {:>3}%  {:>2}  {}",
+                m.name, m.type_, m.category, m.power, m.accuracy, m.pp, m.description
+            )
+        }
+        None => {
+            format!(
+                "{:<15}  {:<6}  {:<12}  {:>3}  {:>3}%  {:>2}  {}",
+                "N/A", "N/A", "N/A", "N/A", "N/A", "N/A", "N/A"
+            )
+        }
+    }
+}
+
 /// The moves available in Gen I.
 ///
 /// Note:
