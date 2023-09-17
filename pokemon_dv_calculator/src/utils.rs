@@ -1,13 +1,10 @@
-use std::io::Write;
-
 use crate as pkmn;
-use crate::moves::{Move, Moves};
+use crate::moves::Moves;
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
 use image::DynamicImage;
 use imageproc::contrast::threshold_mut;
 use pkmn::learnset::Learnset;
-use tabwriter::TabWriter;
 
 /// Returns a formatted "By leveling up" learnset table.
 /// For the cases when the learnset is the same among game versions.
