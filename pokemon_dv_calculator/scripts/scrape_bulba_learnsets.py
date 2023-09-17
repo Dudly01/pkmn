@@ -183,7 +183,7 @@ def get_learnset_leveling_up(markdown_source: str) -> list[list[str]]:
 
 
 def norm_learnset_table(table: list[list[str]]) -> list[list[str]]:
-    """Splits the Level column into RGB and Y columns if present."""
+    """Splits the Level column, if present, into RGB and Y columns."""
     if table[0][0] == "RGB" and table[0][1] == "Y":
         return table
 
@@ -209,19 +209,27 @@ def main():
     if len(article_urls) != 151:
         raise RuntimeError(f"Expected URLs for 151 Pokemon. Found {len(article_urls)}.")
 
-    print(f"Found {len(article_urls)} article URLs.")
+    # Bulbapedia to Smogon names
+    smogon_names = {
+        "Nidoran♀": "Nidoran-F",
+        "Nidoran♂": "Nidoran-M",
+    }
 
     pkmn_entries = []
     for url in tqdm(article_urls):
         markdown_source = get_wiki_article_markdown_source(url=url)
 
-        ndex, pkmn = get_pokemon_name_and_ndex(markdown_source)
+        ndex, pokemon = get_pokemon_name_and_ndex(markdown_source)
+        if pokemon in smogon_names:
+            pokemon = smogon_names[pokemon]
+
         table = get_learnset_leveling_up(markdown_source)
+        table = [row[:-4] for row in table]  # Remove Type, Powr, Acc and PP
         normed_table = norm_learnset_table(table)
 
         entry = {
             "ndex": ndex,
-            "pokemon": pkmn,
+            "pokemon": pokemon,
             "by_leveling_up": table,
         }
         pkmn_entries.append(entry)
