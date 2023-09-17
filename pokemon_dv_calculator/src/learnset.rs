@@ -15,7 +15,7 @@ pub struct Learnsets {
 
 impl Learnsets {
     pub fn new() -> Learnsets {
-        const LEARNSET_JSON: &str = include_str!("../data/learnset.json");
+        const LEARNSET_JSON: &str = include_str!("../data/geni_learnsets.json");
 
         // Deserialize the JSON data into a Vec<Entry>
         let entries: Vec<Learnset> =
