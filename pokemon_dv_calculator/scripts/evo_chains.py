@@ -1,4 +1,4 @@
-"""Cleans the evo_chains.csv into rb_evo_chains.txt
+"""Cleans the evo_chains.csv into geni_evo_chains.txt
 
 To create the input file:
  - Visit https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family.
@@ -240,7 +240,7 @@ def main():
 
     filtered_paths = [JOIN_STR.join(p) for p in filtered_paths]
 
-    evo_chain_path = Path(script_dir.parent, "data", "rb_evo_chains.txt")
+    evo_chain_path = Path(script_dir.parent, "data", "geni_evo_chains.txt")
     with evo_chain_path.open("w", encoding="utf-8") as f:
         for evo in filtered_paths:
             f.write(evo + "\n")
