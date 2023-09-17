@@ -222,7 +222,7 @@ def main():
         entry = {
             "ndex": ndex,
             "pokemon": pkmn,
-            "by_leveling_up": normed_table,
+            "by_leveling_up": table,
         }
         pkmn_entries.append(entry)
 
