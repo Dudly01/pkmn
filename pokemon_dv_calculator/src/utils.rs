@@ -298,7 +298,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         text_result.push_str(&"\nEvo chain(s):\n");
         println!("Evo chains:\n");
         for chain in evo_chains {
-            text_result.push_str(&format!("{}\n", chain.replace(">", "   >   ")));
+            text_result.push_str(&format!("{}\n", chain.replace("->", "   ->   ")));
         }
 
         text_result.push_str(&"\n");
