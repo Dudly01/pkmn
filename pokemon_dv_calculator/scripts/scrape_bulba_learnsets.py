@@ -38,8 +38,8 @@ def get_gen_1_learnset_article_urls() -> list[str]:
                         "https://bulbapedia.bulbagarden.net", relative_url
                     )
                     article_urls.append(category_url)
-                    
-    if (n:= len(article_urls)) != 151:
+
+    if (n := len(article_urls)) != 151:
         raise RuntimeError(f"Expected 151 URLs, found {n}.")
 
     return article_urls
@@ -182,6 +182,26 @@ def get_learnset_leveling_up(markdown_source: str) -> list[list[str]]:
     return table
 
 
+def norm_learnset_table(table: list[list[str]]) -> list[list[str]]:
+    """Splits the Level column into RGB and Y columns if present."""
+    if table[0][0] == "RGB" and table[0][1] == "Y":
+        return table
+
+    if table[0][0] != "Level":
+        raise ValueError(f"Got unexpected header in learnset table: {table[0]}")
+
+    normed_header = ["RGB", "Y"] + table[0][1:]
+
+    normed_rows = []
+    for row in table[1:]:
+        normed_row = [row[0]] + row
+        normed_rows.append(normed_row)
+
+    normed_table = normed_header + normed_rows
+
+    return normed_table
+
+
 def main():
     print("Collecting Gen 1 learnset articles.")
 
@@ -197,19 +217,20 @@ def main():
 
         ndex, pkmn = get_pokemon_name_and_ndex(markdown_source)
         table = get_learnset_leveling_up(markdown_source)
+        normed_table = norm_learnset_table(table)
 
         entry = {
             "ndex": ndex,
             "pokemon": pkmn,
-            "by_leveling_up": table,
+            "by_leveling_up": normed_table,
         }
         pkmn_entries.append(entry)
 
-    dst_dir = Path(__file__).parent
+    dst_dir = Path(__file__).parent.parent / "data"
     if not dst_dir.is_dir:
         dst_dir.mkdir()
 
-    result_json_path = Path(dst_dir, "learnset.json")
+    result_json_path = Path(dst_dir, "geni_learnsets.json")
     with result_json_path.open("w", encoding="utf-8") as f:
         json_str = json.dumps(pkmn_entries, indent=4, ensure_ascii=False)
         f.write(json_str)
