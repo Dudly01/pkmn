@@ -1,12 +1,12 @@
-"""Cleans the evo_chains.csv into evo_chains.txt
+"""Cleans the evo_chains.csv into rb_evo_chains.txt
 
-To create the input file, visit the Bulbapedia "List of Pokémon by evolution family"
-page at https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family.
-Copy the table into a spreadsheet editor, then export it into a CSV file.
-(Make sure that the cells are correct for Sylveon.)
+To create the input file:
+ - Visit https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family.
+ - Copy the table into Open Office Calc (a spreadsheet editor).
+ - Verify cell structure and layout. (Look at diverging families and Sylveon).
+ - Export into CSV file using comma separators and " quote chars.
 
 The exported file contains the evolution chains line by line.
-E.g. Eevee take up three lines in Gen 1.
 """
 
 import csv
@@ -214,6 +214,13 @@ def main():
     script_dir = Path(__file__).parent
     csv_path = Path(script_dir.parent, "data", "evo_chains.csv")
     clean_csv_rows = list_clean_rows(csv_path)
+
+    for row in clean_csv_rows:
+        if JOIN_STR in row:
+            raise RuntimeError(
+                f"JOIN_STR {JOIN_STR} found in row.",
+                "It would mess up later data processing.",
+            )
 
     evo_paths = get_full_evo_paths(clean_csv_rows)
 
