@@ -216,11 +216,12 @@ def main():
     clean_csv_rows = list_clean_rows(csv_path)
 
     for row in clean_csv_rows:
-        if JOIN_STR in row:
-            raise RuntimeError(
-                f"JOIN_STR {JOIN_STR} found in row.",
-                "It would mess up later data processing.",
-            )
+        for cell in row:
+            if JOIN_STR in cell:
+                raise RuntimeError(
+                    f"The cell '{cell}' contains the '{JOIN_STR}' join-string. "
+                    "This will create errors later. ",
+                )
 
     evo_paths = get_full_evo_paths(clean_csv_rows)
 
