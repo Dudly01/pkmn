@@ -1,6 +1,28 @@
 # pokemon-dv-calculator
 A tool for estimating the DVs of a Pokémon.
 
+# Quickstart
+
+This section provides minimal info on getting started with the project.
+For more details, visit the documentation of the individual tools.
+
+## Benchmarks
+
+The project uses [Criterion.rs](https://github.com/bheisler/criterion.rs).
+
+```
+# Runs benchmarks
+cargo bench
+
+# Filters benchmark IDs with <filter> regular expression
+cargo bench -- <filter>
+
+# Saves baseline
+cargo bench -- --save-baseline <name>
+
+# Compares against baseline
+cargo bench -- --baseline <name>
+```
 
 # Troubleshooting
 
