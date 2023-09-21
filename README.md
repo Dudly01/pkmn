@@ -1,10 +1,29 @@
 # pokemon-dv-calculator
+
 A tool for estimating the DVs of a Pokémon.
 
-# Quickstart
+# Getting started
 
-This section provides minimal info on getting started with the project.
+This section provides a quickstart of using the project.
 For more details, visit the documentation of the individual tools.
+
+## Building WASM, testing website
+
+```
+# Installs wasm-pack
+cargo install wasm-pack
+
+# Builds WASM code
+wasm-pack build --target web
+
+# Starts local webserver
+python -m http.server
+```
+
+Visit http://localhost:8000/ to see `index.html`.
+Access other `.html` files with their relative path.
+
+Hard-refresh Firefox with `Ctrl + F5` in case changes do not show up.
 
 ## Benchmarks
 
@@ -26,44 +45,17 @@ cargo bench -- --baseline <name>
 
 # Troubleshooting
 
-## Build WASM code
+This section provides information on issues encountered during the develpment.
 
-https://rustwasm.github.io/docs/book/game-of-life/setup.html
+## Missing dependencies
 
-cargo install wasm-pack
-
-```
-wasm-pack build --target web
-```
-
-## Local webserver
-
-To view the examples it's best to start a local webserver from the repo's directory. In Python3, this can be done with:
+Some crates may require the installation of certain libraries.
 
 ```
-python -m http.server
-```
-
-## Hard reload Firefox
-
-Ctrl + F5
-
-Afterwards, one can visit http://localhost:8000/ which will show `index.html` by default. Other `.html` files can be accessed with their relative paths.
-
-[Source](https://emscripten.org/docs/getting_started/FAQ.html#faq-local-webserver)
-
-
-## scrap - acquiring screenshot
-
-It was missing libraries.
-```
+# For scrap
 sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
-```
 
-## show-image - showing images
-
-It was missing a packages.
-```
+# For show-image
 sudo apt-get install pkg-config libfontconfig1-dev
 ```
 
