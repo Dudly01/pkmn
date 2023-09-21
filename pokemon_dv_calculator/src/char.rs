@@ -75,7 +75,7 @@ impl Charset {
     pub fn new() -> Charset {
         let mut chars = HashMap::<CharBitmap, &str>::new();
 
-        let img_path = "../Nicknaming_I.png";
+        let img_path = "data/Nicknaming_I.png";
         let img_nicknaming = ImageReader::open(img_path).unwrap().decode().unwrap();
         let mut img_nicknaming = img_nicknaming.to_luma8();
         threshold_mut(&mut img_nicknaming, 200);  // Needed as black is 7 white is 23x
