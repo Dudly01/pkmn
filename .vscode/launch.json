@@ -11,9 +11,9 @@
             "cargo": {
                 "args": [
                     "build",
-                    "--manifest-path=${workspaceFolder}/pokemon_dv_calculator/Cargo.toml",
+                    "--manifest-path=${workspaceFolder}/core/Cargo.toml",
                     "--example=vis",
-                    "--package=pokemon_dv_calculator"
+                    "--package=core"
                 ],
                 "filter": {
                     "name": "vis",
@@ -21,9 +21,9 @@
                 }
             },
             "args": [],
-            "cwd": "${workspaceFolder}/pokemon_dv_calculator",
+            "cwd": "${workspaceFolder}/core",
             "initCommands": [
-                "command script import ${workspaceFolder}/pokemon_dv_calculator/scripts/debug_vis.py" // <<<<< This is the important bit
+                "command script import ${workspaceFolder}/core/scripts/debug_vis.py" // <<<<< This is the important bit
             ]
         }
     ]

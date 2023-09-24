@@ -10,7 +10,7 @@ use crossterm::{
 use image::DynamicImage;
 use std::{io::stdout, time::Instant};
 
-use pokemon_dv_calculator as pkmn;
+use core as pkmn;
 
 fn main() -> Result<()> {
     let mut stdout = stdout();

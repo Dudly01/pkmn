@@ -1,6 +1,6 @@
 /// Helper example for developing Python debug scripts.
 use image::io::Reader as ImageReader;
-use pokemon_dv_calculator::{position::Position, roi::Roi};
+use core::{position::Position, roi::Roi};
 
 #[show_image::main]
 fn main() {
