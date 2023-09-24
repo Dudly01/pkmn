@@ -2,7 +2,7 @@
 use criterion::*;
 
 use image::{io::Reader as ImageReader, GrayImage};
-use pokemon_dv_calculator as pkmn;
+use core as pkmn;
 
 const SUMMARY_SCREEN_1_PATH: &str = "data/Yellow_summary_1.png";
 const SUMMARY_SCREEN_2_PATH: &str = "data/Yellow_summary_2.png";

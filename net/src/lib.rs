@@ -1,6 +1,6 @@
 mod utils;
 
-use pokemon_dv_calculator as pkmn;
+use core as pkmn;
 use wasm_bindgen::prelude::*;
 
 use image::{DynamicImage, ImageBuffer, Rgba};

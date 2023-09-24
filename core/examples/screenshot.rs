@@ -2,7 +2,7 @@
 use image::io::Reader as ImageReader;
 use show_image;
 
-use pokemon_dv_calculator as pkmn;
+use core as pkmn;
 
 #[show_image::main]
 fn main() -> Result<(), String> {

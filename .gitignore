@@ -1,5 +1,5 @@
 # Rust build files
-pokemon_dv_calculator/target/*
+core/target/*
 
 # Images for development
 *.png
@@ -18,5 +18,5 @@ net/wasm-pack.log
 
 # Data files
 # Ignored until resolved format
-pokemon_dv_calculator/data/
-pokemon_dv_calculator/data_manual/
+core/data/
+core/data_manual/
