@@ -1,7 +1,41 @@
+use core::{gameboy::contour_to_position, position::Position};
+
 /// Finds the GameBoy on the "screenshot.png", shows images in windows, shows stats in terminal.
-use image::io::Reader as ImageReader;
-use imageproc::contrast::threshold_mut;
+use image::{io::Reader as ImageReader, GrayImage, Luma};
+use imageproc::{contrast::threshold_mut, rect::Rect};
 use show_image;
+
+fn locate_screen(img: &GrayImage) -> Option<Position> {
+    let contours = imageproc::contours::find_contours::<i32>(&img);
+
+    let target_ratio = 160.0 / 62.0;
+    let tolerance = 0.01;
+
+    let mut candidates = Vec::with_capacity(4);
+
+    for contour in &contours {
+        let pos = contour_to_position(contour).unwrap();
+
+        if pos.width < 160 || pos.height < 62 {
+            continue; // Smaller than original size
+        }
+
+        let ratio = pos.width as f32 / pos.height as f32;
+        if (ratio - target_ratio).abs() > tolerance {
+            continue; // Not within tolerance
+        }
+
+        candidates.push(pos);
+    }
+
+    let largest_pos = candidates.iter().max_by_key(|p| p.width * p.height);
+
+    let Some(largest_pos) = largest_pos else {
+        return None; // There were no candidates to find the biggest of
+    };
+
+    Some(largest_pos.clone())
+}
 
 #[show_image::main]
 fn main() -> Result<(), String> {
@@ -28,12 +62,21 @@ fn main() -> Result<(), String> {
     ];
 
     for threshold in (0..255).step_by(10) {
-
         println!("Threshold: {}", threshold);
 
         for i in 0..3 {
             let mut img = imgs[i].to_luma8();
             threshold_mut(&mut img, threshold);
+
+            let screen_pos = locate_screen(&img);
+            if let Some(screen_pos) = screen_pos {
+                let rect = Rect::at(screen_pos.x as i32, screen_pos.y as i32)
+                    .of_size(screen_pos.width, screen_pos.height);
+
+                let color = Luma([128]);
+
+                imageproc::drawing::draw_hollow_rect_mut(&mut img, rect, color)
+            }
 
             let window = &windows[i];
             window.set_image(i.to_string(), img).unwrap();
