@@ -254,7 +254,7 @@ impl StatScreen1Layout {
 
             let char = read_character(&roi, chars);
             let Ok(char) = char else {
-                return false;  // Char not recognised
+                return false; // Char not recognised
             };
             if char != "/" {
                 return false; // Not the char we want
@@ -444,7 +444,7 @@ impl StatScreen2Layout {
         };
         let char = read_character(&roi, chars);
         let Ok(char) = char else {
-            return false;  // Char not recognised
+            return false; // Char not recognised
         };
         if char != "/" {
             return false; // Not the char we want
@@ -509,4 +509,179 @@ pub struct StatsSreen2Content {
     pub attack_2: String,
     pub attack_3: String,
     pub attack_4: String,
+}
+
+pub struct GscSummary1 {
+    pub width: i32,
+    pub height: i32,
+
+    pub ndex: Position,
+    pub level: Position,
+
+    pub hp: Position,
+}
+
+impl GscSummary1 {
+    pub fn new() -> GscSummary1 {
+        let width = 160;
+        let height = 144;
+
+        let ndex = Position {
+            x: 80,
+            y: 0,
+            width: 23,
+            height: 7,
+        };
+
+        let level = Position {
+            x: 120,
+            y: 0,
+            width: 23,
+            height: 7,
+        };
+
+        let hp = Position {
+            x: 40,
+            y: 80,
+            width: 23,
+            height: 7,
+        };
+
+        let layout = GscSummary1 {
+            width,
+            height,
+            ndex,
+            level,
+            hp,
+        };
+
+        layout
+    }
+}
+
+pub struct GscSummary2 {
+    pub width: i32,
+    pub height: i32,
+
+    pub ndex: Position,
+    pub level: Position,
+
+    pub attack_1: Position,
+    pub attack_2: Position,
+    pub attack_3: Position,
+    pub attack_4: Position,
+}
+
+impl GscSummary2 {
+    pub fn new() -> GscSummary2 {
+        let layout = GscSummary2 {
+            width: 160,
+            height: 144,
+            ndex: Position {
+                x: 80,
+                y: 0,
+                width: 23,
+                height: 7,
+            },
+            level: Position {
+                x: 120,
+                y: 0,
+                width: 23,
+                height: 7,
+            },
+            attack_1: Position {
+                x: 64,
+                y: 80,
+                width: 95,
+                height: 7,
+            },
+            attack_2: Position {
+                x: 64,
+                y: 96,
+                width: 95,
+                height: 7,
+            },
+            attack_3: Position {
+                x: 64,
+                y: 112,
+                width: 95,
+                height: 7,
+            },
+            attack_4: Position {
+                x: 64,
+                y: 128,
+                width: 95,
+                height: 7,
+            },
+        };
+
+        layout
+    }
+}
+
+pub struct GscSummary3 {
+    pub width: i32,
+    pub height: i32,
+
+    pub ndex: Position,
+    pub level: Position,
+
+    pub attack: Position,
+    pub defense: Position,
+    pub spc_attack: Position,
+    pub spc_defense: Position,
+    pub speed: Position,
+}
+
+impl GscSummary3 {
+    pub fn new() -> GscSummary3 {
+        let layout = GscSummary3 {
+            width: 160,
+            height: 144,
+            ndex: Position {
+                x: 80,
+                y: 0,
+                width: 23,
+                height: 7,
+            },
+            level: Position {
+                x: 120,
+                y: 0,
+                width: 23,
+                height: 7,
+            },
+            attack: Position {
+                x: 136,
+                y: 72,
+                width: 23,
+                height: 7,
+            },
+            defense: Position {
+                x: 136,
+                y: 88,
+                width: 23,
+                height: 7,
+            },
+            spc_attack: Position {
+                x: 136,
+                y: 104,
+                width: 23,
+                height: 7,
+            },
+            spc_defense: Position {
+                x: 136,
+                y: 120,
+                width: 23,
+                height: 7,
+            },
+            speed: Position {
+                x: 136,
+                y: 136,
+                width: 23,
+                height: 7,
+            },
+        };
+
+        layout
+    }
 }
