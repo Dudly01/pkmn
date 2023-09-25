@@ -557,6 +557,31 @@ impl GscSummary1 {
 
         layout
     }
+
+    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return false;
+        }
+
+        let roi = Roi {
+            img: img,
+            pos: Position {
+                // hp divider slash
+                x: 32,
+                y: 80,
+                width: 7,
+                height: 7,
+            },
+        };
+        let char = read_character(&roi, chars);
+        let Ok(char) = char else {
+            return false; // Char not recognised
+        };
+        if char != "/" {
+            return false; // Not the char we want
+        }
+        true
+    }
 }
 
 pub struct GscSummary2 {
@@ -616,6 +641,31 @@ impl GscSummary2 {
         };
 
         layout
+    }
+
+    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return false;
+        }
+
+        let roi = Roi {
+            img: img,
+            pos: Position {
+                // First attack PP divider
+                x: 136,
+                y: 88,
+                width: 7,
+                height: 7,
+            },
+        };
+        let char = read_character(&roi, chars);
+        let Ok(char) = char else {
+            return false; // Char not recognised
+        };
+        if char != "/" {
+            return false; // Not the char we want
+        }
+        true
     }
 }
 
@@ -683,5 +733,30 @@ impl GscSummary3 {
         };
 
         layout
+    }
+
+    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+        if img.width() as i32 != self.width || img.height() as i32 != self.height {
+            return false;
+        }
+
+        let roi = Roi {
+            img: img,
+            pos: Position {
+                // OT divider slash
+                x: 16,
+                y: 96,
+                width: 7,
+                height: 7,
+            },
+        };
+        let char = read_character(&roi, chars);
+        let Ok(char) = char else {
+            return false; // Char not recognised
+        };
+        if char != "/" {
+            return false; // Not the char we want
+        }
+        true
     }
 }
