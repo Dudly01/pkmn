@@ -70,12 +70,20 @@ fn main() -> Result<(), String> {
 
             let screen_pos = locate_screen(&img);
             if let Some(screen_pos) = screen_pos {
+                let height = screen_pos.width as f32 * 144.0 / 160.0;
+                let height = height as i32;
+
                 let rect = Rect::at(screen_pos.x as i32, screen_pos.y as i32)
-                    .of_size(screen_pos.width, screen_pos.height);
+                    .of_size(screen_pos.width, height as u32);
 
                 let color = Luma([128]);
 
-                imageproc::drawing::draw_hollow_rect_mut(&mut img, rect, color)
+                imageproc::drawing::draw_hollow_rect_mut(&mut img, rect, color);
+
+                println!(
+                    "x:{} y:{} w:{} h:{}",
+                    screen_pos.x, screen_pos.y, screen_pos.width, height
+                );
             }
 
             let window = &windows[i];
