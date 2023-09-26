@@ -1,3 +1,5 @@
+//! Prototype app, locating the Gen I-II summary screens.
+
 use core::{gameboy::contour_to_position, position::Position};
 
 /// Finds the GameBoy on the "screenshot.png", shows images in windows, shows stats in terminal.
