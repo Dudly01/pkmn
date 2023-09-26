@@ -8,7 +8,7 @@ use imageproc::contrast::threshold;
 use std::cmp::{max, min};
 
 /// Returns the inclusive bounding box of a contour.
-fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
+pub fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
     if contour.points.len() < 1 {
         return Err("Contour contains no points!");
     }
