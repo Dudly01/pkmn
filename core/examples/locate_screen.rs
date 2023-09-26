@@ -7,6 +7,10 @@ use show_image;
 
 /// Returns the position of RBY Game Boy if found.
 fn locate_screen_rby(img: &GrayImage) -> Option<Position> {
+
+    let mut img = img.clone();
+    *img.get_pixel_mut(0, 0) = Luma([0]);
+
     let contours = imageproc::contours::find_contours::<i32>(&img);
 
     let width_orig = 160;
