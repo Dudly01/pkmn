@@ -5,7 +5,8 @@ use image::{io::Reader as ImageReader, GrayImage, Luma};
 use imageproc::{contrast::threshold_mut, rect::Rect};
 use show_image;
 
-fn locate_screen(img: &GrayImage) -> Option<Position> {
+/// Returns the position of GSC Game Boy if found.
+fn locate_screen_gsc(img: &GrayImage) -> Option<Position> {
     let contours = imageproc::contours::find_contours::<i32>(&img);
 
     let target_ratio = 160.0 / 62.0;
@@ -17,6 +18,42 @@ fn locate_screen(img: &GrayImage) -> Option<Position> {
         let pos = contour_to_position(contour).unwrap();
 
         if pos.width < 160 || pos.height < 62 {
+            continue; // Smaller than original size
+        }
+
+        let ratio = pos.width as f32 / pos.height as f32;
+        if (ratio - target_ratio).abs() > tolerance {
+            continue; // Not within tolerance
+        }
+
+        candidates.push(pos);
+    }
+
+    let largest_pos = candidates.iter().max_by_key(|p| p.width * p.height);
+
+    let Some(largest_pos) = largest_pos else {
+        return None; // There were no candidates to find the biggest of
+    };
+
+    Some(largest_pos.clone())
+}
+
+/// Returns the position of RBY Game Boy if found.
+fn locate_screen_rby(img: &GrayImage) -> Option<Position> {
+    let contours = imageproc::contours::find_contours::<i32>(&img);
+
+    let width_orig = 160;
+    let height_orig = 144;
+
+    let target_ratio = width_orig as f32 / height_orig as f32;
+    let tolerance = 0.01;
+
+    let mut candidates = Vec::with_capacity(4);
+
+    for contour in &contours {
+        let pos = contour_to_position(contour).unwrap();
+
+        if pos.width < width_orig || pos.height < height_orig {
             continue; // Smaller than original size
         }
 
@@ -68,8 +105,23 @@ fn main() -> Result<(), String> {
             let mut img = imgs[i].to_luma8();
             threshold_mut(&mut img, threshold);
 
-            let screen_pos = locate_screen(&img);
-            if let Some(screen_pos) = screen_pos {
+            let rby_screen_pos = locate_screen_rby(&img);
+            if let Some(screen_pos) = rby_screen_pos {
+                let rect = Rect::at(screen_pos.x as i32, screen_pos.y as i32)
+                    .of_size(screen_pos.width, screen_pos.height);
+
+                let color = Luma([128]);
+
+                imageproc::drawing::draw_hollow_rect_mut(&mut img, rect, color);
+
+                println!(
+                    "id:{} RBY x:{} y:{} w:{} h:{}",
+                    i, screen_pos.x, screen_pos.y, screen_pos.width, screen_pos.height
+                );
+            }
+
+            let gsc_screen_pos = locate_screen_gsc(&img);
+            if let Some(screen_pos) = gsc_screen_pos {
                 let height = screen_pos.width as f32 * 144.0 / 160.0;
                 let height = height as i32;
 
@@ -81,8 +133,8 @@ fn main() -> Result<(), String> {
                 imageproc::drawing::draw_hollow_rect_mut(&mut img, rect, color);
 
                 println!(
-                    "x:{} y:{} w:{} h:{}",
-                    screen_pos.x, screen_pos.y, screen_pos.width, height
+                    "id:{} GSC x:{} y:{} w:{} h:{}",
+                    i, screen_pos.x, screen_pos.y, screen_pos.width, height
                 );
             }
 
