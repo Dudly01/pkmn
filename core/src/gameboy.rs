@@ -2,53 +2,27 @@ use crate::char::Charset;
 use crate::ocr::{read_character, read_field};
 use crate::position::Position;
 use crate::roi::Roi;
-use image::{DynamicImage, GrayImage, ImageBuffer, Luma};
+use image::{DynamicImage, GrayImage, Luma};
 use imageproc::contours::Contour;
-use imageproc::contrast::threshold;
-use std::cmp::{max, min};
+use imageproc::contrast::threshold_mut;
 
-/// Returns the inclusive bounding box of a contour.
-pub fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
-    if contour.points.len() < 1 {
-        return Err("Contour contains no points!");
-    }
+/// Searches and returns the possible screen positions for Pokemon RBY.
+///
+/// Note that the all-white border of the summary screen may prevent the
+/// border to be found. Add a black padding or a marker pixel to prevent that.
+pub fn search_screen_rby(contours: &Vec<Contour<i32>>) -> Vec<Position> {
+    let width_orig = 160;
+    let height_orig = 144;
 
-    let curr_point = &contour.points[0];
-    let mut x_min = curr_point.x;
-    let mut x_max = curr_point.x;
-    let mut y_min = curr_point.y;
-    let mut y_max = curr_point.y;
-
-    for point in &contour.points[1..] {
-        x_min = min(x_min, point.x);
-        x_max = max(x_max, point.x);
-        y_min = min(y_min, point.y);
-        y_max = max(y_max, point.y);
-    }
-
-    let width = x_max - x_min + 1;
-    let height = y_max - y_min + 1;
-
-    let pos = Position {
-        x: x_min as u32,
-        y: y_min as u32,
-        width: width as u32,
-        height: height as u32,
-    };
-    Ok(pos)
-}
-
-/// Returns the possible Game Boy screen positions.
-/// Candidates have a minimum size of 160x140 and a ratio of ~10:9.
-fn locate_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Position> {
-    let target_ratio = 10.0 / 9.0;
+    // Look for rectangle
+    let target_ratio = width_orig as f32 / height_orig as f32;
     let tolerance = 0.01;
 
-    let mut potential_rects: Vec<Position> = Vec::with_capacity(8);
+    let mut candidates: Vec<Position> = Vec::with_capacity(8);
     for contour in contours {
-        let bbox = contour_to_position(&contour).unwrap();
+        let bbox = Position::try_from(contour).expect("Could not create Position");
 
-        if bbox.width < 160 || bbox.height < 144 {
+        if bbox.width < width_orig || bbox.height < height_orig {
             continue; // Smaller than original resolution
         }
 
@@ -57,65 +31,72 @@ fn locate_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Position> {
             continue; // Not within tolerance
         }
 
-        potential_rects.push(bbox);
+        candidates.push(bbox);
     }
-    potential_rects
+    candidates
 }
 
-/// Returns the position of the Game Boy screen.
-///
-/// The input input image is converted to grayscale and thresholded right away.
-/// Therefore it accepts images of various kinds.
-///
-/// Known limitation: fails if the input image is the original GameBoy screen (160x140 pixels).
-/// The erode is too much for that.
-pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
-    let img_gray = img.clone().into_luma8();
+/// Searches and returns the possible screen positions for Pokemon GSC.
+pub fn search_screen_gsc(contours: &Vec<Contour<i32>>) -> Vec<Position> {
+    let width_orig = 160;
+    let height_orig = 62;
 
-    let threshold_val = 200;
-    let img_threshold = threshold(&img_gray, threshold_val);
+    // Look for rectangle
+    let target_ratio = width_orig as f32 / height_orig as f32;
+    let tolerance = 0.01;
 
-    // Unlike OpenCV, the border type can not be set for erode.
-    // Would it be set to a constant zero, then erode would create a black border.
-    // Find contours need sthe black border as seen in #38
-    let border_size = 1; // pixels
-    let new_width = img_threshold.width() + 2 * border_size;
-    let new_height = img_threshold.height() + 2 * border_size;
-    let mut img_border = ImageBuffer::from_pixel(new_width, new_height, Luma([0]));
-    for y in 0..img_threshold.height() {
-        for x in 0..img_threshold.width() {
-            let pixel = img_threshold.get_pixel(x, y);
-            img_border.put_pixel(x + border_size, y + border_size, *pixel);
+    let mut candidates: Vec<Position> = Vec::with_capacity(8);
+    for contour in contours {
+        let mut bbox = Position::try_from(contour).expect("Could not create Position");
+
+        if bbox.width < width_orig || bbox.height < height_orig {
+            continue; // Smaller than original resolution
         }
+
+        let ratio = bbox.width as f32 / bbox.height as f32;
+        if (ratio - target_ratio).abs() > tolerance {
+            continue; // Not within tolerance
+        }
+
+        // Extrapolate full screen position
+        let estimated_height = bbox.width as f32 * 144.0 / 160.0;
+        let estimated_height = estimated_height as u32;
+
+        bbox.height = estimated_height;
+
+        candidates.push(bbox);
     }
+    candidates
+}
 
-    // Remove little dots to speed up finding contours
-    let erode_size = 1;
-    let image_erode = imageproc::morphology::erode(
-        &img_border,
-        imageproc::distance_transform::Norm::LInf,
-        erode_size as u8,
-    );
+/// Returns the position of the biggest Game Boy screen on the image.
+///
+/// Works with the Summary screens of RBY and GSC.
+pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
+    let mut img = img.to_luma8();
 
-    let contours = imageproc::contours::find_contours::<i32>(&image_erode);
+    let threshold_val = 140; // Can be anything in [30, 240]
+    threshold_mut(&mut img, threshold_val);
 
-    let screen_candidates = locate_screen_candidates(&contours);
+    // find_contours() does not find the border on an all-white image.
+    // Add black marker pixel as a work-around.
+    *img.get_pixel_mut_checked(0, 0)
+        .expect("Image has no pixels") = Luma([0]);
 
-    let largest_candidate = screen_candidates
+    let contours = imageproc::contours::find_contours::<i32>(&img);
+
+    let rby_candidates = search_screen_rby(&contours);
+    let gsc_candidates = search_screen_gsc(&contours);
+
+    let biggest = gsc_candidates
         .iter()
-        .max_by_key(|pos| pos.width * pos.height);
+        .chain(rby_candidates.iter())
+        .max_by_key(|&p| p.width * p.height);
 
-    let screen_position = match largest_candidate {
-        Some(p) => Some(Position {
-            x: p.x - erode_size - border_size,
-            y: p.y - erode_size - border_size,
-            width: p.width + 2 * erode_size,
-            height: p.height + 2 * erode_size,
-        }),
+    match biggest {
+        Some(a) => Some(*a),
         None => None,
-    };
-
-    screen_position
+    }
 }
 
 /// The layout of the stats screen 1.

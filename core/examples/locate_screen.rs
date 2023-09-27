@@ -1,84 +1,8 @@
 //! Prototype app, locating the Gen I-II summary screens.
-
-use core::{gameboy::contour_to_position, position::Position};
-
-/// Finds the GameBoy on the "screenshot.png", shows images in windows, shows stats in terminal.
-use image::{io::Reader as ImageReader, GrayImage, Luma};
+use core::gameboy::{search_screen_gsc, search_screen_rby};
+use image::{io::Reader as ImageReader, Luma};
 use imageproc::{contrast::threshold_mut, rect::Rect};
 use show_image;
-
-/// Returns the position of RBY Game Boy if found.
-fn locate_screen_rby(img: &GrayImage) -> Option<Position> {
-
-    let mut img = img.clone();
-    *img.get_pixel_mut(0, 0) = Luma([0]);
-
-    let contours = imageproc::contours::find_contours::<i32>(&img);
-
-    let width_orig = 160;
-    let height_orig = 144;
-
-    let target_ratio = width_orig as f32 / height_orig as f32;
-    let tolerance = 0.01;
-
-    let mut candidates = Vec::with_capacity(4);
-
-    for contour in &contours {
-        let pos = contour_to_position(contour).unwrap();
-
-        if pos.width < width_orig || pos.height < height_orig {
-            continue; // Smaller than original size
-        }
-
-        let ratio = pos.width as f32 / pos.height as f32;
-        if (ratio - target_ratio).abs() > tolerance {
-            continue; // Not within tolerance
-        }
-
-        candidates.push(pos);
-    }
-
-    let largest_pos = candidates.iter().max_by_key(|p| p.width * p.height);
-
-    let Some(largest_pos) = largest_pos else {
-        return None; // There were no candidates to find the biggest of
-    };
-
-    Some(largest_pos.clone())
-}
-
-/// Returns the position of GSC Game Boy if found.
-fn locate_screen_gsc(img: &GrayImage) -> Option<Position> {
-    let contours = imageproc::contours::find_contours::<i32>(&img);
-
-    let target_ratio = 160.0 / 62.0;
-    let tolerance = 0.01;
-
-    let mut candidates = Vec::with_capacity(4);
-
-    for contour in &contours {
-        let pos = contour_to_position(contour).unwrap();
-
-        if pos.width < 160 || pos.height < 62 {
-            continue; // Smaller than original size
-        }
-
-        let ratio = pos.width as f32 / pos.height as f32;
-        if (ratio - target_ratio).abs() > tolerance {
-            continue; // Not within tolerance
-        }
-
-        candidates.push(pos);
-    }
-
-    let largest_pos = candidates.iter().max_by_key(|p| p.width * p.height);
-
-    let Some(largest_pos) = largest_pos else {
-        return None; // There were no candidates to find the biggest of
-    };
-
-    Some(largest_pos.clone())
-}
 
 #[show_image::main]
 fn main() -> Result<(), String> {
@@ -120,10 +44,13 @@ fn main() -> Result<(), String> {
         for i in 0..5 {
             let mut img = imgs[i].to_luma8();
             threshold_mut(&mut img, threshold);
+            *img.get_pixel_mut_checked(0, 0).unwrap() = Luma([0]);
+            let contours = imageproc::contours::find_contours::<i32>(&img);
 
             print!("{i} ");
 
-            let rby_screen_pos = locate_screen_rby(&img);
+            let screen_candidates = search_screen_rby(&contours);
+            let rby_screen_pos = screen_candidates.iter().max_by_key(|&p| p.width);
             if let Some(screen_pos) = rby_screen_pos {
                 let rect = Rect::at(screen_pos.x as i32, screen_pos.y as i32)
                     .of_size(screen_pos.width, screen_pos.height);
@@ -138,7 +65,8 @@ fn main() -> Result<(), String> {
                 );
             }
 
-            let gsc_screen_pos = locate_screen_gsc(&img);
+            let screen_candidates = search_screen_gsc(&contours);
+            let gsc_screen_pos = screen_candidates.iter().max_by_key(|&p| p.width);
             if let Some(screen_pos) = gsc_screen_pos {
                 let height = screen_pos.width as f32 * 144.0 / 160.0;
                 let height = height as i32;
