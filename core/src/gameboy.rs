@@ -10,7 +10,7 @@ use imageproc::contrast::threshold_mut;
 ///
 /// Note that the all-white border of the summary screen may prevent the
 /// border to be found. Add a black padding or a marker pixel to prevent that.
-fn search_screen_rby(contours: &Vec<Contour<i32>>) -> Vec<Position> {
+pub fn search_screen_rby(contours: &Vec<Contour<i32>>) -> Vec<Position> {
     let width_orig = 160;
     let height_orig = 144;
 
@@ -37,7 +37,7 @@ fn search_screen_rby(contours: &Vec<Contour<i32>>) -> Vec<Position> {
 }
 
 /// Searches and returns the possible screen positions for Pokemon GSC.
-fn search_screen_gsc(contours: &Vec<Contour<i32>>) -> Vec<Position> {
+pub fn search_screen_gsc(contours: &Vec<Contour<i32>>) -> Vec<Position> {
     let width_orig = 160;
     let height_orig = 62;
 
