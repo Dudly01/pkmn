@@ -1,15 +1,12 @@
 //! Prototype app, locating the Gen I-II summary screens.
 
-use core::{gameboy::contour_to_position, position::Position};
-
-/// Finds the GameBoy on the "screenshot.png", shows images in windows, shows stats in terminal.
+use core::position::Position;
 use image::{io::Reader as ImageReader, GrayImage, Luma};
 use imageproc::{contrast::threshold_mut, rect::Rect};
 use show_image;
 
 /// Returns the position of RBY Game Boy if found.
 fn locate_screen_rby(img: &GrayImage) -> Option<Position> {
-
     let mut img = img.clone();
     *img.get_pixel_mut(0, 0) = Luma([0]);
 
@@ -24,7 +21,7 @@ fn locate_screen_rby(img: &GrayImage) -> Option<Position> {
     let mut candidates = Vec::with_capacity(4);
 
     for contour in &contours {
-        let pos = contour_to_position(contour).unwrap();
+        let pos = Position::try_from(contour).expect("Could not create Position");
 
         if pos.width < width_orig || pos.height < height_orig {
             continue; // Smaller than original size
@@ -57,7 +54,7 @@ fn locate_screen_gsc(img: &GrayImage) -> Option<Position> {
     let mut candidates = Vec::with_capacity(4);
 
     for contour in &contours {
-        let pos = contour_to_position(contour).unwrap();
+        let pos = Position::try_from(contour).expect("Could not create Position");
 
         if pos.width < 160 || pos.height < 62 {
             continue; // Smaller than original size

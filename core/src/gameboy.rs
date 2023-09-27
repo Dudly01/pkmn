@@ -5,38 +5,6 @@ use crate::roi::Roi;
 use image::{DynamicImage, GrayImage, ImageBuffer, Luma};
 use imageproc::contours::Contour;
 use imageproc::contrast::threshold;
-use std::cmp::{max, min};
-
-/// Returns the inclusive bounding box of a contour.
-pub fn contour_to_position(contour: &Contour<i32>) -> Result<Position, &str> {
-    if contour.points.len() < 1 {
-        return Err("Contour contains no points!");
-    }
-
-    let curr_point = &contour.points[0];
-    let mut x_min = curr_point.x;
-    let mut x_max = curr_point.x;
-    let mut y_min = curr_point.y;
-    let mut y_max = curr_point.y;
-
-    for point in &contour.points[1..] {
-        x_min = min(x_min, point.x);
-        x_max = max(x_max, point.x);
-        y_min = min(y_min, point.y);
-        y_max = max(y_max, point.y);
-    }
-
-    let width = x_max - x_min + 1;
-    let height = y_max - y_min + 1;
-
-    let pos = Position {
-        x: x_min as u32,
-        y: y_min as u32,
-        width: width as u32,
-        height: height as u32,
-    };
-    Ok(pos)
-}
 
 /// Returns the possible Game Boy screen positions.
 /// Candidates have a minimum size of 160x140 and a ratio of ~10:9.
@@ -46,7 +14,7 @@ fn locate_screen_candidates(contours: &Vec<Contour<i32>>) -> Vec<Position> {
 
     let mut potential_rects: Vec<Position> = Vec::with_capacity(8);
     for contour in contours {
-        let bbox = contour_to_position(&contour).unwrap();
+        let bbox = Position::try_from(contour).expect("Could not create Position");
 
         if bbox.width < 160 || bbox.height < 144 {
             continue; // Smaller than original resolution
