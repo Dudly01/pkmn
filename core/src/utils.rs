@@ -133,7 +133,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         );
 
     let mut img_gameboy = img_gameboy.to_luma8();
-    threshold_mut(&mut img_gameboy, 200);
+    let threshold_val = 140; // Anything in [30, 170]
+    threshold_mut(&mut img_gameboy, threshold_val);
     invert(&mut img_gameboy);
 
     let is_summary_screen_1 = stats_screen_1_layout.verify_layout(&img_gameboy, &chars);
