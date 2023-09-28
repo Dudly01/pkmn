@@ -43,6 +43,19 @@ cargo bench -- --save-baseline <name>
 cargo bench -- --baseline <name>
 ```
 
+## Debug visualization
+
+The CodeLLDB VSCode extension enables running Python scripts
+during a debugging session from the Debug Console.
+Therefore it is possible to visualize images.
+
+For helpful scripts and more info, peek into `core/scripts/debug_vis.py`.
+
+[CodeLLDB bundles its own copy of Python.](https://github.com/vadimcn/codelldb/blob/master/MANUAL.md#installing-packages)
+In order to install packages for use in CodeLLDB, use the 
+LLDB: Command Prompt command in VSCode, followed by `pip install --user <package>`.
+
+
 # Troubleshooting
 
 This section provides information on issues encountered during the develpment.
