@@ -78,7 +78,7 @@ impl Charset {
         let img_path = "data/Nicknaming_I.png";
         let img_nicknaming = ImageReader::open(img_path).unwrap().decode().unwrap();
         let mut img_nicknaming = img_nicknaming.to_luma8();
-        threshold_mut(&mut img_nicknaming, 200);  // Needed as black is 7 white is 23x
+        threshold_mut(&mut img_nicknaming, 200); // Needed as black is 7 white is 23x
         invert(&mut img_nicknaming);
         let img_nicknaming = img_nicknaming;
 
@@ -282,6 +282,88 @@ impl Charset {
             0, 0, 1, 0, 0, 0, 0, //
             0, 1, 0, 0, 0, 0, 0, //
             1, 0, 0, 0, 0, 0, 0, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
+
+        // GSC has a slightly modified set of character
+
+        let img_path = "data/Nicknaming_II.png";
+        let img_nicknaming = ImageReader::open(img_path).unwrap().decode().unwrap();
+        let mut img_nicknaming = img_nicknaming.to_luma8();
+        threshold_mut(&mut img_nicknaming, 200); // Needed as black is 7 white is 23x
+        invert(&mut img_nicknaming);
+        let img_nicknaming = img_nicknaming;
+
+        let char_positions = [
+            ("A", 0, 0),
+            ("B", 0, 1),
+            ("C", 0, 2),
+            ("D", 0, 3),
+            ("E", 0, 4),
+            ("F", 0, 5),
+            ("G", 0, 6),
+            ("H", 0, 7),
+            ("I", 0, 8),
+            ("J", 1, 0),
+            ("K", 1, 1),
+            ("L", 1, 2),
+            ("M", 1, 3),
+            ("N", 1, 4),
+            ("O", 1, 5),
+            ("P", 1, 6),
+            ("Q", 1, 7),
+            ("R", 1, 8),
+            ("S", 2, 0),
+            ("T", 2, 1),
+            ("U", 2, 2),
+            ("V", 2, 3),
+            ("W", 2, 4),
+            ("X", 2, 5),
+            ("Y", 2, 6),
+            ("Z", 2, 7),
+            (" ", 2, 8),
+        ];
+        for (char, row, col) in char_positions {
+            let char_pos = Position {
+                x: 16 + col * 16,
+                y: 64 + row * 16,
+                width: 7,
+                height: 7,
+            };
+
+            let roi = Roi {
+                img: &img_nicknaming,
+                pos: char_pos,
+            };
+
+            let bitmap = CharBitmap::from_roi(&roi).unwrap();
+
+            chars.insert(bitmap, char);
+        }
+
+        let char = "2";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            0, 1, 1, 1, 1, 1, 0, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 0, 0, 0, 1, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
+            1, 1, 1, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 1, //
+        ])
+        .unwrap();
+        chars.insert(code, char);
+
+        let char = "5";
+        let code = CharBitmap::from_pixels(&[
+            0, 0, 0, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 0, //
+            1, 0, 0, 0, 0, 0, 0, //
+            1, 1, 1, 1, 1, 1, 0, //
+            0, 0, 0, 0, 0, 1, 1, //
+            1, 1, 0, 0, 0, 1, 1, //
+            0, 1, 1, 1, 1, 1, 0, //
         ])
         .unwrap();
         chars.insert(code, char);

@@ -7,6 +7,14 @@ Module needs to be imported in the launch.json:
 ]
 ```
 
+The numpy and matplotlib packages need to be installed to the Python
+bundles with CodeLLDB. Use the `LLDB: Command Prompt` command in VSCode
+followed by:
+
+```
+pip install numpy matplotlib
+```
+
 The function can be called from the debug console:
 ```
 ?/py debug_vis.plot_rgb8($img_addr, $width, $height)

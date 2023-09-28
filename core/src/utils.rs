@@ -1,5 +1,6 @@
 use crate as pkmn;
 use crate::moves::Moves;
+use crate::roi::Roi;
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
 use image::DynamicImage;
@@ -313,15 +314,157 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     if is_gsc_summary_1 {
-        return Ok("GSC Summary 1".to_string());
+        let mut t = String::new();
+
+        t.push_str("GSC Summary 1\n");
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_1.ndex.clone(),
+        };
+        let ndex =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read ndex.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_1.level.clone(),
+        };
+        let level =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read level.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_1.hp.clone(),
+        };
+        let hp = pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read hp.".to_string());
+
+        t.push_str(&format!("Ndex: {ndex}\n"));
+        t.push_str(&format!("Level: {level}\n"));
+        t.push_str(&format!("Hp: {hp}\n"));
+
+        return Ok(t);
     }
 
     if is_gsc_summary_2 {
-        return Ok("GSC Summary 2".to_string());
+        let mut t = String::new();
+
+        t.push_str("GSC Summary 2\n");
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_2.ndex.clone(),
+        };
+        let ndex =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read ndex.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_2.level.clone(),
+        };
+        let level =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read level.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_2.attack_1.clone(),
+        };
+        let attack_1 =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 1.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_2.attack_2.clone(),
+        };
+        let attack_2 =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 2.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_2.attack_3.clone(),
+        };
+        let attack_3 =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 3.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_2.attack_4.clone(),
+        };
+        let attack_4 =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 4.".to_string());
+
+        t.push_str(&format!("Ndex: {ndex}\n"));
+        t.push_str(&format!("Level: {level}\n"));
+        t.push_str(&format!("Attack 1: {attack_1}\n"));
+        t.push_str(&format!("Attack 2: {attack_2}\n"));
+        t.push_str(&format!("Attack 3: {attack_3}\n"));
+        t.push_str(&format!("Attack 4: {attack_4}\n"));
+
+        return Ok(t);
     }
 
     if is_gsc_summary_3 {
-        return Ok("GSC Summary 3".to_string());
+        let mut t = String::new();
+
+        t.push_str("GSC Summary 3\n");
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_3.ndex.clone(),
+        };
+        let ndex =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read ndex.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_3.level.clone(),
+        };
+        let level =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read level.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_3.attack.clone(),
+        };
+        let attack =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read attack.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_3.defense.clone(),
+        };
+        let defense =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read defense.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_3.spc_attack.clone(),
+        };
+        let spc_attack =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read spc_attack.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_3.spc_defense.clone(),
+        };
+        let spc_defense = pkmn::ocr::read_field(&roi, &chars)
+            .unwrap_or("Could not read spc_defense.".to_string());
+
+        let roi = Roi {
+            img: &img_gameboy,
+            pos: gsc_summary_3.speed.clone(),
+        };
+        let speed =
+            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read speed.".to_string());
+
+        t.push_str(&format!("Ndex: {ndex}\n"));
+        t.push_str(&format!("Level: {level}\n"));
+        t.push_str(&format!("Attack: {attack}\n"));
+        t.push_str(&format!("Defense: {defense}\n"));
+        t.push_str(&format!("Spc. Attack: {spc_attack}\n"));
+        t.push_str(&format!("Spc. Defense: {spc_defense}\n"));
+        t.push_str(&format!("Speed: {speed}\n"));
+
+        return Ok(t);
     }
 
     return Err("Screen found but not recognised.".to_string());
