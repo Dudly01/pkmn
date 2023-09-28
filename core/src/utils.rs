@@ -108,12 +108,15 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
     let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
     let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
+    let gsc_summary_1 = pkmn::gameboy::GscSummary1::new();
+    let gsc_summary_2 = pkmn::gameboy::GscSummary2::new();
+    let gsc_summary_3 = pkmn::gameboy::GscSummary3::new();
 
     // Do actual scanning
     let gameboy_pos = pkmn::gameboy::locate_screen(&img_screen);
     let Some(gameboy_pos) = gameboy_pos else {
-            return Err("No GameBoy screen was found!".to_string());
-        };
+        return Err("No GameBoy screen was found!".to_string());
+    };
 
     let img_gameboy = img_screen
         .clone()
@@ -130,15 +133,15 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         );
 
     let mut img_gameboy = img_gameboy.to_luma8();
-    threshold_mut(&mut img_gameboy, 200);
+    let threshold_val = 140; // Anything in [30, 170]
+    threshold_mut(&mut img_gameboy, threshold_val);
     invert(&mut img_gameboy);
 
     let is_summary_screen_1 = stats_screen_1_layout.verify_layout(&img_gameboy, &chars);
     let is_summary_screen_2 = stats_screen_2_layout.verify_layout(&img_gameboy, &chars);
-
-    if !is_summary_screen_1 && !is_summary_screen_2 {
-        return Err("Not showing summary screen 1 nor 2!".to_string());
-    }
+    let is_gsc_summary_1 = gsc_summary_1.verify_layout(&img_gameboy, &chars);
+    let is_gsc_summary_2 = gsc_summary_2.verify_layout(&img_gameboy, &chars);
+    let is_gsc_summary_3 = gsc_summary_3.verify_layout(&img_gameboy, &chars);
 
     if is_summary_screen_1 {
         let content = stats_screen_1_layout
@@ -309,5 +312,17 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         return Ok(text_result);
     }
 
-    return Err("Error in scanning logic. Went down logic path it should not have".to_string());
+    if is_gsc_summary_1 {
+        return Ok("GSC Summary 1".to_string());
+    }
+
+    if is_gsc_summary_2 {
+        return Ok("GSC Summary 2".to_string());
+    }
+
+    if is_gsc_summary_3 {
+        return Ok("GSC Summary 3".to_string());
+    }
+
+    return Err("Screen found but not recognised.".to_string());
 }
