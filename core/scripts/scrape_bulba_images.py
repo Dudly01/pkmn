@@ -21,13 +21,13 @@ def main():
         "https://archives.bulbagarden.net/media/upload/d/d7/Crystal_summary_3.png",
         # Latin letters for OCR
         "https://archives.bulbagarden.net/media/upload/f/f0/Nicknaming_I.png",
-        "https://archives.bulbagarden.net/media/upload/c/c9/Nicknaming_II.png"
+        "https://archives.bulbagarden.net/media/upload/c/c9/Nicknaming_II.png",
     ]
 
     script_dir = Path(__file__).parent
-
     dst_dir = Path(script_dir.parent, "data")
     if not dst_dir.is_dir():
+        print(f"Creating dir at {dst_dir}")
         dst_dir.mkdir()
 
     for url in img_urls:
