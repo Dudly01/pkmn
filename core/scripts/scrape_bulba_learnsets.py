@@ -1,9 +1,23 @@
-"""
-Collects the Gen 1 learnsets from Bulbapedia into a JSON file.
-Currently only the "By leveling up" learnset is collected.
+"""Collects the learnsets from Bulbapedia.
+
+The learnset category page contains the generation learnset (sub)category pages.
+
+The generation learnset (sub)category pages contain the learnset article pages.
+Maximum 200 article pages can be listed at a time, therefore the (sub)category
+can have multiple pages.
+
+The learnset article page contains the learnset of a specific pokemon for the
+specific generation.
+
+Category:Pokémon learnsets
+https://bulbapedia.bulbagarden.net/wiki/Category:Pok%C3%A9mon_learnsets
+
+Category:Pokémon learnsets (Generation I)
+https://bulbapedia.bulbagarden.net/wiki/Category:Pok%C3%A9mon_learnsets_(Generation_I)
 """
 
 import json
+from multiprocessing import Pool
 from pathlib import Path
 from urllib.parse import urljoin
 
@@ -13,40 +27,50 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 
 
-def get_gen_1_learnset_article_urls() -> list[str]:
-    """Returns the URLs of the Gen 1 learnset articles for each 151 Pokemon."""
+def get_learnset_article_urls(category_url: str) -> list[str]:
+    """Returns the article URLs from the generation learnset (sub)category.
 
-    # The category website
-    category_url = "https://bulbapedia.bulbagarden.net/wiki/Category:Pok%C3%A9mon_learnsets_(Generation_I)"
+    The `category_url` is the first page of the generation learnset (sub)category page.
+    E.g. https://bulbapedia.bulbagarden.net/wiki/Category:Pok%C3%A9mon_learnsets_(Generation_II)
+    """
 
-    response = requests.get(category_url)
-    if response.status_code != 200:
-        raise Exception(
-            "Failed to fetch the webpage.", f"Status code: {response.status_code}"
-        )
+    categ_page_urls = [category_url]
+    article_urls = []
 
-    soup = BeautifulSoup(response.content, "html.parser")
+    while categ_page_urls:
+        curr_category_url = categ_page_urls.pop(0)
 
-    article_urls: list[str] = []
-    for ul in soup.find_all("ul"):  # unordered list
-        for li in ul.find_all("li"):  # list item
-            for a in li.find_all("a"):
-                text: str = a.contents[0]
-                if text.endswith(" (Pokémon)/Generation I learnset"):
-                    relative_url = a["href"]
-                    category_url = urljoin(
-                        "https://bulbapedia.bulbagarden.net", relative_url
-                    )
-                    article_urls.append(category_url)
+        response = requests.get(curr_category_url)
+        if response.status_code != 200:
+            raise Exception(
+                f"Failed fetching page. Status code: {response.status_code}"
+            )
 
-    if (n := len(article_urls)) != 151:
-        raise RuntimeError(f"Expected 151 URLs, found {n}.")
+        soup = BeautifulSoup(response.content, "html.parser")
+
+        for a in soup.find_all("a"):  # Links
+            if not a.contents:
+                continue  # No human-readable text
+
+            text: str = a.contents[0]
+            relative_url: str = a["href"]
+            full_url = urljoin("https://bulbapedia.bulbagarden.net", relative_url)
+
+            if text == "next page":
+                if full_url not in categ_page_urls:
+                    # Only need one "next page" link per page. Two is present.
+                    categ_page_urls.append(full_url)
+
+            if " (Pokémon)/Generation " in text:
+                article_urls.append(full_url)
 
     return article_urls
 
 
 def article_url_to_source_url(url: str) -> str:
     """Returns the Bulbapedia source page url from the article page url.
+
+    Seems to work with all Bulbapedia pages.
 
     Example:
     https://bulbapedia.bulbagarden.net/wiki/Squirtle_(Pok%C3%A9mon)/Generation_I_learnset
@@ -121,13 +145,15 @@ def get_learnset_leveling_up(markdown_source: str) -> list[list[str]]:
             table_headers.append(row)
             continue
 
-        # Macro differs when Y version has different learnset
-        if row.startswith("{{learnlist/level1") or row.startswith("{{learnlist/levelI"):
-            table_rows.append(row)
-            continue
-
         if row.startswith("{{learnlist/levelf"):
             table_footer.append(row)
+            continue
+
+        # Wiki macro differs when the table contains one level data or two.
+        # With same moves, its leveln, where n is an Arab number.
+        # With separate moves, its levelN, where N is a Roman number.
+        if row.startswith("{{learnlist/level"):
+            table_rows.append(row)
             continue
 
     if len(table_headers) != 1:
@@ -144,7 +170,6 @@ def get_learnset_leveling_up(markdown_source: str) -> list[list[str]]:
         raise RuntimeError(
             f"Expected one 'By leveling up' footer, got {len(table_footer)}"
         )
-
     first_row = table_rows[0].split("|")
 
     header = ["Move", "Type", "Power", "Accuracy", "PP"]  # The fix columns
@@ -183,7 +208,9 @@ def get_learnset_leveling_up(markdown_source: str) -> list[list[str]]:
 
 
 def norm_learnset_table(table: list[list[str]]) -> list[list[str]]:
-    """Splits the Level column, if present, into RGB and Y columns."""
+    """If present, splits the Level column into RGB and Y columns."""
+    raise NotImplementedError("Only works for Gen 1")
+
     if table[0][0] == "RGB" and table[0][1] == "Y":
         return table
 
@@ -202,12 +229,23 @@ def norm_learnset_table(table: list[list[str]]) -> list[list[str]]:
     return normed_table
 
 
-def main():
-    print("Collecting Gen 1 learnset articles.")
+def scrape_gen_learnset(gen: str, category_url: str) -> None:
+    """Scrapes the learnsets into a JSON file."""
 
-    article_urls = get_gen_1_learnset_article_urls()
-    if len(article_urls) != 151:
-        raise RuntimeError(f"Expected URLs for 151 Pokemon. Found {len(article_urls)}.")
+    print(f"\nCollecting Gen {gen} article URLs from {category_url}")
+
+    article_urls = get_learnset_article_urls(category_url)
+
+    print(f"Found {len(article_urls)} learnset articles.")
+
+    print("Downloading article Markdown sources:")
+    with Pool(8) as p:
+        markdown_sources = list(
+            tqdm(
+                p.imap(get_wiki_article_markdown_source, article_urls),
+                total=len(article_urls),
+            )
+        )
 
     # Bulbapedia to Smogon names
     smogon_names = {
@@ -216,16 +254,14 @@ def main():
     }
 
     pkmn_entries = []
-    for url in tqdm(article_urls):
-        markdown_source = get_wiki_article_markdown_source(url=url)
-
+    for markdown_source in markdown_sources:
         ndex, pokemon = get_pokemon_name_and_ndex(markdown_source)
         if pokemon in smogon_names:
             pokemon = smogon_names[pokemon]
 
         table = get_learnset_leveling_up(markdown_source)
         table = [row[:-4] for row in table]  # Remove Type, Powr, Acc and PP
-        normed_table = norm_learnset_table(table)
+        # normed_table = norm_learnset_table(table)
 
         entry = {
             "ndex": ndex,
@@ -234,16 +270,34 @@ def main():
         }
         pkmn_entries.append(entry)
 
-    dst_dir = Path(__file__).parent.parent / "data"
-    if not dst_dir.is_dir:
+    script_dir = Path(__file__).parent
+    dst_dir = Path(script_dir.parent, "data")
+    if not dst_dir.is_dir():
+        print(f"Creating dir at {dst_dir}")
         dst_dir.mkdir()
 
-    result_json_path = Path(dst_dir, "geni_learnsets.json")
-    with result_json_path.open("w", encoding="utf-8") as f:
+    dst_path = Path(dst_dir, f"gen{gen}_learnsets.json")
+    with dst_path.open("w", encoding="utf-8") as f:
         json_str = json.dumps(pkmn_entries, indent=4, ensure_ascii=False)
         f.write(json_str)
 
-    print(f"Written JSON file to {result_json_path.absolute()}")
+    print(f"Wrote Gen {gen} learnset to {dst_path}")
+
+
+def main():
+    gen_learnset_categ_urls = [
+        (
+            "i",
+            "https://bulbapedia.bulbagarden.net/wiki/Category:Pok%C3%A9mon_learnsets_(Generation_I)",
+        ),
+        (
+            "ii",
+            "https://bulbapedia.bulbagarden.net/wiki/Category:Pok%C3%A9mon_learnsets_(Generation_II)",
+        ),
+    ]
+
+    for gen, url in gen_learnset_categ_urls:
+        scrape_gen_learnset(gen, url)
 
 
 if __name__ == "__main__":
