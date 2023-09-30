@@ -1,17 +1,10 @@
-"""
-Scrapes the source of the Smogon website.
-"""
+"""Scrapes the Pokemon and Moves data from Smogon."""
 
 import csv
 import json
 from pathlib import Path
 
 import requests
-
-
-def get_smogon_url() -> str:
-    """Returns the URL to the Smogon Gen I website."""
-    return "https://www.smogon.com/dex/rb/pokemon/"
 
 
 def get_smogon_json_string(url: str) -> str:
@@ -67,10 +60,7 @@ def export_moves(smogon_json: dict, dst_path: Path) -> None:
 
 
 def export_pokemon(smogon_json: dict, dst_path: Path) -> None:
-    """Exports the Pokemon data to a CSV file.
-
-    May be enough to export Spc., instead of Spc. Att. abd Spc. Def..
-    """
+    """Exports the Pokemon data to a CSV file."""
 
     header = [
         "name",
@@ -113,22 +103,28 @@ def export_pokemon(smogon_json: dict, dst_path: Path) -> None:
 
 
 def main():
-    smogon_url = get_smogon_url()
-    smogon_json = get_smogon_json_string(smogon_url)
-    json_content = json.loads(smogon_json)
+    gen_urls: list[tuple[str, str]] = [
+        ("rb", "https://www.smogon.com/dex/rb/pokemon/"),
+        ("gs", "https://www.smogon.com/dex/gs/pokemon/"),
+    ]
 
-    script_dir = Path(__file__).parent
-    dst_dir = Path(script_dir.parent, "data")
-    if not dst_dir.is_dir():
-        dst_dir.mkdir()
+    for gen_name, gen_url in gen_urls:
+        smogon_json = get_smogon_json_string(gen_url)
+        json_content = json.loads(smogon_json)
 
-    csv_path = Path(dst_dir, "smogon_rb_moves.csv")
-    print(f"Writing moves to {csv_path}")
-    export_moves(smogon_json=json_content, dst_path=csv_path)
+        script_dir = Path(__file__).parent
+        dst_dir = Path(script_dir.parent, "data")
+        if not dst_dir.is_dir():
+            print(f"Creating dir at {dst_dir}")
+            dst_dir.mkdir()
 
-    csv_path = Path(dst_dir, "smogon_rb_pokemon.csv")
-    print(f"Writing pokemon to {csv_path}")
-    export_pokemon(smogon_json=json_content, dst_path=csv_path)
+        csv_path = Path(dst_dir, f"smogon_{gen_name}_moves.csv")
+        print(f"Writing moves to {csv_path}")
+        export_moves(smogon_json=json_content, dst_path=csv_path)
+
+        csv_path = Path(dst_dir, f"smogon_{gen_name}_pokemon.csv")
+        print(f"Writing pokemon to {csv_path}")
+        export_pokemon(smogon_json=json_content, dst_path=csv_path)
 
     return
 
