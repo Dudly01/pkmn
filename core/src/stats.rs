@@ -32,7 +32,7 @@ impl Deref for StatVariation {
 }
 
 /// Stores the minimum and maximum (inclusive) DV values of a Pokemon.
-/// 
+///
 /// A stat value may not determine an exact DV value due to rounding.
 pub struct DvRange {
     pub min: i32,
@@ -42,7 +42,7 @@ pub struct DvRange {
 impl DvRange {
     pub fn init(current_stat: &i32, variation: &StatVariation) -> Option<DvRange> {
         let first = variation.iter().position(|i| i == current_stat);
-        let last = variation.iter().rev().position(|i| i == current_stat);
+        let last = variation.iter().rposition(|i| i == current_stat);
 
         match (first, last) {
             (Some(a), Some(b)) => Some(DvRange {
