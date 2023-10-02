@@ -194,10 +194,11 @@ pub fn fmt_gsc_learnset(learnset: &Learnset, moves: &GscMoves) -> Result<String,
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     // Init data
     let chars = pkmn::char::Charset::new();
-    let pokedex = pkmn::pokemon::Pokedex::new();
-    let pkmn_learnsets = pkmn::learnset::Learnsets::new();
-    let pkmn_evo_chains = pkmn::evos::load_evos();
-    let pkmn_moves = pkmn::moves::Moves::new();
+
+    let rby_pokedex = pkmn::pokemon::Pokedex::new();
+    let rby_learnsets = pkmn::learnset::Learnsets::new();
+    let rby_evo_chains = pkmn::evos::load_evos();
+    let rby_moves = pkmn::moves::Moves::new();
 
     let gsc_pokedex = pkmn::pokemon::GscPokedex::new();
     let gsc_learnsets = pkmn::learnset::GscLearnsets::new();
@@ -248,7 +249,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .expect("Failed to read Summary 1");
 
         let ndex: usize = content.pkmn_no as usize;
-        let pokemon = &pokedex[ndex - 1];
+        let pokemon = &rby_pokedex[ndex - 1];
 
         let var_hp = StatVariation::init(&content.level, &pokemon.hp, &0, &true);
         let var_attack = StatVariation::init(&content.level, &pokemon.attack, &0, &false);
@@ -353,8 +354,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let ndex: usize = content.pkmn_no.parse().unwrap();
 
-        let pkmn_name = &pokedex[ndex - 1].name;
-        let evo_chains: Vec<_> = pkmn_evo_chains
+        let pkmn_name = &rby_pokedex[ndex - 1].name;
+        let evo_chains: Vec<_> = rby_evo_chains
             .iter()
             .filter(|x| x.contains(pkmn_name))
             .collect();
@@ -371,9 +372,9 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let evo_chain_learnsets = pkmn_names
             .iter()
-            .map(|name| pokedex.iter().find(|r| r.name == *name).unwrap())
+            .map(|name| rby_pokedex.iter().find(|r| r.name == *name).unwrap())
             .map(|r| r.ndex)
-            .map(|ndex| &pkmn_learnsets[ndex as usize - 1])
+            .map(|ndex| &rby_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();
 
         let mut text_result = String::with_capacity(256);
@@ -388,7 +389,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             match attack_name.as_str() {
                 "-" => text_result.push_str("-\n"),
                 _ => {
-                    let move_ = pkmn_moves.get(&attack_name);
+                    let move_ = rby_moves.get(&attack_name);
                     text_result.push_str(&format!("{}\n", pkmn::moves::fmt_move(move_)));
                 }
             }
@@ -404,7 +405,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         for learnset in &evo_chain_learnsets {
             text_result.push_str(&format!(
                 "{}\n",
-                fmt_learnset(learnset, &pkmn_moves).unwrap()
+                fmt_learnset(learnset, &rby_moves).unwrap()
             ));
         }
 
