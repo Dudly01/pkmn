@@ -570,17 +570,17 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .to_string();
 
         let attack_2 = attack_2
-            .expect("Failed to read attack_1")
+            .expect("Failed to read attack_2")
             .trim()
             .to_string();
 
         let attack_3 = attack_3
-            .expect("Failed to read attack_1")
+            .expect("Failed to read attack_3")
             .trim()
             .to_string();
 
         let attack_4 = attack_4
-            .expect("Failed to read attack_1")
+            .expect("Failed to read attack_4")
             .trim()
             .to_string();
 
