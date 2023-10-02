@@ -1,8 +1,8 @@
 /// Benchmark for the lib.
 use criterion::*;
 
-use image::{io::Reader as ImageReader, GrayImage};
 use core as pkmn;
+use image::{io::Reader as ImageReader, GrayImage};
 
 const SUMMARY_SCREEN_1_PATH: &str = "data/Yellow_summary_1.png";
 const SUMMARY_SCREEN_2_PATH: &str = "data/Yellow_summary_2.png";
