@@ -205,8 +205,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let gsc_evo_chains = pkmn::evos::load_gsc_evos();
     let gsc_moves = pkmn::moves::GscMoves::new();
 
-    let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
-    let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
+    let rby_summary_1 = pkmn::gameboy::StatScreen1Layout::new();
+    let rby_summary_2 = pkmn::gameboy::StatScreen2Layout::new();
 
     let gsc_summary_1 = pkmn::gameboy::GscSummary1::new();
     let gsc_summary_2 = pkmn::gameboy::GscSummary2::new();
@@ -227,8 +227,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             gameboy_pos.height,
         )
         .resize_exact(
-            stats_screen_1_layout.width as u32,
-            stats_screen_1_layout.height as u32,
+            rby_summary_1.width as u32,
+            rby_summary_1.height as u32,
             image::imageops::FilterType::Nearest,
         );
 
@@ -237,14 +237,14 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     threshold_mut(&mut img_gameboy, threshold_val);
     invert(&mut img_gameboy);
 
-    let is_summary_screen_1 = stats_screen_1_layout.verify_layout(&img_gameboy, &chars);
-    let is_summary_screen_2 = stats_screen_2_layout.verify_layout(&img_gameboy, &chars);
+    let is_rby_summary_1 = rby_summary_1.verify_layout(&img_gameboy, &chars);
+    let is_rby_summary_2 = rby_summary_2.verify_layout(&img_gameboy, &chars);
     let is_gsc_summary_1 = gsc_summary_1.verify_layout(&img_gameboy, &chars);
     let is_gsc_summary_2 = gsc_summary_2.verify_layout(&img_gameboy, &chars);
     let is_gsc_summary_3 = gsc_summary_3.verify_layout(&img_gameboy, &chars);
 
-    if is_summary_screen_1 {
-        let content = stats_screen_1_layout
+    if is_rby_summary_1 {
+        let content = rby_summary_1
             .read_fields(&img_gameboy, &chars)
             .expect("Failed to read Summary 1");
 
@@ -346,8 +346,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         return Ok(t);
     }
 
-    if is_summary_screen_2 {
-        let content = stats_screen_2_layout.read_fields(&img_gameboy, &chars);
+    if is_rby_summary_2 {
+        let content = rby_summary_2.read_fields(&img_gameboy, &chars);
         let Ok(content) = content else {
             return Err("Could not read summary screen 2 content!".to_string());
         };
