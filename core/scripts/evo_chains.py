@@ -229,7 +229,7 @@ def get_clean_row(row: list[str]) -> list[str]:
     row = [bulba_to_smogon_name(c) for c in row]
 
     # Remove unwanted characters
-    row = [c.replace("→", "").replace("*", "").strip() for c in row]
+    row = [c.replace("→", "").replace("*", "").replace("\n", "").strip() for c in row]
 
     return row
 
