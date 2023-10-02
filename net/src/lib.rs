@@ -9,6 +9,8 @@ use image::{DynamicImage, ImageBuffer, Rgba};
 /// and returns the stats of the found pokemon.
 #[wasm_bindgen]
 pub fn read_stats_from_screen(data: &[u8], width: u32, height: u32) -> Result<JsValue, JsValue> {
+    utils::set_panic_hook();
+
     if data.len() != (width * height * 4) as usize {
         return Err(JsValue::from_str("Dimensions do not add up."));
     }
