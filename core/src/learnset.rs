@@ -32,3 +32,27 @@ impl Deref for Learnsets {
         &self.sets
     }
 }
+
+pub struct GscLearnsets {
+    sets: Vec<Learnset>,
+}
+
+impl GscLearnsets {
+    pub fn new() -> GscLearnsets {
+        const LEARNSET_JSON: &str = include_str!("../data/genii_learnsets.json");
+
+        // Deserialize the JSON data into a Vec<Entry>
+        let entries: Vec<Learnset> =
+            serde_json::from_str(&LEARNSET_JSON).expect("Failed to parse JSON");
+
+        GscLearnsets { sets: entries }
+    }
+}
+
+impl Deref for GscLearnsets {
+    type Target = Vec<Learnset>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.sets
+    }
+}
