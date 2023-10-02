@@ -1,5 +1,5 @@
 use crate as pkmn;
-use crate::moves::Moves;
+use crate::moves::{GscMoves, Moves};
 use crate::roi::Roi;
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
@@ -96,6 +96,98 @@ pub fn fmt_learnset(learnset: &Learnset, moves: &Moves) -> Result<String, String
     t
 }
 
+/// Returns a formatted "By leveling up" learnset table.
+/// For the cases when the learnset is the same among game versions.
+fn fmt_gsc_shared_learnset_table(learnset: &Learnset, moves: &GscMoves) -> Result<String, String> {
+    let mut t = String::with_capacity(256);
+
+    // Pokemon
+    t.push_str(&format!(
+        "#{} {} learnset:\n",
+        learnset.ndex, learnset.pokemon
+    ));
+
+    // Header
+    t.push_str(&format!(
+        "{:<3}  {}\n",
+        "Lvl",
+        pkmn::moves::fmt_move_header()
+    ));
+
+    // Moves
+    for row in learnset.by_leveling_up.iter().skip(1) {
+        let move_name = &row[1];
+        let move_ = moves.get(move_name);
+
+        let rt = format!("{:<3}  {}\n", row[0], pkmn::moves::fmt_move(move_));
+        t.push_str(&rt);
+    }
+
+    Ok(t)
+}
+
+/// Returns a formatted "By leveling up" learnset table.
+/// For the cases when the learnset differs among game versions.
+fn fmt_gsc_divering_learnset_table(
+    learnset: &Learnset,
+    moves: &GscMoves,
+) -> Result<String, String> {
+    let mut t = String::with_capacity(256);
+
+    // Pokemon
+    t.push_str(&format!(
+        "#{} {} learnset:\n",
+        learnset.ndex, learnset.pokemon
+    ));
+
+    // Header
+    t.push_str(&format!(
+        "{:<3}  {:<3}  {}\n",
+        "RB",
+        "Y",
+        pkmn::moves::fmt_move_header()
+    ));
+
+    // Moves
+    for row in learnset.by_leveling_up.iter().skip(1) {
+        let move_name = &row[1];
+        let move_ = moves.get(move_name);
+
+        let rt = format!(
+            "{:<3}  {:<3}  {}\n",
+            row[0],
+            row[1],
+            pkmn::moves::fmt_move(move_)
+        );
+
+        t.push_str(&rt);
+    }
+
+    Ok(t)
+}
+
+/// Returns the string with the formatted "By leveling up" learnset.
+pub fn fmt_gsc_learnset(learnset: &Learnset, moves: &GscMoves) -> Result<String, String> {
+    let level_up_table = &learnset.by_leveling_up;
+    let col_count = level_up_table[0].len();
+    for row in level_up_table {
+        if row.len() != col_count {
+            return Err(format!("Mismatching column count for {}", learnset.pokemon));
+        }
+    }
+
+    let t = match col_count {
+        2 => fmt_gsc_shared_learnset_table(learnset, moves),
+        3 => fmt_gsc_divering_learnset_table(learnset, moves),
+        _ => Err(format!(
+            "Expected column count of 2 or 3, got {}",
+            col_count
+        )),
+    };
+
+    t
+}
+
 /// Scans the image and returns the printable text.
 /// The summary screen 1 is for printing the stat DVs.
 /// The summary screen 2 us for printing the learnset and evolution chain.
@@ -107,8 +199,14 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let pkmn_evo_chains = pkmn::evos::load_evos();
     let pkmn_moves = pkmn::moves::Moves::new();
 
+    let gsc_pokedex = pkmn::pokemon::GscPokedex::new();
+    let gsc_learnsets = pkmn::learnset::GscLearnsets::new();
+    let gsc_evo_chains = pkmn::evos::load_gsc_evos();
+    let gsc_moves = pkmn::moves::GscMoves::new();
+
     let stats_screen_1_layout = pkmn::gameboy::StatScreen1Layout::new();
     let stats_screen_2_layout = pkmn::gameboy::StatScreen2Layout::new();
+
     let gsc_summary_1 = pkmn::gameboy::GscSummary1::new();
     let gsc_summary_2 = pkmn::gameboy::GscSummary2::new();
     let gsc_summary_3 = pkmn::gameboy::GscSummary3::new();
@@ -201,7 +299,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             "SPC", pokemon.special, content.special, range_special.min, range_special.max
         ));
 
-        t.push_str("\n\nDV-Value Table\n");
+        t.push_str("\nDV-Value Table\n");
 
         t.push_str(&format!(
             "{:>3}  {:>3}  {:>3}  {:>3}  {:>3}  {:>3}\n",
@@ -314,155 +412,433 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     if is_gsc_summary_1 {
-        let mut t = String::new();
-
-        t.push_str("GSC Summary 1\n");
-
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_1.ndex.clone(),
         };
-        let ndex =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read ndex.".to_string());
+        let ndex = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_1.level.clone(),
         };
-        let level =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read level.".to_string());
+        let level = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_1.hp.clone(),
         };
-        let hp = pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read hp.".to_string());
+        let hp = pkmn::ocr::read_field(&roi, &chars);
 
-        t.push_str(&format!("Ndex: {ndex}\n"));
-        t.push_str(&format!("Level: {level}\n"));
-        t.push_str(&format!("Hp: {hp}\n"));
+        let mut t: String = String::new();
+        #[cfg(debug_assertions)]
+        {
+            t.push_str("GSC Summary 1\n");
+            t.push_str(&format!("Ndex: {ndex:?}\n"));
+            t.push_str(&format!("Level: {level:?}\n"));
+            t.push_str(&format!("Hp: {hp:?}\n"));
+        }
+
+        let ndex: usize = ndex
+            .expect("Failed to read ndex")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse ndex to an integer");
+
+        let level: i32 = level
+            .expect("Failed to read level")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse level to an integer");
+
+        let hp: i32 = hp
+            .expect("Failed to read hp")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse hp to an integer");
+
+        let pokemon = &gsc_pokedex[ndex - 1];
+
+        let var_hp = StatVariation::init(&level, &pokemon.hp, &0, &true);
+        let range_hp = DvRange::init(&hp, &var_hp).unwrap();
+
+        t.push_str(&format!(
+            "#{} {} :L{}\n\n",
+            pokemon.ndex, pokemon.name, level
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}  {}\n",
+            "Stat", "Base", "Value", "DV [min-max]"
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "HP", pokemon.hp, hp, range_hp.min, range_hp.max
+        ));
+
+        // Returns the notification char upon equality, space otherwise.
+        let notif_char = |eq: bool| -> char {
+            if eq {
+                '-'
+            } else {
+                ' '
+            }
+        };
+
+        let notif_hp: [char; 16] = std::array::from_fn(|i| notif_char(var_hp[i] == hp));
+        t.push_str("\nDV-Value Table\n");
+        t.push_str(&format!("{:>3}  {:>3}\n", "DV", "HP",));
+        for i in 0..16 {
+            t.push_str(&format!("{:>3} {:>3}{}\n", i, var_hp[i], notif_hp[i],));
+        }
 
         return Ok(t);
     }
 
     if is_gsc_summary_2 {
-        let mut t = String::new();
-
-        t.push_str("GSC Summary 2\n");
-
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_2.ndex.clone(),
         };
-        let ndex =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read ndex.".to_string());
+        let ndex = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_2.level.clone(),
         };
-        let level =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read level.".to_string());
+        let level = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_2.attack_1.clone(),
         };
-        let attack_1 =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 1.".to_string());
+        let attack_1 = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_2.attack_2.clone(),
         };
-        let attack_2 =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 2.".to_string());
+        let attack_2 = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_2.attack_3.clone(),
         };
-        let attack_3 =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 3.".to_string());
+        let attack_3 = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_2.attack_4.clone(),
         };
-        let attack_4 =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read Attack 4.".to_string());
+        let attack_4 = pkmn::ocr::read_field(&roi, &chars);
 
-        t.push_str(&format!("Ndex: {ndex}\n"));
-        t.push_str(&format!("Level: {level}\n"));
-        t.push_str(&format!("Attack 1: {attack_1}\n"));
-        t.push_str(&format!("Attack 2: {attack_2}\n"));
-        t.push_str(&format!("Attack 3: {attack_3}\n"));
-        t.push_str(&format!("Attack 4: {attack_4}\n"));
+        let mut t = String::new();
+
+        #[cfg(debug_assertions)]
+        {
+            t.push_str("GSC Summary 2\n");
+            t.push_str(&format!("Ndex: {ndex:?}\n"));
+            t.push_str(&format!("Level: {level:?}\n"));
+            t.push_str(&format!("Attack 1: {attack_1:?}\n"));
+            t.push_str(&format!("Attack 2: {attack_2:?}\n"));
+            t.push_str(&format!("Attack 3: {attack_3:?}\n"));
+            t.push_str(&format!("Attack 4: {attack_4:?}\n"));
+        }
+
+        let ndex: usize = ndex
+            .expect("Failed to read ndex")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse ndex to an integer");
+
+        let level: i32 = level
+            .expect("Failed to read level")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse level to an integer");
+
+        let attack_1 = attack_1
+            .expect("Failed to read attack_1")
+            .trim()
+            .to_string();
+
+        let attack_2 = attack_2
+            .expect("Failed to read attack_1")
+            .trim()
+            .to_string();
+
+        let attack_3 = attack_3
+            .expect("Failed to read attack_1")
+            .trim()
+            .to_string();
+
+        let attack_4 = attack_4
+            .expect("Failed to read attack_1")
+            .trim()
+            .to_string();
+
+        let pokemon = &gsc_pokedex[ndex - 1];
+        t.push_str(&format!(
+            "#{} {} :L{}\n\n",
+            pokemon.ndex, pokemon.name, level
+        ));
+
+        t.push_str(&format!("{}\n", &pkmn::moves::fmt_move_header()));
+        for attack_name in [&attack_1, &attack_2, &attack_3, &attack_4] {
+            match attack_name.as_str() {
+                "-" => t.push_str("-\n"),
+                _ => {
+                    let move_ = gsc_moves.get(&attack_name);
+                    t.push_str(&format!("{}\n", pkmn::moves::fmt_move(move_)));
+                }
+            }
+        }
+
+        let pokemon = &gsc_pokedex[ndex - 1];
+        let evo_chains: Vec<_> = gsc_evo_chains
+            .iter()
+            .filter(|x| x.contains(&pokemon.name))
+            .collect();
+
+        let mut pkmn_names: Vec<&str> = Vec::new();
+        for chain in &evo_chains {
+            let pkmn = chain.split("->").step_by(2);
+            for name in pkmn {
+                if !pkmn_names.contains(&name) {
+                    pkmn_names.push(name);
+                }
+            }
+        }
+
+        let evo_chain_learnsets = pkmn_names
+            .iter()
+            .map(|name| gsc_pokedex.iter().find(|r| r.name == *name).unwrap())
+            .map(|r| r.ndex)
+            .map(|ndex| &gsc_learnsets[ndex as usize - 1])
+            .collect::<Vec<&pkmn::learnset::Learnset>>();
+
+        t.push_str(&"\nEvo chain(s):\n");
+        for chain in evo_chains {
+            t.push_str(&format!("{}\n", chain.replace("->", "   ->   ")));
+        }
+
+        t.push_str(&"\n");
+        for learnset in &evo_chain_learnsets {
+            t.push_str(&format!(
+                "{}\n",
+                fmt_gsc_learnset(learnset, &gsc_moves).unwrap()
+            ));
+        }
 
         return Ok(t);
     }
 
     if is_gsc_summary_3 {
-        let mut t = String::new();
-
-        t.push_str("GSC Summary 3\n");
-
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_3.ndex.clone(),
         };
-        let ndex =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read ndex.".to_string());
+        let ndex = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_3.level.clone(),
         };
-        let level =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read level.".to_string());
+        let level = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_3.attack.clone(),
         };
-        let attack =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read attack.".to_string());
+        let attack = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_3.defense.clone(),
         };
-        let defense =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read defense.".to_string());
+        let defense = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_3.spc_attack.clone(),
         };
-        let spc_attack =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read spc_attack.".to_string());
+        let spc_attack = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_3.spc_defense.clone(),
         };
-        let spc_defense = pkmn::ocr::read_field(&roi, &chars)
-            .unwrap_or("Could not read spc_defense.".to_string());
+        let spc_defense = pkmn::ocr::read_field(&roi, &chars);
 
         let roi = Roi {
             img: &img_gameboy,
             pos: gsc_summary_3.speed.clone(),
         };
-        let speed =
-            pkmn::ocr::read_field(&roi, &chars).unwrap_or("Could not read speed.".to_string());
+        let speed = pkmn::ocr::read_field(&roi, &chars);
 
-        t.push_str(&format!("Ndex: {ndex}\n"));
-        t.push_str(&format!("Level: {level}\n"));
-        t.push_str(&format!("Attack: {attack}\n"));
-        t.push_str(&format!("Defense: {defense}\n"));
-        t.push_str(&format!("Spc. Attack: {spc_attack}\n"));
-        t.push_str(&format!("Spc. Defense: {spc_defense}\n"));
-        t.push_str(&format!("Speed: {speed}\n"));
+        let mut t = String::new();
+
+        #[cfg(debug_assertions)]
+        {
+            t.push_str("GSC Summary 3\n");
+            t.push_str(&format!("Ndex: {ndex:?}\n"));
+            t.push_str(&format!("Level: {level:?}\n"));
+            t.push_str(&format!("Attack: {attack:?}\n"));
+            t.push_str(&format!("Defense: {defense:?}\n"));
+            t.push_str(&format!("Spc. Attack: {spc_attack:?}\n"));
+            t.push_str(&format!("Spc. Defense: {spc_defense:?}\n"));
+            t.push_str(&format!("Speed: {speed:?}\n"));
+        }
+
+        let ndex: usize = ndex
+            .expect("Failed to read ndex")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse ndex to an integer");
+
+        let level: i32 = level
+            .expect("Failed to read level")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse level to an integer");
+
+        let attack: i32 = attack
+            .expect("Failed to read hp")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse attack to an integer");
+
+        let defense: i32 = defense
+            .expect("Failed to read hp")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse defense to an integer");
+
+        let spc_attack: i32 = spc_attack
+            .expect("Failed to read hp")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse spc_attack to an integer");
+
+        let spc_defense: i32 = spc_defense
+            .expect("Failed to read hp")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse spc_defense to an integer");
+
+        let speed: i32 = speed
+            .expect("Failed to read hp")
+            .trim()
+            .to_string()
+            .parse()
+            .expect("Failed to parse speed to an integer");
+
+        let pokemon = &gsc_pokedex[ndex - 1];
+
+        let var_attack = StatVariation::init(&level, &pokemon.attack, &0, &false);
+        let var_defense = StatVariation::init(&level, &pokemon.defense, &0, &false);
+        let var_spc_attack = StatVariation::init(&level, &pokemon.special_attack, &0, &false);
+        let var_spc_defense = StatVariation::init(&level, &pokemon.special_defense, &0, &false);
+        let var_speed = StatVariation::init(&level, &pokemon.speed, &0, &false);
+
+        let range_attack = DvRange::init(&attack, &var_attack).unwrap();
+        let range_defense = DvRange::init(&defense, &var_defense).unwrap();
+        let range_spc_attack = DvRange::init(&spc_attack, &var_spc_attack).unwrap();
+        let range_spc_defense = DvRange::init(&spc_defense, &var_spc_defense).unwrap();
+        let range_speed = DvRange::init(&speed, &var_speed).unwrap();
+
+        t.push_str(&format!(
+            "#{} {} :L{}\n\n",
+            pokemon.ndex, pokemon.name, level
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}  {}\n",
+            "Stat", "Base", "Value", "DV [min-max]"
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "ATT", pokemon.attack, attack, range_attack.min, range_attack.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "DEF", pokemon.defense, defense, range_defense.min, range_defense.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "SPA", pokemon.special_attack, spc_attack, range_spc_attack.min, range_spc_attack.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "SPD",
+            pokemon.special_attack,
+            spc_defense,
+            range_spc_defense.min,
+            range_spc_defense.max
+        ));
+
+        t.push_str(&format!(
+            "{:>4}  {:>4}  {:>4}    {}-{}\n",
+            "SPE", pokemon.speed, speed, range_speed.min, range_speed.max
+        ));
+
+        t.push_str("\nDV-Value Table\n");
+
+        // Returns the notification char upon equality, space otherwise.
+        let notif_char = |eq: bool| -> char {
+            if eq {
+                '-'
+            } else {
+                ' '
+            }
+        };
+
+        let notif_attack: [char; 16] = std::array::from_fn(|i| notif_char(var_attack[i] == attack));
+        let notif_defense: [char; 16] =
+            std::array::from_fn(|i| notif_char(var_defense[i] == defense));
+        let notif_spc_attack: [char; 16] =
+            std::array::from_fn(|i| notif_char(var_spc_attack[i] == spc_attack));
+        let notif_spc_defense: [char; 16] =
+            std::array::from_fn(|i| notif_char(var_spc_defense[i] == spc_defense));
+        let notif_speed: [char; 16] = std::array::from_fn(|i| notif_char(var_speed[i] == speed));
+
+        t.push_str(&format!(
+            "{:>3}  {:>3}  {:>3}  {:>3}  {:>3}  {:>3}\n",
+            "DV", "ATT", "DEF", "SPA", "SPD", "SPE",
+        ));
+
+        for i in 0..16 {
+            t.push_str(&format!(
+                "{:>3} {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
+                i,
+                var_attack[i],
+                notif_attack[i],
+                var_defense[i],
+                notif_defense[i],
+                var_spc_attack[i],
+                notif_spc_attack[i],
+                var_spc_defense[i],
+                notif_spc_defense[i],
+                var_speed[i],
+                notif_speed[i],
+            ));
+        }
 
         return Ok(t);
     }
