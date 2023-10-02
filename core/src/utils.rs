@@ -205,8 +205,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let gsc_evo_chains = pkmn::evos::load_gsc_evos();
     let gsc_moves = pkmn::moves::GscMoves::new();
 
-    let rby_summary_1 = pkmn::gameboy::StatScreen1Layout::new();
-    let rby_summary_2 = pkmn::gameboy::StatScreen2Layout::new();
+    let rby_summary_1 = pkmn::gameboy::RbySummary1::new();
+    let rby_summary_2 = pkmn::gameboy::RbySummary2::new();
 
     let gsc_summary_1 = pkmn::gameboy::GscSummary1::new();
     let gsc_summary_2 = pkmn::gameboy::GscSummary2::new();
