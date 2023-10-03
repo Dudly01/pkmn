@@ -7,7 +7,7 @@ use crate::roi::Roi;
 /// Reads a character from 7x7 pixel large region of a `GrayImage`.
 pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'static str, String> {
     if pos.width != 7 || pos.height != 7 {
-        return Err("Invalid Roi dimensions.".to_string());
+        return Err("incorrect Roi dimensions".to_string());
     }
 
     let roi = Roi {
@@ -19,7 +19,7 @@ pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'s
 
     let char = chars.get(&bitmap);
     let Some(char) = char else {
-        return Err("Did not find exact match".to_string());
+        return Err("could not recognise character".to_string());
     };
 
     Ok(*char)
