@@ -99,9 +99,7 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
     }
 }
 
-/// The layout of the stats screen 1.
-/// Contains the position of the fields.
-pub struct StatScreen1Layout {
+pub struct RbySummary1 {
     pub width: i32,
     pub height: i32,
     pub pkmn_ndex_pos: Position,
@@ -114,10 +112,10 @@ pub struct StatScreen1Layout {
     pub slash_positions: [Position; 5],
 }
 
-impl StatScreen1Layout {
+impl RbySummary1 {
     /// Populates the struct with the known positions.
     /// Beware, text that is of no concern are not populated.
-    pub fn new() -> StatScreen1Layout {
+    pub fn new() -> RbySummary1 {
         let field_width = 23;
         let field_height = 7;
 
@@ -142,7 +140,7 @@ impl StatScreen1Layout {
         let x_special = 70 - field_width + 1;
         let y_special = 135 - field_height;
 
-        StatScreen1Layout {
+        RbySummary1 {
             width: 160,
             height: 144,
             pkmn_ndex_pos: Position {
@@ -248,7 +246,7 @@ impl StatScreen1Layout {
         &self,
         img: &GrayImage,
         chars: &Charset,
-    ) -> Result<StatsSreen1Content, String> {
+    ) -> Result<RbySummaryContent, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return Err("Mismatch in image and layout dimensions.".to_string());
         }
@@ -330,7 +328,7 @@ impl StatScreen1Layout {
             .parse()
             .expect("Failed to parse Special to an i32");
 
-        let content = StatsSreen1Content {
+        let content = RbySummaryContent {
             pkmn_no,
             level,
             hp,
@@ -345,7 +343,7 @@ impl StatScreen1Layout {
 
 /// The content of the fields present on stats screen 1.
 #[derive(PartialEq, PartialOrd, Clone)]
-pub struct StatsSreen1Content {
+pub struct RbySummaryContent {
     pub pkmn_no: i32,
     pub level: i32,
     pub hp: i32,
@@ -355,7 +353,7 @@ pub struct StatsSreen1Content {
     pub special: i32,
 }
 
-pub struct StatScreen2Layout {
+pub struct RbySummary2 {
     pub width: i32,
     pub height: i32,
     pub pkmn_ndex_pos: Position,
@@ -365,15 +363,15 @@ pub struct StatScreen2Layout {
     pub attack_4: Position,
 }
 
-impl StatScreen2Layout {
-    pub fn new() -> StatScreen2Layout {
+impl RbySummary2 {
+    pub fn new() -> RbySummary2 {
         let field_width = 23;
         let field_height = 7;
 
         let x_pkmn_no = 24;
         let y_pkmn_no = 56;
 
-        StatScreen2Layout {
+        RbySummary2 {
             width: 160,
             height: 144,
             pkmn_ndex_pos: Position {
@@ -437,7 +435,7 @@ impl StatScreen2Layout {
         &self,
         img: &GrayImage,
         chars: &Charset,
-    ) -> Result<StatsSreen2Content, String> {
+    ) -> Result<RbySummaryContent3, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return Err("Mismatch in image and layout dimensions.".to_string());
         }
@@ -472,7 +470,7 @@ impl StatScreen2Layout {
         };
         let attack_4 = read_field(&roi, chars).unwrap().trim().to_string();
 
-        let content = StatsSreen2Content {
+        let content = RbySummaryContent3 {
             pkmn_no,
             attack_1,
             attack_2,
@@ -484,7 +482,7 @@ impl StatScreen2Layout {
 }
 
 #[derive(PartialEq, PartialOrd, Clone)]
-pub struct StatsSreen2Content {
+pub struct RbySummaryContent3 {
     pub pkmn_no: String,
     pub attack_1: String,
     pub attack_2: String,

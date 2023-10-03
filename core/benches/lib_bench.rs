@@ -1,8 +1,8 @@
 /// Benchmark for the lib.
 use criterion::*;
 
-use image::{io::Reader as ImageReader, GrayImage};
 use core as pkmn;
+use image::{io::Reader as ImageReader, GrayImage};
 
 const SUMMARY_SCREEN_1_PATH: &str = "data/Yellow_summary_1.png";
 const SUMMARY_SCREEN_2_PATH: &str = "data/Yellow_summary_2.png";
@@ -48,13 +48,13 @@ fn verify_layout(c: &mut Criterion) {
     group.bench_function("summary-screen-1", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_1_PATH);
         let chars = pkmn::char::Charset::new();
-        let screen_layout = pkmn::gameboy::StatScreen1Layout::new();
+        let screen_layout = pkmn::gameboy::RbySummary1::new();
         b.iter(|| screen_layout.verify_layout(&img, &chars));
     });
     group.bench_function("summary-screen-2", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_2_PATH);
         let chars = pkmn::char::Charset::new();
-        let screen_layout = pkmn::gameboy::StatScreen2Layout::new();
+        let screen_layout = pkmn::gameboy::RbySummary2::new();
         b.iter(|| screen_layout.verify_layout(&img, &chars));
     });
     group.finish();
@@ -66,13 +66,13 @@ fn read_screen(c: &mut Criterion) {
     group.bench_function("summary-screen-1", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_1_PATH);
         let chars = pkmn::char::Charset::new();
-        let screen_layout = pkmn::gameboy::StatScreen1Layout::new();
+        let screen_layout = pkmn::gameboy::RbySummary1::new();
         b.iter(|| screen_layout.read_fields(&img, &chars));
     });
     group.bench_function("summary-screen-2", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_2_PATH);
         let chars = pkmn::char::Charset::new();
-        let screen_layout = pkmn::gameboy::StatScreen2Layout::new();
+        let screen_layout = pkmn::gameboy::RbySummary2::new();
         b.iter(|| screen_layout.read_fields(&img, &chars));
     });
     group.finish();

@@ -14,9 +14,7 @@ use core as pkmn;
 
 fn main() -> Result<()> {
     let mut stdout = stdout();
-    stdout
-        .execute(terminal::SetTitle("PKMN DV calc"))?
-        .execute(cursor::Hide)?;
+    stdout.execute(terminal::SetTitle("PKMN DV calc"))?;
 
     let capturer = screen_capturer::ScreenCapturer::for_primary_display();
     let Ok(mut capturer) = capturer else {

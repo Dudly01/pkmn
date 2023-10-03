@@ -1,6 +1,7 @@
-/// Helper example for developing Python debug scripts.
-use image::io::Reader as ImageReader;
+//! Helper example for developing Python debug scripts.
+
 use core::{position::Position, roi::Roi};
+use image::io::Reader as ImageReader;
 
 #[show_image::main]
 fn main() {

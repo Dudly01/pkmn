@@ -1,6 +1,6 @@
-# pokemon-dv-calculator
+# pkmn
 
-A tool for estimating the DVs of a Pokémon.
+Data processing tools for Pokémon RBY and GSC.
 
 # Getting started
 
