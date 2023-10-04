@@ -413,23 +413,11 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     if is_gsc_summary_1 {
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_1.ndex.clone(),
-        };
-        let ndex = pkmn::ocr::read_field(&roi, &chars);
+        let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.ndex, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_1.level.clone(),
-        };
-        let level = pkmn::ocr::read_field(&roi, &chars);
+        let level = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.level, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_1.hp.clone(),
-        };
-        let hp = pkmn::ocr::read_field(&roi, &chars);
+        let hp = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.hp, &chars);
 
         let mut t: String = String::new();
         #[cfg(debug_assertions)]
@@ -501,41 +489,17 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     if is_gsc_summary_2 {
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_2.ndex.clone(),
-        };
-        let ndex = pkmn::ocr::read_field(&roi, &chars);
+        let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.ndex, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_2.level.clone(),
-        };
-        let level = pkmn::ocr::read_field(&roi, &chars);
+        let level = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.level, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_2.attack_1.clone(),
-        };
-        let attack_1 = pkmn::ocr::read_field(&roi, &chars);
+        let attack_1 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_1, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_2.attack_2.clone(),
-        };
-        let attack_2 = pkmn::ocr::read_field(&roi, &chars);
+        let attack_2 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_2, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_2.attack_3.clone(),
-        };
-        let attack_3 = pkmn::ocr::read_field(&roi, &chars);
+        let attack_3 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_3, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_2.attack_4.clone(),
-        };
-        let attack_4 = pkmn::ocr::read_field(&roi, &chars);
+        let attack_4 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_4, &chars);
 
         let mut t = String::new();
 
@@ -641,47 +605,19 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     if is_gsc_summary_3 {
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_3.ndex.clone(),
-        };
-        let ndex = pkmn::ocr::read_field(&roi, &chars);
+        let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.ndex, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_3.level.clone(),
-        };
-        let level = pkmn::ocr::read_field(&roi, &chars);
+        let level = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.level, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_3.attack.clone(),
-        };
-        let attack = pkmn::ocr::read_field(&roi, &chars);
+        let attack = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.attack, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_3.defense.clone(),
-        };
-        let defense = pkmn::ocr::read_field(&roi, &chars);
+        let defense = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.defense, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_3.spc_attack.clone(),
-        };
-        let spc_attack = pkmn::ocr::read_field(&roi, &chars);
+        let spc_attack = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.spc_attack, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_3.spc_defense.clone(),
-        };
-        let spc_defense = pkmn::ocr::read_field(&roi, &chars);
+        let spc_defense = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.spc_defense, &chars);
 
-        let roi = Roi {
-            img: &img_gameboy,
-            pos: gsc_summary_3.speed.clone(),
-        };
-        let speed = pkmn::ocr::read_field(&roi, &chars);
+        let speed = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.speed, &chars);
 
         let mut t = String::new();
 
