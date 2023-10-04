@@ -69,7 +69,7 @@ impl CharBitmap {
 }
 
 /// A map from the CharBitmaps to the characters.
-/// 
+///
 /// The characters include:
 /// - Latin letters
 /// - ligatures (PK, MN etc.)

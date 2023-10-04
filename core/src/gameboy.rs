@@ -1,5 +1,5 @@
 use crate::char::Charset;
-use crate::ocr::{read_character, read_field};
+use crate::ocr::{read_char, read_field};
 use crate::position::Position;
 use crate::roi::Roi;
 use image::{DynamicImage, GrayImage, Luma};
@@ -231,7 +231,7 @@ impl RbySummary1 {
                 pos: pos.clone(),
             };
 
-            let char = read_character(&roi, chars);
+            let char = read_char(&roi, chars);
             let Ok(char) = char else {
                 return false; // Char not recognised
             };
@@ -421,7 +421,7 @@ impl RbySummary2 {
                 height: 7,
             },
         };
-        let char = read_character(&roi, chars);
+        let char = read_char(&roi, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
@@ -552,7 +552,7 @@ impl GscSummary1 {
                 height: 7,
             },
         };
-        let char = read_character(&roi, chars);
+        let char = read_char(&roi, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
@@ -637,7 +637,7 @@ impl GscSummary2 {
                 height: 7,
             },
         };
-        let char = read_character(&roi, chars);
+        let char = read_char(&roi, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
@@ -729,7 +729,7 @@ impl GscSummary3 {
                 height: 7,
             },
         };
-        let char = read_character(&roi, chars);
+        let char = read_char(&roi, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
