@@ -226,12 +226,7 @@ impl RbySummary1 {
         }
 
         for pos in &self.slash_positions {
-            let roi = Roi {
-                img: img,
-                pos: pos.clone(),
-            };
-
-            let char = read_char(&roi, chars);
+            let char = read_char(img, pos, chars);
             let Ok(char) = char else {
                 return false; // Char not recognised
             };
@@ -412,16 +407,14 @@ impl RbySummary2 {
             return false;
         }
 
-        let roi = Roi {
-            img: img,
-            pos: Position {
-                x: 128,
-                y: 81,
-                width: 7,
-                height: 7,
-            },
+        let pos = Position {
+            x: 128,
+            y: 81,
+            width: 7,
+            height: 7,
         };
-        let char = read_char(&roi, chars);
+
+        let char = read_char(img, &pos, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
@@ -542,17 +535,15 @@ impl GscSummary1 {
             return false;
         }
 
-        let roi = Roi {
-            img: img,
-            pos: Position {
-                // hp divider slash
-                x: 32,
-                y: 80,
-                width: 7,
-                height: 7,
-            },
+        // hp divider slash
+        let pos = Position {
+            x: 32,
+            y: 80,
+            width: 7,
+            height: 7,
         };
-        let char = read_char(&roi, chars);
+
+        let char = read_char(img, &pos, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
@@ -627,17 +618,15 @@ impl GscSummary2 {
             return false;
         }
 
-        let roi = Roi {
-            img: img,
-            pos: Position {
-                // First attack PP divider
-                x: 136,
-                y: 88,
-                width: 7,
-                height: 7,
-            },
+        // First attack PP divider
+        let pos = Position {
+            x: 136,
+            y: 88,
+            width: 7,
+            height: 7,
         };
-        let char = read_char(&roi, chars);
+
+        let char = read_char(img, &pos, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
@@ -719,17 +708,15 @@ impl GscSummary3 {
             return false;
         }
 
-        let roi = Roi {
-            img: img,
-            pos: Position {
-                // OT divider slash
-                x: 16,
-                y: 96,
-                width: 7,
-                height: 7,
-            },
+        // OT divider slash
+        let pos = Position {
+            x: 16,
+            y: 96,
+            width: 7,
+            height: 7,
         };
-        let char = read_char(&roi, chars);
+
+        let char = read_char(img, &pos, chars);
         let Ok(char) = char else {
             return false; // Char not recognised
         };
