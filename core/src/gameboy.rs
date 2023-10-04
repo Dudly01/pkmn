@@ -246,77 +246,49 @@ impl RbySummary1 {
             return Err("Mismatch in image and layout dimensions.".to_string());
         }
 
-        let roi = Roi {
-            img: img,
-            pos: self.pkmn_ndex_pos.clone(),
-        };
-        let pkmn_no = read_field(&roi, chars)
+        let pkmn_no = read_field(img, &self.pkmn_ndex_pos, chars)
             .expect("Failed to read ndex")
             .trim()
             .to_string()
             .parse()
             .expect("Failed to parse ndex to an i32");
 
-        let roi = Roi {
-            img: img,
-            pos: self.level_field_pos.clone(),
-        };
-        let level = read_field(&roi, chars)
+        let level = read_field(img, &self.level_field_pos, chars)
             .expect("Failed to read level")
             .trim()
             .to_string()
             .parse()
             .expect("Failed to parse ndex to an i32");
 
-        let roi = Roi {
-            img: img,
-            pos: self.hp_field_pos.clone(),
-        };
-        let hp = read_field(&roi, chars)
+        let hp = read_field(img, &self.hp_field_pos, chars)
             .expect("Failed to read HP")
             .trim()
             .to_string()
             .parse()
             .expect("Failed to parse HP to an i32");
 
-        let roi = Roi {
-            img: img,
-            pos: self.attack_field_pos.clone(),
-        };
-        let attack = read_field(&roi, chars)
+        let attack = read_field(img, &self.attack_field_pos, chars)
             .expect("Failed to read Attack")
             .trim()
             .to_string()
             .parse()
             .expect("Failed to parse Attack to an i32");
 
-        let roi = Roi {
-            img: img,
-            pos: self.defense_field_pos.clone(),
-        };
-        let defense = read_field(&roi, chars)
+        let defense = read_field(img, &self.defense_field_pos, chars)
             .expect("Failed to read Defense")
             .trim()
             .to_string()
             .parse()
             .expect("Failed to parse Defense to an i32");
 
-        let roi = Roi {
-            img: img,
-            pos: self.speed_field_pos.clone(),
-        };
-        let speed = read_field(&roi, chars)
+        let speed = read_field(img, &self.speed_field_pos, chars)
             .expect("Failed to read Speed")
             .trim()
             .to_string()
             .parse()
             .expect("Failed to parse Speed to an i32");
 
-        let roi = Roi {
-            img: img,
-            pos: self.special_field_pos.clone(),
-        };
-        let special = read_field(&roi, chars)
+        let special = read_field(img, &self.special_field_pos, chars)
             .expect("Failed to read Special")
             .trim()
             .to_string()
@@ -433,35 +405,30 @@ impl RbySummary2 {
             return Err("Mismatch in image and layout dimensions.".to_string());
         }
 
-        let roi = Roi {
-            img: img,
-            pos: self.pkmn_ndex_pos,
-        };
-        let pkmn_no = read_field(&roi, chars).unwrap().trim().to_string();
+        let pkmn_no = read_field(img, &self.pkmn_ndex_pos, chars)
+            .unwrap()
+            .trim()
+            .to_string();
 
-        let roi = Roi {
-            img: img,
-            pos: self.attack_1,
-        };
-        let attack_1 = read_field(&roi, chars).unwrap().trim().to_string();
+        let attack_1 = read_field(img, &self.attack_1, chars)
+            .unwrap()
+            .trim()
+            .to_string();
 
-        let roi = Roi {
-            img: img,
-            pos: self.attack_2,
-        };
-        let attack_2 = read_field(&roi, chars).unwrap().trim().to_string();
+        let attack_2 = read_field(img, &self.attack_2, chars)
+            .unwrap()
+            .trim()
+            .to_string();
 
-        let roi = Roi {
-            img: img,
-            pos: self.attack_3,
-        };
-        let attack_3 = read_field(&roi, chars).unwrap().trim().to_string();
+        let attack_3 = read_field(img, &self.attack_3, chars)
+            .unwrap()
+            .trim()
+            .to_string();
 
-        let roi = Roi {
-            img: img,
-            pos: self.attack_4,
-        };
-        let attack_4 = read_field(&roi, chars).unwrap().trim().to_string();
+        let attack_4 = read_field(img, &self.attack_4, chars)
+            .unwrap()
+            .trim()
+            .to_string();
 
         let content = RbySummaryContent3 {
             pkmn_no,

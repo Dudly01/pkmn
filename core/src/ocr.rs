@@ -26,8 +26,7 @@ pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'s
 }
 
 /// Reads the characters from the field.
-pub fn read_field(roi: &Roi, chars: &Charset) -> Result<String, String> {
-    let pos = roi.pos();
+pub fn read_field(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<String, String> {
     if pos.height != 7 || (pos.width + 1) % 8 != 0 {
         return Err("Input dimensions are incorrect.".to_string());
     }
@@ -44,12 +43,7 @@ pub fn read_field(roi: &Roi, chars: &Charset) -> Result<String, String> {
             height: 7,
         };
 
-        let roi = Roi {
-            img: roi.img(),
-            pos: char_pos,
-        };
-
-        let char = read_char(roi.img(), &char_pos, chars)?;
+        let char = read_char(img, &char_pos, chars)?;
         result.extend(char.chars());
     }
 
