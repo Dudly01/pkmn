@@ -9,6 +9,7 @@ body {
 main {
     overflow: scroll;
     padding: 20px;
+    border-radius: 20px;
     background-color: #333333; /* https://design.ubuntu.com/brand/colour-palette */
 }
 
