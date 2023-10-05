@@ -27,3 +27,19 @@ main {
     font-family: monospace;
     white-space: pre-wrap;
 }
+
+button {
+    background-color: #666666;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    padding: 10px 15px;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;    
+}
+
+button:active {
+    background-color: #525252;
+}
