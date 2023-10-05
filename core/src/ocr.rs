@@ -7,7 +7,7 @@ use crate::roi::Roi;
 /// Reads a character from 7x7 pixel large region of a `GrayImage`.
 pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'static str, String> {
     if pos.width != 7 || pos.height != 7 {
-        return Err("Invalid Roi dimensions.".to_string());
+        return Err("incorrect Roi dimensions".to_string());
     }
 
     let roi = Roi {
@@ -17,18 +17,14 @@ pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'s
 
     let bitmap = CharBitmap::from_roi(&roi)?;
 
-    let char = chars.get(&bitmap);
-    let Some(char) = char else {
-        return Err("Did not find exact match".to_string());
-    };
-
+    let char = chars.get(&bitmap).ok_or("could not recognize character")?;
     Ok(*char)
 }
 
 /// Reads the characters from the field.
 pub fn read_field(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<String, String> {
     if pos.height != 7 || (pos.width + 1) % 8 != 0 {
-        return Err("Input dimensions are incorrect.".to_string());
+        return Err("incorrect Roi dimensions".to_string());
     }
 
     let char_count = (pos.width + 1) / 8;
@@ -43,7 +39,9 @@ pub fn read_field(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<St
             height: 7,
         };
 
-        let char = read_char(img, &char_pos, chars)?;
+        let char = read_char(img, &char_pos, chars)
+            .map_err(|err| format!("could not read character #{i}: {err}"))?;
+
         result.extend(char.chars());
     }
 
