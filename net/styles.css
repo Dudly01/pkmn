@@ -16,7 +16,8 @@ main {
 @media (min-width: 960px) {
     main {
         position: absolute;
-        left: calc(50% - 480px);
+        /* Subtract half of width and the padding */
+        left: calc(50% - 480px - 20px);
         width: 960px;
     }
 }
