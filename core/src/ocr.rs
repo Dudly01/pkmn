@@ -17,11 +17,7 @@ pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'s
 
     let bitmap = CharBitmap::from_roi(&roi)?;
 
-    let char = chars.get(&bitmap);
-    let Some(char) = char else {
-        return Err("could not recognise character".to_string());
-    };
-
+    let char = chars.get(&bitmap).ok_or("could not recognize character")?;
     Ok(*char)
 }
 
