@@ -247,53 +247,53 @@ impl RbySummary1 {
         }
 
         let pkmn_no = read_field(img, &self.pkmn_ndex_pos, chars)
-            .expect("Failed to read ndex")
+            .map_err(|err| format!("could not read ndex: {err}"))?;
+        let pkmn_no = pkmn_no
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse ndex to an i32");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse ndex '{pkmn_no}' to i32"))?;
 
         let level = read_field(img, &self.level_field_pos, chars)
-            .expect("Failed to read level")
+            .map_err(|err| format!("could not read level: {err}"))?;
+        let level = level
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse ndex to an i32");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse level '{level}' to i32"))?;
 
         let hp = read_field(img, &self.hp_field_pos, chars)
-            .expect("Failed to read HP")
+            .map_err(|err| format!("could not read hp: {err}"))?;
+        let hp = hp
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse HP to an i32");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse hp '{hp}' to i32"))?;
 
         let attack = read_field(img, &self.attack_field_pos, chars)
-            .expect("Failed to read Attack")
+            .map_err(|err| format!("could not read attack: {err}"))?;
+        let attack = attack
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse Attack to an i32");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse attack '{attack}' to i32"))?;
 
         let defense = read_field(img, &self.defense_field_pos, chars)
-            .expect("Failed to read Defense")
+            .map_err(|err| format!("could not read defense: {err}"))?;
+        let defense = defense
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse Defense to an i32");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse defense '{defense}' to i32"))?;
 
         let speed = read_field(img, &self.speed_field_pos, chars)
-            .expect("Failed to read Speed")
+            .map_err(|err| format!("could not read speed: {err}"))?;
+        let speed = speed
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse Speed to an i32");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse speed '{speed}' to i32"))?;
 
         let special = read_field(img, &self.special_field_pos, chars)
-            .expect("Failed to read Special")
+            .map_err(|err| format!("could not read special: {err}"))?;
+        let special = special
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse Special to an i32");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse special '{special}' to i32"))?;
 
         let content = RbySummaryContent {
             pkmn_no,
@@ -406,27 +406,27 @@ impl RbySummary2 {
         }
 
         let pkmn_no = read_field(img, &self.pkmn_ndex_pos, chars)
-            .unwrap()
+            .map_err(|err| format!("could not read ndex: {err}"))?
             .trim()
             .to_string();
 
         let attack_1 = read_field(img, &self.attack_1, chars)
-            .unwrap()
+            .map_err(|err| format!("could not read attack_1: {err}"))?
             .trim()
             .to_string();
 
         let attack_2 = read_field(img, &self.attack_2, chars)
-            .unwrap()
+            .map_err(|err| format!("could not read attack_2: {err}"))?
             .trim()
             .to_string();
 
         let attack_3 = read_field(img, &self.attack_3, chars)
-            .unwrap()
+            .map_err(|err| format!("could not read attack_3: {err}"))?
             .trim()
             .to_string();
 
         let attack_4 = read_field(img, &self.attack_4, chars)
-            .unwrap()
+            .map_err(|err| format!("could not read attack_4: {err}"))?
             .trim()
             .to_string();
 

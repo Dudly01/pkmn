@@ -246,7 +246,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     if is_rby_summary_1 {
         let content = rby_summary_1
             .read_fields(&img_gameboy, &chars)
-            .expect("Failed to read Summary 1");
+            .map_err(|err| format!("could not read RBY summary 1: {err}"))?;
 
         let ndex: usize = content.pkmn_no as usize;
         let pokemon = &rby_pokedex[ndex - 1];
@@ -352,7 +352,10 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             return Err("Could not read summary screen 2 content!".to_string());
         };
 
-        let ndex: usize = content.pkmn_no.parse().unwrap();
+        let ndex: usize = content
+            .pkmn_no
+            .parse()
+            .map_err(|_| format!("could not parse ndex '{}' into an integer", content.pkmn_no))?;
 
         let pkmn_name = &rby_pokedex[ndex - 1].name;
         let evo_chains: Vec<_> = rby_evo_chains
@@ -428,26 +431,26 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             t.push_str(&format!("Hp: {hp:?}\n"));
         }
 
-        let ndex: usize = ndex
-            .expect("Failed to read ndex")
+        let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.ndex, &chars)
+            .map_err(|err| format!("could not read ndex: {err}"))?;
+        let ndex = ndex
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse ndex to an integer");
+            .parse::<usize>()
+            .map_err(|_| format!("could not parse ndex '{ndex}' to an integer"))?;
 
-        let level: i32 = level
-            .expect("Failed to read level")
+        let level = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.level, &chars)
+            .map_err(|err| format!("could not read level: {err}"))?;
+        let level = level
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse level to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse level '{level}' to an integer"))?;
 
-        let hp: i32 = hp
-            .expect("Failed to read hp")
+        let hp = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.hp, &chars)
+            .map_err(|err| format!("could not read hp: {err}"))?;
+        let hp = hp
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse hp to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse hp '{hp}' to an integer"))?;
 
         let pokemon = &gsc_pokedex[ndex - 1];
 
@@ -514,37 +517,35 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             t.push_str(&format!("Attack 4: {attack_4:?}\n"));
         }
 
-        let ndex: usize = ndex
-            .expect("Failed to read ndex")
+        let ndex = ndex.map_err(|err| format!("could not read ndex: {err}"))?;
+        let ndex = ndex
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse ndex to an integer");
+            .parse::<usize>()
+            .map_err(|_| format!("could not parse ndex '{ndex}' to an integer"))?;
 
-        let level: i32 = level
-            .expect("Failed to read level")
+        let level = level.map_err(|err| format!("could not read level: {err}"))?;
+        let level = level
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse level to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse level '{level}' to an integer"))?;
 
         let attack_1 = attack_1
-            .expect("Failed to read attack_1")
+            .map_err(|err| format!("could not read attack 1: {err}"))?
             .trim()
             .to_string();
 
         let attack_2 = attack_2
-            .expect("Failed to read attack_2")
+            .map_err(|err| format!("could not read attack 2: {err}"))?
             .trim()
             .to_string();
 
         let attack_3 = attack_3
-            .expect("Failed to read attack_3")
+            .map_err(|err| format!("could not read attack 3: {err}"))?
             .trim()
             .to_string();
 
         let attack_4 = attack_4
-            .expect("Failed to read attack_4")
+            .map_err(|err| format!("could not read attack 4: {err}"))?
             .trim()
             .to_string();
 
@@ -633,54 +634,48 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             t.push_str(&format!("Speed: {speed:?}\n"));
         }
 
-        let ndex: usize = ndex
-            .expect("Failed to read ndex")
+        let ndex = ndex.map_err(|err| format!("could not read ndex: {err}"))?;
+        let ndex = ndex
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse ndex to an integer");
+            .parse::<usize>()
+            .map_err(|_| format!("could not parse ndex '{ndex}' to an integer"))?;
 
-        let level: i32 = level
-            .expect("Failed to read level")
+        let level = level.map_err(|err| format!("could not read level: {err}"))?;
+        let level = level
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse level to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse level '{level}' to an integer"))?;
 
-        let attack: i32 = attack
-            .expect("Failed to read hp")
+        let attack = attack.map_err(|err| format!("could not read attack: {err}"))?;
+        let attack = attack
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse attack to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse attack '{attack}' to an integer"))?;
 
-        let defense: i32 = defense
-            .expect("Failed to read hp")
+        let defense = defense.map_err(|err| format!("could not read defense: {err}"))?;
+        let defense = defense
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse defense to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse defense '{defense}' to an integer"))?;
 
-        let spc_attack: i32 = spc_attack
-            .expect("Failed to read hp")
+        let spc_attack = spc_attack.map_err(|err| format!("could not read spc_attack: {err}"))?;
+        let spc_attack = spc_attack
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse spc_attack to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse spc_attack '{spc_attack}' to an integer"))?;
 
-        let spc_defense: i32 = spc_defense
-            .expect("Failed to read hp")
+        let spc_defense =
+            spc_defense.map_err(|err| format!("could not read spc_defense: {err}"))?;
+        let spc_defense = spc_defense
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse spc_defense to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse spc_defense '{spc_defense}' to an integer"))?;
 
-        let speed: i32 = speed
-            .expect("Failed to read hp")
+        let speed = speed.map_err(|err| format!("could not read speed: {err}"))?;
+        let speed = speed
             .trim()
-            .to_string()
-            .parse()
-            .expect("Failed to parse speed to an integer");
+            .parse::<i32>()
+            .map_err(|_| format!("could not parse speed '{speed}' to an integer"))?;
 
         let pokemon = &gsc_pokedex[ndex - 1];
 
