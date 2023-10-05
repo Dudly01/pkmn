@@ -9,11 +9,6 @@ const button_scan = document.getElementById("button_scan");
 const button_interval_scan = document.getElementById("button_interval_scan");
 
 const text_output = document.getElementById("output");
-text_output.style.cssText =
-    `
-    font-family: monospace;
-    white-space: pre-wrap;
-    `;
 
 var displayMediaOptions = {
     video: {
