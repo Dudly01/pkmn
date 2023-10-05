@@ -324,10 +324,10 @@ pub struct RbySummary2 {
     pub width: i32,
     pub height: i32,
     pub pkmn_ndex_pos: Position,
-    pub attack_1: Position,
-    pub attack_2: Position,
-    pub attack_3: Position,
-    pub attack_4: Position,
+    pub move_1: Position,
+    pub move_2: Position,
+    pub move_3: Position,
+    pub move_4: Position,
 }
 
 impl RbySummary2 {
@@ -347,25 +347,25 @@ impl RbySummary2 {
                 width: field_width,
                 height: field_height,
             },
-            attack_1: Position {
+            move_1: Position {
                 x: 16,
                 y: 72,
                 width: 95,
                 height: 7,
             },
-            attack_2: Position {
+            move_2: Position {
                 x: 16,
                 y: 88,
                 width: 95,
                 height: 7,
             },
-            attack_3: Position {
+            move_3: Position {
                 x: 16,
                 y: 104,
                 width: 95,
                 height: 7,
             },
-            attack_4: Position {
+            move_4: Position {
                 x: 16,
                 y: 120,
                 width: 95,
@@ -410,32 +410,32 @@ impl RbySummary2 {
             .trim()
             .to_string();
 
-        let attack_1 = read_field(img, &self.attack_1, chars)
-            .map_err(|err| format!("could not read attack_1: {err}"))?
+        let move_1 = read_field(img, &self.move_1, chars)
+            .map_err(|err| format!("could not read move_1: {err}"))?
             .trim()
             .to_string();
 
-        let attack_2 = read_field(img, &self.attack_2, chars)
-            .map_err(|err| format!("could not read attack_2: {err}"))?
+        let move_2 = read_field(img, &self.move_2, chars)
+            .map_err(|err| format!("could not read move_2: {err}"))?
             .trim()
             .to_string();
 
-        let attack_3 = read_field(img, &self.attack_3, chars)
-            .map_err(|err| format!("could not read attack_3: {err}"))?
+        let move_3 = read_field(img, &self.move_3, chars)
+            .map_err(|err| format!("could not read move_3: {err}"))?
             .trim()
             .to_string();
 
-        let attack_4 = read_field(img, &self.attack_4, chars)
-            .map_err(|err| format!("could not read attack_4: {err}"))?
+        let move_4 = read_field(img, &self.move_4, chars)
+            .map_err(|err| format!("could not read move_4: {err}"))?
             .trim()
             .to_string();
 
         let content = RbySummaryContent3 {
             pkmn_no,
-            attack_1,
-            attack_2,
-            attack_3,
-            attack_4,
+            move_1,
+            move_2,
+            move_3,
+            move_4,
         };
         Ok(content)
     }
@@ -444,10 +444,10 @@ impl RbySummary2 {
 #[derive(PartialEq, PartialOrd, Clone)]
 pub struct RbySummaryContent3 {
     pub pkmn_no: String,
-    pub attack_1: String,
-    pub attack_2: String,
-    pub attack_3: String,
-    pub attack_4: String,
+    pub move_1: String,
+    pub move_2: String,
+    pub move_3: String,
+    pub move_4: String,
 }
 
 pub struct GscSummary1 {
@@ -528,10 +528,10 @@ pub struct GscSummary2 {
     pub ndex: Position,
     pub level: Position,
 
-    pub attack_1: Position,
-    pub attack_2: Position,
-    pub attack_3: Position,
-    pub attack_4: Position,
+    pub move_1: Position,
+    pub move_2: Position,
+    pub move_3: Position,
+    pub move_4: Position,
 }
 
 impl GscSummary2 {
@@ -551,25 +551,25 @@ impl GscSummary2 {
                 width: 23,
                 height: 7,
             },
-            attack_1: Position {
+            move_1: Position {
                 x: 64,
                 y: 80,
                 width: 95,
                 height: 7,
             },
-            attack_2: Position {
+            move_2: Position {
                 x: 64,
                 y: 96,
                 width: 95,
                 height: 7,
             },
-            attack_3: Position {
+            move_3: Position {
                 x: 64,
                 y: 112,
                 width: 95,
                 height: 7,
             },
-            attack_4: Position {
+            move_4: Position {
                 x: 64,
                 y: 128,
                 width: 95,

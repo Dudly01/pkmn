@@ -383,16 +383,16 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         let mut text_result = String::with_capacity(256);
 
         text_result.push_str(&format!("{}\n", &pkmn::moves::fmt_move_header()));
-        for attack_name in [
-            &content.attack_1,
-            &content.attack_2,
-            &content.attack_3,
-            &content.attack_4,
+        for move_name in [
+            &content.move_1,
+            &content.move_2,
+            &content.move_3,
+            &content.move_4,
         ] {
-            match attack_name.as_str() {
+            match move_name.as_str() {
                 "-" => text_result.push_str("-\n"),
                 _ => {
-                    let move_ = rby_moves.get(&attack_name);
+                    let move_ = rby_moves.get(&move_name);
                     text_result.push_str(&format!("{}\n", pkmn::moves::fmt_move(move_)));
                 }
             }
@@ -496,13 +496,13 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let level = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.level, &chars);
 
-        let attack_1 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_1, &chars);
+        let move_1 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.move_1, &chars);
 
-        let attack_2 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_2, &chars);
+        let move_2 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.move_2, &chars);
 
-        let attack_3 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_3, &chars);
+        let move_3 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.move_3, &chars);
 
-        let attack_4 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.attack_4, &chars);
+        let move_4 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.move_4, &chars);
 
         let mut t = String::new();
 
@@ -511,10 +511,10 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             t.push_str("GSC Summary 2\n");
             t.push_str(&format!("Ndex: {ndex:?}\n"));
             t.push_str(&format!("Level: {level:?}\n"));
-            t.push_str(&format!("Attack 1: {attack_1:?}\n"));
-            t.push_str(&format!("Attack 2: {attack_2:?}\n"));
-            t.push_str(&format!("Attack 3: {attack_3:?}\n"));
-            t.push_str(&format!("Attack 4: {attack_4:?}\n"));
+            t.push_str(&format!("Move 1: {move_1:?}\n"));
+            t.push_str(&format!("Move 2: {move_2:?}\n"));
+            t.push_str(&format!("Move 3: {move_3:?}\n"));
+            t.push_str(&format!("Move 4: {move_4:?}\n"));
         }
 
         let ndex = ndex.map_err(|err| format!("could not read ndex: {err}"))?;
@@ -529,23 +529,23 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .parse::<i32>()
             .map_err(|_| format!("could not parse level '{level}' to an integer"))?;
 
-        let attack_1 = attack_1
-            .map_err(|err| format!("could not read attack 1: {err}"))?
+        let move_1 = move_1
+            .map_err(|err| format!("could not read move_1: {err}"))?
             .trim()
             .to_string();
 
-        let attack_2 = attack_2
-            .map_err(|err| format!("could not read attack 2: {err}"))?
+        let move_2 = move_2
+            .map_err(|err| format!("could not read move_2: {err}"))?
             .trim()
             .to_string();
 
-        let attack_3 = attack_3
-            .map_err(|err| format!("could not read attack 3: {err}"))?
+        let move_3 = move_3
+            .map_err(|err| format!("could not read move_3: {err}"))?
             .trim()
             .to_string();
 
-        let attack_4 = attack_4
-            .map_err(|err| format!("could not read attack 4: {err}"))?
+        let move_4 = move_4
+            .map_err(|err| format!("could not read move_4: {err}"))?
             .trim()
             .to_string();
 
@@ -556,11 +556,11 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         ));
 
         t.push_str(&format!("{}\n", &pkmn::moves::fmt_move_header()));
-        for attack_name in [&attack_1, &attack_2, &attack_3, &attack_4] {
-            match attack_name.as_str() {
+        for move_name in [&move_1, &move_2, &move_3, &move_4] {
+            match move_name.as_str() {
                 "-" => t.push_str("-\n"),
                 _ => {
-                    let move_ = gsc_moves.get(&attack_name);
+                    let move_ = gsc_moves.get(&move_name);
                     t.push_str(&format!("{}\n", pkmn::moves::fmt_move(move_)));
                 }
             }
