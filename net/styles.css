@@ -22,6 +22,8 @@ main {
 }
 
 #output {
+    color: whitesmoke;
+    font-size: 13px;
     font-family: monospace;
     white-space: pre-wrap;
 }
