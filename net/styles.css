@@ -1,3 +1,21 @@
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #333;
+    /* Background color for the track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #666;
+    /* Color of the thumb (the draggable part) */
+}
+
+* {
+    scrollbar-color: #666 #333;
+}
+
 body {
     /* Taken from https://www.svgbackgrounds.com/ */
     background-color: #ff9d00;
