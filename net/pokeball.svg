@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+    <!-- Ball black border -->
+    <circle cx="100" cy="100" r="100" fill="#000" />
+
+    <!-- Red upper half -->
+    <path d="M 10 100 A 90 90 0 0 1 190 100" fill="#e53a29" />
+
+    <!-- Black bottom half -->
+    <path d="M 190 100 A 90 90 0 0 1 10 100 z" fill="#fff" />
+
+    <!-- Black line in the middle -->
+    <rect x="0" y="94" width="200" height="12" fill="#000" />
+
+    <!-- Center black border -->
+    <circle cx="100" cy="100" r="35" fill="#000" />
+
+    <!-- White center circle -->
+    <circle cx="100" cy="100" r="25" fill="#fff" />
+
+    <!-- Button black border -->
+    <circle cx="100" cy="100" r="15" fill="#000" />
+
+    <!-- Button white center -->
+    <circle cx="100" cy="100" r="14" fill="#fff" />
+</svg>

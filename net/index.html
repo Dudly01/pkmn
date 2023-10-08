@@ -8,20 +8,36 @@
     <title>pkmn</title>
     <script src="./index.js" type="module"></script>
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="pokeball.svg">
 </head>
 
 <body>
 
+    <header>
+        <div id="header-logo"><img src="pokeball.svg" width="18px" />
+            PKMN
+        </div>
+        <div id="header-content">
+            DV calculator, move and evolution lister.
+            For the Pokémon on your Game Boy screen.
+            Processed in your browser.
+        </div>
+        <div></div>
+    </header>
+
     <main>
-        <p>
-            <button id="button_start">Start sharing</button>
+        <p style="margin-top: 0px;">
+            <button id="button_start">Select screen</button>
             <button id="button_stop">Stop sharing</button>
-            <button id="button_scan">Scan</button>
-            <button id="button_interval_scan">Continous scan</button>
+            <button id="button_scan">Scan once</button>
+            <button id="button_interval_scan">Start scanning</button>
         </p>
         <p id="output"></p>
         <canvas id="canvas" class="d-none"></canvas>
         <video id="video" autoplay></video>
+        <p id="footer">Created by Dudly01. Pokémon data sourced from
+            bulbapedia.bulbagarden.net and Smogon.com. Pokémon is a
+            trademark of Nintendo.</p>
     </main>
 
 </body>
