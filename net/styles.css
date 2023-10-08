@@ -30,13 +30,9 @@ header {
     color: whitesmoke;
     padding: 10px;
     margin-bottom: 10px;
-    display: flex;
-    /* Set the cross axis up-down */
-    flex-direction: row;
-    /* Align elements on the cross axis https://stackoverflow.com/a/35046535*/
-    align-items: flex-end;
-    /* Move header content to the middle */
-    justify-content: center;
+    display: grid;
+    gap: 10px;
+    grid-template-columns: 1fr 4fr 1fr;
 }
 
 #header-logo {
@@ -47,6 +43,7 @@ header {
 }
 
 #header-content {
+    text-align: center;
     /* Prevent text from wrapping to the next line */
     white-space: nowrap;
     /* Hide overflowing text */
