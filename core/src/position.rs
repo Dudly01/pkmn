@@ -20,7 +20,7 @@ impl TryFrom<&Contour<i32>> for Position {
     /// Finds the bounding box of the contour points.
     fn try_from(contour: &Contour<i32>) -> Result<Self, Self::Error> {
         if contour.points.len() < 1 {
-            return Err("Contour has no points to get the position of!");
+            return Err("no points within contour");
         }
 
         let curr_point = &contour.points[0];
