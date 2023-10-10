@@ -1,4 +1,4 @@
-/// Loads the evo chains from the file
+/// Loads the RBY avo chains.
 pub fn load_evos() -> Vec<String> {
     const EVO_DATA: &str = include_str!("../data/geni_evo_chains.txt");
 
@@ -7,7 +7,7 @@ pub fn load_evos() -> Vec<String> {
     evo_chains
 }
 
-/// Loads the evo chains from the file
+/// Loads the GSC evo chains.
 pub fn load_gsc_evos() -> Vec<String> {
     const EVO_DATA: &str = include_str!("../data/genii_evo_chains.txt");
 

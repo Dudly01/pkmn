@@ -3,7 +3,9 @@ use std::cmp::{max, min};
 use std::convert::TryFrom;
 
 /// The inclusive bounding box of something.
-/// The elements on the border are part of the thing.
+///
+/// The elements on the border are part of the thing. Therefore a single pixel
+/// would contain the pixel coordinates and the height and width of 1.
 #[derive(Debug, Copy, Clone)]
 pub struct Position {
     pub x: u32,
@@ -15,9 +17,10 @@ pub struct Position {
 impl TryFrom<&Contour<i32>> for Position {
     type Error = &'static str;
 
+    /// Finds the bounding box of the contour points.
     fn try_from(contour: &Contour<i32>) -> Result<Self, Self::Error> {
         if contour.points.len() < 1 {
-            return Err("Contour has no points to get the position of!");
+            return Err("no points within contour");
         }
 
         let curr_point = &contour.points[0];

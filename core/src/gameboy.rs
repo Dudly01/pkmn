@@ -1,15 +1,16 @@
 use crate::char::Charset;
 use crate::ocr::{read_char, read_field};
 use crate::position::Position;
-use crate::roi::Roi;
 use image::{DynamicImage, GrayImage, Luma};
 use imageproc::contours::Contour;
 use imageproc::contrast::threshold_mut;
 
-/// Searches and returns the possible screen positions for Pokemon RBY.
+/// Returns the possible RBY screen positions.
 ///
-/// Note that the all-white border of the summary screen may prevent the
-/// border to be found. Add a black padding or a marker pixel to prevent that.
+/// # Notes:
+/// 
+/// The all-white border of the RBY summary screen could prevent the border to
+/// be found. As a workaround, add a black padding around, or a dummy black pixel within the border.
 pub fn search_screen_rby(contours: &Vec<Contour<i32>>) -> Vec<Position> {
     let width_orig = 160;
     let height_orig = 144;
@@ -99,6 +100,7 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
     }
 }
 
+/// The layout of the RBY summary screen 1.
 pub struct RbySummary1 {
     pub width: i32,
     pub height: i32,
@@ -113,8 +115,7 @@ pub struct RbySummary1 {
 }
 
 impl RbySummary1 {
-    /// Populates the struct with the known positions.
-    /// Beware, text that is of no concern are not populated.
+    /// Creates a new instance of the RBY summary screen 1 layout.
     pub fn new() -> RbySummary1 {
         let field_width = 23;
         let field_height = 7;
@@ -220,6 +221,9 @@ impl RbySummary1 {
         }
     }
 
+    /// Returns true if the image is the RBY summary screen 1.
+    /// 
+    /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
@@ -237,6 +241,9 @@ impl RbySummary1 {
         true
     }
 
+    /// Reads the fields of the layout from the screen.
+    /// 
+    /// Expects the image to be a binary image.
     pub fn read_fields(
         &self,
         img: &GrayImage,
@@ -308,7 +315,7 @@ impl RbySummary1 {
     }
 }
 
-/// The content of the fields present on stats screen 1.
+/// The content of the RBY summary screen 1.
 #[derive(PartialEq, PartialOrd, Clone)]
 pub struct RbySummaryContent {
     pub pkmn_no: i32,
@@ -320,6 +327,7 @@ pub struct RbySummaryContent {
     pub special: i32,
 }
 
+/// The layout of the RBY summary screen 2.
 pub struct RbySummary2 {
     pub width: i32,
     pub height: i32,
@@ -331,6 +339,7 @@ pub struct RbySummary2 {
 }
 
 impl RbySummary2 {
+    /// Creates a new instance of the RBY summary screen 2 layout.
     pub fn new() -> RbySummary2 {
         let field_width = 23;
         let field_height = 7;
@@ -374,6 +383,9 @@ impl RbySummary2 {
         }
     }
 
+    /// Returns true if the image is the RBY summary screen 2.
+    /// 
+    /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
@@ -396,11 +408,14 @@ impl RbySummary2 {
         true
     }
 
+    /// Reads the fields of the layout from the screen.
+    /// 
+    /// Expects the image to be a binary image.
     pub fn read_fields(
         &self,
         img: &GrayImage,
         chars: &Charset,
-    ) -> Result<RbySummaryContent3, String> {
+    ) -> Result<RbySummaryContent2, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return Err("Mismatch in image and layout dimensions.".to_string());
         }
@@ -430,7 +445,7 @@ impl RbySummary2 {
             .trim()
             .to_string();
 
-        let content = RbySummaryContent3 {
+        let content = RbySummaryContent2 {
             pkmn_no,
             move_1,
             move_2,
@@ -441,8 +456,9 @@ impl RbySummary2 {
     }
 }
 
+/// The contents of the RBY summary screen 2.
 #[derive(PartialEq, PartialOrd, Clone)]
-pub struct RbySummaryContent3 {
+pub struct RbySummaryContent2 {
     pub pkmn_no: String,
     pub move_1: String,
     pub move_2: String,
@@ -450,6 +466,7 @@ pub struct RbySummaryContent3 {
     pub move_4: String,
 }
 
+/// The layout of the GSC summary screen 1.
 pub struct GscSummary1 {
     pub width: i32,
     pub height: i32,
@@ -461,6 +478,7 @@ pub struct GscSummary1 {
 }
 
 impl GscSummary1 {
+    /// Creates an instance of the GSC summary screen 1 layout.
     pub fn new() -> GscSummary1 {
         let width = 160;
         let height = 144;
@@ -497,6 +515,9 @@ impl GscSummary1 {
         layout
     }
 
+    /// Returns true if the image is the GSC summary screen 1.
+    /// 
+    /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
@@ -521,6 +542,7 @@ impl GscSummary1 {
     }
 }
 
+/// The layout of the GSC summary screen 2.
 pub struct GscSummary2 {
     pub width: i32,
     pub height: i32,
@@ -535,6 +557,7 @@ pub struct GscSummary2 {
 }
 
 impl GscSummary2 {
+    /// Creates an instance of the GSC summary screen 2 layout.
     pub fn new() -> GscSummary2 {
         let layout = GscSummary2 {
             width: 160,
@@ -580,6 +603,9 @@ impl GscSummary2 {
         layout
     }
 
+    /// Returns true if the image is the RBY summary screen 2.
+    /// 
+    /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
@@ -604,6 +630,8 @@ impl GscSummary2 {
     }
 }
 
+/// The layout of the GSC summary screen 3.
+
 pub struct GscSummary3 {
     pub width: i32,
     pub height: i32,
@@ -619,6 +647,7 @@ pub struct GscSummary3 {
 }
 
 impl GscSummary3 {
+    /// Creates an instance of the GSC summary screen 3 layout.
     pub fn new() -> GscSummary3 {
         let layout = GscSummary3 {
             width: 160,
@@ -670,6 +699,9 @@ impl GscSummary3 {
         layout
     }
 
+    /// Returns true if the image is the RBY summary screen 3.
+    /// 
+    /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
