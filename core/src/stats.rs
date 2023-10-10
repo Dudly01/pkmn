@@ -1,11 +1,21 @@
+//! Pokémon stats related functionality.
+//!
+//! Sources:
+//! https://www.smogon.com/ingame/guides/rby_gsc_stats.
+
 use std::ops::Deref;
 
-/// Stores the possible stat values corresponding to the possible DV values.
+/// The extent to which a stat varies with respect to DV values.
+///
+/// Due to rounding, different DV values can produce the same stat value.
 pub struct StatVariation {
     values: [i32; 16],
 }
 
 impl StatVariation {
+    /// Calculates the stat variation from the level, base stat and the stat
+    /// experience of a Pokémon. The HP is calculated slightly differently
+    /// from the other stats.
     pub fn init(level: &i32, base: &i32, exp: &i32, is_hp: &bool) -> StatVariation {
         let offset = if *is_hp { level + 10 } else { 5 };
 
@@ -31,15 +41,14 @@ impl Deref for StatVariation {
     }
 }
 
-/// Stores the minimum and maximum (inclusive) DV values of a Pokemon.
-///
-/// A stat value may not determine an exact DV value due to rounding.
+/// The range of possible DV values for a stat, with both ends being inclusive.
 pub struct DvRange {
     pub min: i32,
     pub max: i32,
 }
 
 impl DvRange {
+    /// Inits the DvRange from a stat value and a stat variation.
     pub fn init(current_stat: &i32, variation: &StatVariation) -> Option<DvRange> {
         let first = variation.iter().position(|i| i == current_stat);
         let last = variation.iter().rposition(|i| i == current_stat);
