@@ -1,11 +1,7 @@
-//! Region of Interest
-//!
-//! Helper class to ease iterating the pixels of a section of a greyscale image.
-
 use crate::position::Position;
 use image::{GrayImage, Luma};
 
-/// The Region of Interest of a GreyImage.
+/// The Region of Interest (ROI) of a image::GreyImage.
 pub struct Roi<'a> {
     pub img: &'a GrayImage,
     pub pos: Position,
@@ -31,6 +27,7 @@ impl<'a> Roi<'a> {
     }
 }
 
+/// The pixel iterator of a Roi.
 pub struct RoiIter<'a> {
     roi: &'a Roi<'a>,
     x: u32,
