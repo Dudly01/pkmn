@@ -49,16 +49,19 @@ pub struct DvRange {
 
 impl DvRange {
     /// Inits the DvRange from a stat value and a stat variation.
-    pub fn init(current_stat: &i32, variation: &StatVariation) -> Option<DvRange> {
+    pub fn init(current_stat: &i32, variation: &StatVariation) -> Result<DvRange, String> {
         let first = variation.iter().position(|i| i == current_stat);
         let last = variation.iter().rposition(|i| i == current_stat);
 
         match (first, last) {
-            (Some(a), Some(b)) => Some(DvRange {
+            (Some(a), Some(b)) => Ok(DvRange {
                 min: a as i32,
                 max: b as i32,
             }),
-            _ => None,
+            _ => Err(format!(
+                "stat value '{}' not found in stat variation '{:?}'",
+                current_stat, variation.values
+            )),
         }
     }
 }
