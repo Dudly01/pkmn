@@ -1,8 +1,5 @@
-//! Module containing the data of the Pokémon.
-
 use std::ops::Deref;
 
-/// Pokémon
 #[derive(Debug, serde::Deserialize)]
 pub struct Pokemon {
     #[serde(rename = "dex_number")]
@@ -44,8 +41,6 @@ impl Pokedex {
     }
 }
 
-/// To have every method the inner tyoe has.
-/// https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types
 impl Deref for Pokedex {
     type Target = Vec<Pokemon>;
 
@@ -97,8 +92,6 @@ impl GscPokedex {
     }
 }
 
-/// To have every method the inner tyoe has.
-/// https://doc.rust-lang.org/book/ch19-03-advanced-traits.html#using-the-newtype-pattern-to-implement-external-traits-on-external-types
 impl Deref for GscPokedex {
     type Target = Vec<GscPokemon>;
 
