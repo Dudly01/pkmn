@@ -1,8 +1,7 @@
-use image::GrayImage;
-
 use crate::char::{CharBitmap, Charset};
 use crate::position::Position;
 use crate::roi::Roi;
+use image::GrayImage;
 
 /// Reads a character from 7x7 pixel large region of a `GrayImage`.
 pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'static str, String> {
