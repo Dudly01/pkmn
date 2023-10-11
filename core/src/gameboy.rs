@@ -21,7 +21,7 @@ pub fn search_screen_rby(contours: &Vec<Contour<i32>>) -> Vec<Position> {
 
     let mut candidates: Vec<Position> = Vec::with_capacity(8);
     for contour in contours {
-        let bbox = Position::try_from(contour).expect("Could not create Position");
+        let bbox = Position::try_from(contour).expect("could not create Position");
 
         if bbox.width < width_orig || bbox.height < height_orig {
             continue; // Smaller than original resolution
@@ -48,7 +48,7 @@ pub fn search_screen_gsc(contours: &Vec<Contour<i32>>) -> Vec<Position> {
 
     let mut candidates: Vec<Position> = Vec::with_capacity(8);
     for contour in contours {
-        let mut bbox = Position::try_from(contour).expect("Could not create Position");
+        let mut bbox = Position::try_from(contour).expect("could not create Position");
 
         if bbox.width < width_orig || bbox.height < height_orig {
             continue; // Smaller than original resolution
@@ -82,7 +82,7 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
     // find_contours() does not find the border on an all-white image.
     // Add black marker pixel as a work-around.
     *img.get_pixel_mut_checked(0, 0)
-        .expect("Image has no pixels") = Luma([0]);
+        .expect("image has no pixels") = Luma([0]);
 
     let contours = imageproc::contours::find_contours::<i32>(&img);
 
