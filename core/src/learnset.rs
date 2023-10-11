@@ -8,11 +8,13 @@ pub struct Learnset {
     pub by_leveling_up: Vec<Vec<String>>,
 }
 
+/// Contains the learnsets for the 151 pokemon in RBY.
 pub struct RbyLearnsets {
     sets: Vec<Learnset>,
 }
 
 impl RbyLearnsets {
+    /// Creates a new instance.
     pub fn new() -> RbyLearnsets {
         const LEARNSET_JSON: &str = include_str!("../data/geni_learnsets.json");
 
@@ -36,11 +38,13 @@ impl RbyLearnsets {
     }
 }
 
+/// Contains the learnsets for the 251 Pokemon in GSC.
 pub struct GscLearnsets {
     sets: Vec<Learnset>,
 }
 
 impl GscLearnsets {
+    /// Creates a new instance.
     pub fn new() -> GscLearnsets {
         const LEARNSET_JSON: &str = include_str!("../data/genii_learnsets.json");
 
