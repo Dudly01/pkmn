@@ -1,10 +1,7 @@
-use std::ops::Deref;
-
 #[derive(Debug, serde::Deserialize)]
-pub struct Pokemon {
+pub struct RbyPokemon {
     #[serde(rename = "dex_number")]
     pub ndex: i32,
-    #[serde(rename = "name")]
     pub name: String,
     pub type1: String,
     pub type2: String,
@@ -19,13 +16,15 @@ pub struct Pokemon {
     pub special: i32,
 }
 
-pub struct Pokedex {
-    pokemon: Vec<Pokemon>,
+/// The Pokedex with the RBY Pokemon.
+pub struct RbyPokedex {
+    pokemon: Vec<RbyPokemon>,
 }
 
-impl Pokedex {
-    pub fn new() -> Pokedex {
-        let mut pokedex: Vec<Pokemon> = Vec::with_capacity(151);
+impl RbyPokedex {
+    /// Creates a new instance.
+    pub fn new() -> RbyPokedex {
+        let mut pokedex: Vec<RbyPokemon> = Vec::with_capacity(151);
 
         const CSV_DATA: &str = include_str!("../data/smogon_rb_pokemon.csv");
         let mut csv_reader = csv::ReaderBuilder::new()
@@ -33,19 +32,23 @@ impl Pokedex {
             .from_reader(CSV_DATA.as_bytes());
 
         for result in csv_reader.deserialize() {
-            let record: Pokemon = result.unwrap();
+            let record: RbyPokemon = result.unwrap();
             pokedex.push(record);
         }
 
-        Pokedex { pokemon: pokedex }
+        RbyPokedex { pokemon: pokedex }
     }
-}
 
-impl Deref for Pokedex {
-    type Target = Vec<Pokemon>;
+    /// Returns a reference to the Pokemon corresponding to the name.
+    pub fn get_pokemon(&self, name: &str) -> Option<&RbyPokemon> {
+        let pokemon = self.pokemon.iter().find(|p| p.name == name);
+        pokemon
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.pokemon
+    /// Returns a reference to the Pokemon corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&RbyPokemon> {
+        let pokemon = self.pokemon.get(ndex - 1); // Pokemon are stored in order
+        pokemon
     }
 }
 
@@ -53,7 +56,6 @@ impl Deref for Pokedex {
 pub struct GscPokemon {
     #[serde(rename = "dex_number")]
     pub ndex: i32,
-    #[serde(rename = "name")]
     pub name: String,
     pub type1: String,
     pub type2: String,
@@ -70,11 +72,13 @@ pub struct GscPokemon {
     pub speed: i32,
 }
 
+/// The Pokedex with the GSC Pokemon.
 pub struct GscPokedex {
     pokemon: Vec<GscPokemon>,
 }
 
 impl GscPokedex {
+    /// Creates a new instance.
     pub fn new() -> GscPokedex {
         let mut pokedex: Vec<GscPokemon> = Vec::with_capacity(251);
 
@@ -90,12 +94,16 @@ impl GscPokedex {
 
         GscPokedex { pokemon: pokedex }
     }
-}
 
-impl Deref for GscPokedex {
-    type Target = Vec<GscPokemon>;
+    /// Returns a reference to the Pokemon corresponding to the name.
+    pub fn get_pokemon(&self, name: &str) -> Option<&GscPokemon> {
+        let pokemon = self.pokemon.iter().find(|p| p.name == name);
+        pokemon
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.pokemon
+    /// Returns a reference to the Pokemon corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&GscPokemon> {
+        let pokemon = self.pokemon.get(ndex - 1); // Pokemon are stored in order
+        pokemon
     }
 }
