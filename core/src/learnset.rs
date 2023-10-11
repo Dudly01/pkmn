@@ -9,23 +9,23 @@ pub struct Learnset {
     pub by_leveling_up: Vec<Vec<String>>,
 }
 
-pub struct Learnsets {
+pub struct RbyLearnsets {
     sets: Vec<Learnset>,
 }
 
-impl Learnsets {
-    pub fn new() -> Learnsets {
+impl RbyLearnsets {
+    pub fn new() -> RbyLearnsets {
         const LEARNSET_JSON: &str = include_str!("../data/geni_learnsets.json");
 
         // Deserialize the JSON data into a Vec<Entry>
         let entries: Vec<Learnset> =
             serde_json::from_str(&LEARNSET_JSON).expect("Failed to parse JSON");
 
-        Learnsets { sets: entries }
+        RbyLearnsets { sets: entries }
     }
 }
 
-impl Deref for Learnsets {
+impl Deref for RbyLearnsets {
     type Target = Vec<Learnset>;
 
     fn deref(&self) -> &Self::Target {

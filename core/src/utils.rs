@@ -195,7 +195,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let chars = pkmn::char::Charset::new();
 
     let rby_pokedex = pkmn::pokemon::RbyPokedex::new();
-    let rby_learnsets = pkmn::learnset::Learnsets::new();
+    let rby_learnsets = pkmn::learnset::RbyLearnsets::new();
     let rby_evo_chains = pkmn::evos::load_evos();
     let rby_moves = pkmn::moves::Moves::new();
 
