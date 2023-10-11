@@ -8,7 +8,7 @@ use imageproc::contrast::threshold_mut;
 /// Returns the possible RBY screen positions.
 ///
 /// # Notes:
-/// 
+///
 /// The all-white border of the RBY summary screen could prevent the border to
 /// be found. As a workaround, add a black padding around, or a dummy black pixel within the border.
 pub fn search_screen_rby(contours: &Vec<Contour<i32>>) -> Vec<Position> {
@@ -222,7 +222,7 @@ impl RbySummary1 {
     }
 
     /// Returns true if the image is the RBY summary screen 1.
-    /// 
+    ///
     /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
@@ -242,7 +242,7 @@ impl RbySummary1 {
     }
 
     /// Reads the fields of the layout from the screen.
-    /// 
+    ///
     /// Expects the image to be a binary image.
     pub fn read_fields(
         &self,
@@ -384,7 +384,7 @@ impl RbySummary2 {
     }
 
     /// Returns true if the image is the RBY summary screen 2.
-    /// 
+    ///
     /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
@@ -409,7 +409,7 @@ impl RbySummary2 {
     }
 
     /// Reads the fields of the layout from the screen.
-    /// 
+    ///
     /// Expects the image to be a binary image.
     pub fn read_fields(
         &self,
@@ -516,7 +516,7 @@ impl GscSummary1 {
     }
 
     /// Returns true if the image is the GSC summary screen 1.
-    /// 
+    ///
     /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
@@ -604,7 +604,7 @@ impl GscSummary2 {
     }
 
     /// Returns true if the image is the RBY summary screen 2.
-    /// 
+    ///
     /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
@@ -700,7 +700,7 @@ impl GscSummary3 {
     }
 
     /// Returns true if the image is the RBY summary screen 3.
-    /// 
+    ///
     /// Expects the image to be a binary image.
     pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
