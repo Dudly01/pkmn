@@ -1,5 +1,6 @@
 pub mod char;
 pub mod evos;
+pub mod fmt;
 pub mod gameboy;
 pub mod learnset;
 pub mod moves;

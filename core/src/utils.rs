@@ -1,191 +1,9 @@
 use crate as pkmn;
-use crate::moves::{GscMoves, Moves};
+use crate::fmt;
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
 use image::DynamicImage;
 use imageproc::contrast::threshold_mut;
-use pkmn::learnset::Learnset;
-
-/// Returns a formatted "By leveling up" learnset table.
-/// For the cases when the learnset is the same among game versions.
-fn fmt_shared_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
-    let mut t = String::with_capacity(256);
-
-    // Pokemon
-    t.push_str(&format!(
-        "#{} {} learnset:\n",
-        learnset.ndex, learnset.pokemon
-    ));
-
-    // Header
-    t.push_str(&format!(
-        "{:<3}  {}\n",
-        "Lvl",
-        pkmn::moves::fmt_move_header()
-    ));
-
-    // Moves
-    for row in learnset.by_leveling_up.iter().skip(1) {
-        let move_name = &row[1];
-        let move_ = moves.get(move_name);
-
-        let rt = format!("{:<3}  {}\n", row[0], pkmn::moves::fmt_move(move_));
-        t.push_str(&rt);
-    }
-
-    Ok(t)
-}
-
-/// Returns a formatted "By leveling up" learnset table.
-/// For the cases when the learnset differs among game versions.
-fn fmt_divering_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
-    let mut t = String::with_capacity(256);
-
-    // Pokemon
-    t.push_str(&format!(
-        "#{} {} learnset:\n",
-        learnset.ndex, learnset.pokemon
-    ));
-
-    // Header
-    t.push_str(&format!(
-        "{:<3}  {:<3}  {}\n",
-        "RB",
-        "Y",
-        pkmn::moves::fmt_move_header()
-    ));
-
-    // Moves
-    for row in learnset.by_leveling_up.iter().skip(1) {
-        let move_name = &row[1];
-        let move_ = moves.get(move_name);
-
-        let rt = format!(
-            "{:<3}  {:<3}  {}\n",
-            row[0],
-            row[1],
-            pkmn::moves::fmt_move(move_)
-        );
-
-        t.push_str(&rt);
-    }
-
-    Ok(t)
-}
-
-/// Returns the string with the formatted "By leveling up" learnset.
-pub fn fmt_learnset(learnset: &Learnset, moves: &Moves) -> Result<String, String> {
-    let level_up_table = &learnset.by_leveling_up;
-    let col_count = level_up_table[0].len();
-    for row in level_up_table {
-        if row.len() != col_count {
-            return Err(format!("Mismatching column count for {}", learnset.pokemon));
-        }
-    }
-
-    let t = match col_count {
-        2 => fmt_shared_learnset_table(learnset, moves),
-        3 => fmt_divering_learnset_table(learnset, moves),
-        _ => Err(format!(
-            "Expected column count of 2 or 3, got {}",
-            col_count
-        )),
-    };
-
-    t
-}
-
-/// Returns a formatted "By leveling up" learnset table.
-/// For the cases when the learnset is the same among game versions.
-fn fmt_gsc_shared_learnset_table(learnset: &Learnset, moves: &GscMoves) -> Result<String, String> {
-    let mut t = String::with_capacity(256);
-
-    // Pokemon
-    t.push_str(&format!(
-        "#{} {} learnset:\n",
-        learnset.ndex, learnset.pokemon
-    ));
-
-    // Header
-    t.push_str(&format!(
-        "{:<3}  {}\n",
-        "Lvl",
-        pkmn::moves::fmt_move_header()
-    ));
-
-    // Moves
-    for row in learnset.by_leveling_up.iter().skip(1) {
-        let move_name = &row[1];
-        let move_ = moves.get(move_name);
-
-        let rt = format!("{:<3}  {}\n", row[0], pkmn::moves::fmt_move(move_));
-        t.push_str(&rt);
-    }
-
-    Ok(t)
-}
-
-/// Returns a formatted "By leveling up" learnset table.
-/// For the cases when the learnset differs among game versions.
-fn fmt_gsc_divering_learnset_table(
-    learnset: &Learnset,
-    moves: &GscMoves,
-) -> Result<String, String> {
-    let mut t = String::with_capacity(256);
-
-    // Pokemon
-    t.push_str(&format!(
-        "#{} {} learnset:\n",
-        learnset.ndex, learnset.pokemon
-    ));
-
-    // Header
-    t.push_str(&format!(
-        "{:<3}  {:<3}  {}\n",
-        "RB",
-        "Y",
-        pkmn::moves::fmt_move_header()
-    ));
-
-    // Moves
-    for row in learnset.by_leveling_up.iter().skip(1) {
-        let move_name = &row[1];
-        let move_ = moves.get(move_name);
-
-        let rt = format!(
-            "{:<3}  {:<3}  {}\n",
-            row[0],
-            row[1],
-            pkmn::moves::fmt_move(move_)
-        );
-
-        t.push_str(&rt);
-    }
-
-    Ok(t)
-}
-
-/// Returns the string with the formatted "By leveling up" learnset.
-pub fn fmt_gsc_learnset(learnset: &Learnset, moves: &GscMoves) -> Result<String, String> {
-    let level_up_table = &learnset.by_leveling_up;
-    let col_count = level_up_table[0].len();
-    for row in level_up_table {
-        if row.len() != col_count {
-            return Err(format!("Mismatching column count for {}", learnset.pokemon));
-        }
-    }
-
-    let t = match col_count {
-        2 => fmt_gsc_shared_learnset_table(learnset, moves),
-        3 => fmt_gsc_divering_learnset_table(learnset, moves),
-        _ => Err(format!(
-            "Expected column count of 2 or 3, got {}",
-            col_count
-        )),
-    };
-
-    t
-}
 
 /// Scans the image and returns the printable text.
 /// The summary screen 1 is for printing the stat DVs.
@@ -391,7 +209,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let mut text_result = String::with_capacity(256);
 
-        text_result.push_str(&format!("{}\n", &pkmn::moves::fmt_move_header()));
+        text_result.push_str(&format!("{}\n", &fmt::fmt_move_header()));
         for move_name in [
             &content.move_1,
             &content.move_2,
@@ -402,7 +220,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
                 "-" => text_result.push_str("-\n"),
                 _ => {
                     let move_ = rby_moves.get(&move_name);
-                    text_result.push_str(&format!("{}\n", pkmn::moves::fmt_move(move_)));
+                    text_result.push_str(&format!("{}\n", fmt::fmt_move(move_)));
                 }
             }
         }
@@ -417,7 +235,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         for learnset in &evo_chain_learnsets {
             text_result.push_str(&format!(
                 "{}\n",
-                fmt_learnset(learnset, &rby_moves).expect("could not format learnset")
+                fmt::fmt_learnset(learnset, &rby_moves).expect("could not format learnset")
             ));
         }
 
@@ -568,13 +386,13 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             pokemon.ndex, pokemon.name, level
         ));
 
-        t.push_str(&format!("{}\n", &pkmn::moves::fmt_move_header()));
+        t.push_str(&format!("{}\n", &fmt::fmt_move_header()));
         for move_name in [&move_1, &move_2, &move_3, &move_4] {
             match move_name.as_str() {
                 "-" => t.push_str("-\n"),
                 _ => {
                     let move_ = gsc_moves.get(&move_name);
-                    t.push_str(&format!("{}\n", pkmn::moves::fmt_move(move_)));
+                    t.push_str(&format!("{}\n", fmt::fmt_move(move_)));
                 }
             }
         }
@@ -616,7 +434,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         for learnset in &evo_chain_learnsets {
             t.push_str(&format!(
                 "{}\n",
-                fmt_gsc_learnset(learnset, &gsc_moves).expect("could not format learnset")
+                fmt::fmt_gsc_learnset(learnset, &gsc_moves).expect("could not format learnset")
             ));
         }
 
