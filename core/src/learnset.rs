@@ -1,6 +1,5 @@
 use serde;
 use serde_json;
-use std::ops::Deref;
 
 #[derive(Debug, serde::Deserialize)]
 pub struct Learnset {
@@ -9,35 +8,43 @@ pub struct Learnset {
     pub by_leveling_up: Vec<Vec<String>>,
 }
 
-pub struct Learnsets {
+/// Contains the learnsets for the 151 pokemon in RBY.
+pub struct RbyLearnsets {
     sets: Vec<Learnset>,
 }
 
-impl Learnsets {
-    pub fn new() -> Learnsets {
+impl RbyLearnsets {
+    /// Creates a new instance.
+    pub fn new() -> RbyLearnsets {
         const LEARNSET_JSON: &str = include_str!("../data/geni_learnsets.json");
 
         // Deserialize the JSON data into a Vec<Entry>
         let entries: Vec<Learnset> =
             serde_json::from_str(&LEARNSET_JSON).expect("Failed to parse JSON");
 
-        Learnsets { sets: entries }
+        RbyLearnsets { sets: entries }
+    }
+
+    /// Returns a reference to the Learnset corresponding to the Pokemon.
+    pub fn get_pokemon(&self, name: &str) -> Option<&Learnset> {
+        let learnset = self.sets.iter().find(|&p| p.pokemon == name);
+        learnset
+    }
+
+    /// Returns a reference to the Learnset corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&Learnset> {
+        let learnset = self.sets.get(ndex - 1); // Pokemon are stored in order
+        learnset
     }
 }
 
-impl Deref for Learnsets {
-    type Target = Vec<Learnset>;
-
-    fn deref(&self) -> &Self::Target {
-        &self.sets
-    }
-}
-
+/// Contains the learnsets for the 251 Pokemon in GSC.
 pub struct GscLearnsets {
     sets: Vec<Learnset>,
 }
 
 impl GscLearnsets {
+    /// Creates a new instance.
     pub fn new() -> GscLearnsets {
         const LEARNSET_JSON: &str = include_str!("../data/genii_learnsets.json");
 
@@ -47,12 +54,16 @@ impl GscLearnsets {
 
         GscLearnsets { sets: entries }
     }
-}
 
-impl Deref for GscLearnsets {
-    type Target = Vec<Learnset>;
+    /// Returns a reference to the Learnset corresponding to the Pokemon.
+    pub fn get_pokemon(&self, name: &str) -> Option<&Learnset> {
+        let learnset = self.sets.iter().find(|&p| p.pokemon == name);
+        learnset
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.sets
+    /// Returns a reference to the Learnset corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&Learnset> {
+        let learnset = self.sets.get(ndex - 1); // Pokemon are stored in order
+        learnset
     }
 }
