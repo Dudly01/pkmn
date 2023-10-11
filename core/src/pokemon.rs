@@ -4,7 +4,6 @@ use std::ops::Deref;
 pub struct RbyPokemon {
     #[serde(rename = "dex_number")]
     pub ndex: i32,
-    #[serde(rename = "name")]
     pub name: String,
     pub type1: String,
     pub type2: String,
@@ -53,7 +52,6 @@ impl Deref for RbyPokedex {
 pub struct GscPokemon {
     #[serde(rename = "dex_number")]
     pub ndex: i32,
-    #[serde(rename = "name")]
     pub name: String,
     pub type1: String,
     pub type2: String,
