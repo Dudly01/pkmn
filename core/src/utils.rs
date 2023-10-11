@@ -248,7 +248,9 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .map_err(|err| format!("could not read RBY summary 1: {err}"))?;
 
         let ndex: usize = content.pkmn_no as usize;
-        let pokemon = &rby_pokedex[ndex - 1];
+        let pokemon = rby_pokedex
+            .get_ndex(ndex)
+            .ok_or(format!("could not find Pokemon with ndex '{ndex}'"))?;
 
         let var_hp = StatVariation::init(&content.level, &pokemon.hp, &0, &true);
         let var_attack = StatVariation::init(&content.level, &pokemon.attack, &0, &false);
@@ -356,10 +358,15 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .parse()
             .map_err(|_| format!("could not parse ndex '{}' into an integer", content.pkmn_no))?;
 
-        let pkmn_name = &rby_pokedex[ndex - 1].name;
+        let pkmn_name = rby_pokedex
+            .get_ndex(ndex)
+            .ok_or(&format!("could not find Pokemon at ndex '{ndex}'"))?
+            .name
+            .to_owned();
+
         let evo_chains: Vec<_> = rby_evo_chains
             .iter()
-            .filter(|x| x.contains(pkmn_name))
+            .filter(|x| x.contains(&pkmn_name))
             .collect();
 
         let mut pkmn_names: Vec<&str> = Vec::new();
@@ -374,8 +381,12 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let evo_chain_learnsets = pkmn_names
             .iter()
-            .map(|name| rby_pokedex.iter().find(|r| r.name == *name).unwrap())
-            .map(|r| r.ndex)
+            .map(|&name| {
+                rby_pokedex
+                    .get_pokemon(name)
+                    .expect(&format!("Pokemon '{name}' not found"))
+                    .ndex
+            })
             .map(|ndex| &rby_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();
 
@@ -451,7 +462,9 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .parse::<i32>()
             .map_err(|_| format!("could not parse hp '{hp}' to an integer"))?;
 
-        let pokemon = &gsc_pokedex[ndex - 1];
+        let pokemon = gsc_pokedex
+            .get_ndex(ndex)
+            .ok_or(format!("could not find Pokemon at ndex '{ndex}'"))?;
 
         let var_hp = StatVariation::init(&level, &pokemon.hp, &0, &true);
         let range_hp = DvRange::init(&hp, &var_hp)?;
@@ -548,7 +561,9 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .trim()
             .to_string();
 
-        let pokemon = &gsc_pokedex[ndex - 1];
+        let pokemon = &gsc_pokedex
+            .get_ndex(ndex)
+            .ok_or(format!("could not find Pokemon at ndex '{ndex}'"))?;
         t.push_str(&format!(
             "#{} {} :L{}\n\n",
             pokemon.ndex, pokemon.name, level
@@ -565,7 +580,9 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             }
         }
 
-        let pokemon = &gsc_pokedex[ndex - 1];
+        let pokemon = &gsc_pokedex
+            .get_ndex(ndex)
+            .ok_or(format!("could not find Pokemon at ndex '{ndex}'"))?;
         let evo_chains: Vec<_> = gsc_evo_chains
             .iter()
             .filter(|x| x.contains(&pokemon.name))
@@ -583,8 +600,12 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let evo_chain_learnsets = pkmn_names
             .iter()
-            .map(|name| gsc_pokedex.iter().find(|r| r.name == *name).unwrap())
-            .map(|r| r.ndex)
+            .map(|&name| {
+                gsc_pokedex
+                    .get_pokemon(name)
+                    .expect(&format!("Pokemon '{name}' not found in Pokedex"))
+                    .ndex
+            })
             .map(|ndex| &gsc_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();
 
@@ -676,7 +697,9 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .parse::<i32>()
             .map_err(|_| format!("could not parse speed '{speed}' to an integer"))?;
 
-        let pokemon = &gsc_pokedex[ndex - 1];
+        let pokemon = &gsc_pokedex
+            .get_ndex(ndex)
+            .ok_or(format!("could not find Pokemon at ndex '{ndex}'"))?;
 
         let var_attack = StatVariation::init(&level, &pokemon.attack, &0, &false);
         let var_defense = StatVariation::init(&level, &pokemon.defense, &0, &false);

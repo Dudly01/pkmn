@@ -1,5 +1,3 @@
-use std::ops::Deref;
-
 #[derive(Debug, serde::Deserialize)]
 pub struct RbyPokemon {
     #[serde(rename = "dex_number")]
@@ -38,13 +36,17 @@ impl RbyPokedex {
 
         RbyPokedex { pokemon: pokedex }
     }
-}
 
-impl Deref for RbyPokedex {
-    type Target = Vec<RbyPokemon>;
+    /// Returns a reference to the Pokemon corresponding to the name.
+    pub fn get_pokemon(&self, name: &str) -> Option<&RbyPokemon> {
+        let pokemon = self.pokemon.iter().find(|p| p.name == name);
+        pokemon
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.pokemon
+    /// Returns a reference to the Pokemon corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&RbyPokemon> {
+        let pokemon = self.pokemon.get(ndex - 1); // Pokemon are stored in order
+        pokemon
     }
 }
 
@@ -88,12 +90,16 @@ impl GscPokedex {
 
         GscPokedex { pokemon: pokedex }
     }
-}
 
-impl Deref for GscPokedex {
-    type Target = Vec<GscPokemon>;
+    /// Returns a reference to the Pokemon corresponding to the name.
+    pub fn get_pokemon(&self, name: &str) -> Option<&GscPokemon> {
+        let pokemon = self.pokemon.iter().find(|p| p.name == name);
+        pokemon
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.pokemon
+    /// Returns a reference to the Pokemon corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&GscPokemon> {
+        let pokemon = self.pokemon.get(ndex - 1); // Pokemon are stored in order
+        pokemon
     }
 }
