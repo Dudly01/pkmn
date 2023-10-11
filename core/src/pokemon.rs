@@ -16,11 +16,13 @@ pub struct RbyPokemon {
     pub special: i32,
 }
 
+/// The Pokedex with the RBY Pokemon.
 pub struct RbyPokedex {
     pokemon: Vec<RbyPokemon>,
 }
 
 impl RbyPokedex {
+    /// Creates a new instance.
     pub fn new() -> RbyPokedex {
         let mut pokedex: Vec<RbyPokemon> = Vec::with_capacity(151);
 
@@ -70,11 +72,13 @@ pub struct GscPokemon {
     pub speed: i32,
 }
 
+/// The Pokedex with the GSC Pokemon.
 pub struct GscPokedex {
     pokemon: Vec<GscPokemon>,
 }
 
 impl GscPokedex {
+    /// Creates a new instance.
     pub fn new() -> GscPokedex {
         let mut pokedex: Vec<GscPokemon> = Vec::with_capacity(251);
 
