@@ -417,7 +417,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         for learnset in &evo_chain_learnsets {
             text_result.push_str(&format!(
                 "{}\n",
-                fmt_learnset(learnset, &rby_moves).unwrap()
+                fmt_learnset(learnset, &rby_moves).expect("could not format learnset")
             ));
         }
 
@@ -616,7 +616,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         for learnset in &evo_chain_learnsets {
             t.push_str(&format!(
                 "{}\n",
-                fmt_gsc_learnset(learnset, &gsc_moves).unwrap()
+                fmt_gsc_learnset(learnset, &gsc_moves).expect("could not format learnset")
             ));
         }
 

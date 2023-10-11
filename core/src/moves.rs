@@ -64,7 +64,7 @@ impl Moves {
             .from_reader(CSV_DATA.as_bytes());
 
         for result in csv_reader.deserialize() {
-            let m: Move = result.unwrap();
+            let m: Move = result.expect("could not deserialize Move");
             moves.insert(m.name.to_lowercase(), m);
         }
 
@@ -135,7 +135,7 @@ impl GscMoves {
             .from_reader(CSV_DATA.as_bytes());
 
         for result in csv_reader.deserialize() {
-            let m: Move = result.unwrap();
+            let m: Move = result.expect("could not deserialize Move");
             moves.insert(m.name.to_lowercase(), m);
         }
 
