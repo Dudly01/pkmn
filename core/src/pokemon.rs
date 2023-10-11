@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
 #[derive(Debug, serde::Deserialize)]
-pub struct Pokemon {
+pub struct RbyPokemon {
     #[serde(rename = "dex_number")]
     pub ndex: i32,
     #[serde(rename = "name")]
@@ -19,13 +19,13 @@ pub struct Pokemon {
     pub special: i32,
 }
 
-pub struct Pokedex {
-    pokemon: Vec<Pokemon>,
+pub struct RbyPokedex {
+    pokemon: Vec<RbyPokemon>,
 }
 
-impl Pokedex {
-    pub fn new() -> Pokedex {
-        let mut pokedex: Vec<Pokemon> = Vec::with_capacity(151);
+impl RbyPokedex {
+    pub fn new() -> RbyPokedex {
+        let mut pokedex: Vec<RbyPokemon> = Vec::with_capacity(151);
 
         const CSV_DATA: &str = include_str!("../data/smogon_rb_pokemon.csv");
         let mut csv_reader = csv::ReaderBuilder::new()
@@ -33,16 +33,16 @@ impl Pokedex {
             .from_reader(CSV_DATA.as_bytes());
 
         for result in csv_reader.deserialize() {
-            let record: Pokemon = result.unwrap();
+            let record: RbyPokemon = result.unwrap();
             pokedex.push(record);
         }
 
-        Pokedex { pokemon: pokedex }
+        RbyPokedex { pokemon: pokedex }
     }
 }
 
-impl Deref for Pokedex {
-    type Target = Vec<Pokemon>;
+impl Deref for RbyPokedex {
+    type Target = Vec<RbyPokemon>;
 
     fn deref(&self) -> &Self::Target {
         &self.pokemon
