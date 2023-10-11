@@ -382,12 +382,10 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         let evo_chain_learnsets = pkmn_names
             .iter()
             .map(|&name| {
-                rby_pokedex
+                rby_learnsets
                     .get_pokemon(name)
-                    .expect(&format!("Pokemon '{name}' not found"))
-                    .ndex
+                    .expect(&format!("no learnset found for Pokemon '{name}'"))
             })
-            .map(|ndex| &rby_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();
 
         let mut text_result = String::with_capacity(256);
@@ -601,12 +599,10 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         let evo_chain_learnsets = pkmn_names
             .iter()
             .map(|&name| {
-                gsc_pokedex
+                gsc_learnsets
                     .get_pokemon(name)
-                    .expect(&format!("Pokemon '{name}' not found in Pokedex"))
-                    .ndex
+                    .expect(&format!("no learnset found for Pokemon '{name}'"))
             })
-            .map(|ndex| &gsc_learnsets[ndex as usize - 1])
             .collect::<Vec<&pkmn::learnset::Learnset>>();
 
         t.push_str(&"\nEvo chain(s):\n");

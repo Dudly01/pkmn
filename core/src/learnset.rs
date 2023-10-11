@@ -1,6 +1,5 @@
 use serde;
 use serde_json;
-use std::ops::Deref;
 
 #[derive(Debug, serde::Deserialize)]
 pub struct Learnset {
@@ -23,13 +22,17 @@ impl RbyLearnsets {
 
         RbyLearnsets { sets: entries }
     }
-}
 
-impl Deref for RbyLearnsets {
-    type Target = Vec<Learnset>;
+    /// Returns a reference to the Learnset corresponding to the Pokemon.
+    pub fn get_pokemon(&self, name: &str) -> Option<&Learnset> {
+        let learnset = self.sets.iter().find(|&p| p.pokemon == name);
+        learnset
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.sets
+    /// Returns a reference to the Learnset corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&Learnset> {
+        let learnset = self.sets.get(ndex - 1); // Pokemon are stored in order
+        learnset
     }
 }
 
@@ -47,12 +50,16 @@ impl GscLearnsets {
 
         GscLearnsets { sets: entries }
     }
-}
 
-impl Deref for GscLearnsets {
-    type Target = Vec<Learnset>;
+    /// Returns a reference to the Learnset corresponding to the Pokemon.
+    pub fn get_pokemon(&self, name: &str) -> Option<&Learnset> {
+        let learnset = self.sets.iter().find(|&p| p.pokemon == name);
+        learnset
+    }
 
-    fn deref(&self) -> &Self::Target {
-        &self.sets
+    /// Returns a reference to the Learnset corresponding to the national dex number.
+    pub fn get_ndex(&self, ndex: usize) -> Option<&Learnset> {
+        let learnset = self.sets.get(ndex - 1); // Pokemon are stored in order
+        learnset
     }
 }
