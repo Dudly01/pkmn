@@ -384,9 +384,10 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .map(|&name| {
                 rby_learnsets
                     .get_pokemon(name)
-                    .expect(&format!("no learnset found for Pokemon '{name}'"))
+                    .ok_or(format!("no learnset found for Pokemon '{name}'"))
             })
-            .collect::<Vec<&pkmn::learnset::Learnset>>();
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|err| format!("could not collect learnsets for evo chain: {err}"))?;
 
         let mut text_result = String::with_capacity(256);
 
@@ -416,7 +417,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         for learnset in &evo_chain_learnsets {
             text_result.push_str(&format!(
                 "{}\n",
-                fmt_learnset(learnset, &rby_moves).unwrap()
+                fmt_learnset(learnset, &rby_moves).expect("could not format learnset")
             ));
         }
 
@@ -601,9 +602,10 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .map(|&name| {
                 gsc_learnsets
                     .get_pokemon(name)
-                    .expect(&format!("no learnset found for Pokemon '{name}'"))
+                    .ok_or(format!("no learnset found for Pokemon {name}"))
             })
-            .collect::<Vec<&pkmn::learnset::Learnset>>();
+            .collect::<Result<Vec<_>, _>>()
+            .map_err(|err| format!("could not collect learnsets for evo chain: {err}"))?;
 
         t.push_str(&"\nEvo chain(s):\n");
         for chain in evo_chains {
@@ -614,7 +616,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         for learnset in &evo_chain_learnsets {
             t.push_str(&format!(
                 "{}\n",
-                fmt_gsc_learnset(learnset, &gsc_moves).unwrap()
+                fmt_gsc_learnset(learnset, &gsc_moves).expect("could not format learnset")
             ));
         }
 

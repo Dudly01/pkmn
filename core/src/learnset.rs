@@ -20,7 +20,7 @@ impl RbyLearnsets {
 
         // Deserialize the JSON data into a Vec<Entry>
         let entries: Vec<Learnset> =
-            serde_json::from_str(&LEARNSET_JSON).expect("Failed to parse JSON");
+            serde_json::from_str(&LEARNSET_JSON).expect("failed to parse JSON");
 
         RbyLearnsets { sets: entries }
     }
@@ -50,7 +50,7 @@ impl GscLearnsets {
 
         // Deserialize the JSON data into a Vec<Entry>
         let entries: Vec<Learnset> =
-            serde_json::from_str(&LEARNSET_JSON).expect("Failed to parse JSON");
+            serde_json::from_str(&LEARNSET_JSON).expect("failed to parse JSON");
 
         GscLearnsets { sets: entries }
     }

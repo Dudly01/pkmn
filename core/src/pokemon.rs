@@ -32,7 +32,7 @@ impl RbyPokedex {
             .from_reader(CSV_DATA.as_bytes());
 
         for result in csv_reader.deserialize() {
-            let record: RbyPokemon = result.unwrap();
+            let record: RbyPokemon = result.expect("could not deserialize Pokemon");
             pokedex.push(record);
         }
 
@@ -88,7 +88,7 @@ impl GscPokedex {
             .from_reader(CSV_DATA.as_bytes());
 
         for result in csv_reader.deserialize() {
-            let record: GscPokemon = result.unwrap();
+            let record: GscPokemon = result.expect("could not deserialize Pokemon");
             pokedex.push(record);
         }
 
