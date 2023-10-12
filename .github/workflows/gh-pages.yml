@@ -32,11 +32,14 @@ jobs:
           # Optional version of wasm-pack to install(eg. 'v0.9.1', 'latest')
           version: 'latest'
 
-      - name: Install Python dependecies
+      - name: Python dependecy cache
         uses: actions/setup-python@v2
         with:
           python-version: '3.9'
           cache: 'pip'
+              
+      - name: Install Python dependencies
+        shell: bash
         working-directory: ${{github.workspace}}/core/scripts
         run: pip install -r requirements.txt
 
@@ -44,10 +47,6 @@ jobs:
         uses: actions/configure-pages@v3
 
       - name: Get core data
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'
-          cache: 'pip'
         shell: bash
         working-directory: ${{github.workspace}}/core/scripts
         run: |
