@@ -76,11 +76,16 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         let var_speed = StatVariation::init(&content.level, &pokemon.speed, &0, &false);
         let var_special = StatVariation::init(&content.level, &pokemon.special, &0, &false);
 
-        let range_hp = DvRange::init(&content.hp, &var_hp)?;
-        let range_attack = DvRange::init(&content.attack, &var_attack)?;
-        let range_defense = DvRange::init(&content.defense, &var_defense)?;
-        let range_speed = DvRange::init(&content.speed, &var_speed)?;
-        let range_special = DvRange::init(&content.special, &var_special)?;
+        let range_hp = DvRange::init(&content.hp, &var_hp)
+            .map_err(|err| format!("could not determine HP DV range: {err}"))?;
+        let range_attack = DvRange::init(&content.attack, &var_attack)
+            .map_err(|err| format!("could not determine Attack DV range: {err}"))?;
+        let range_defense = DvRange::init(&content.defense, &var_defense)
+            .map_err(|err| format!("could not determine Defense DV range: {err}"))?;
+        let range_speed = DvRange::init(&content.speed, &var_speed)
+            .map_err(|err| format!("could not determine Speed DV range: {err}"))?;
+        let range_special = DvRange::init(&content.special, &var_special)
+            .map_err(|err| format!("could not determine Special DV range: {err}"))?;
 
         let mut t = String::new();
 
@@ -284,7 +289,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .ok_or(format!("could not find Pokemon at ndex '{ndex}'"))?;
 
         let var_hp = StatVariation::init(&level, &pokemon.hp, &0, &true);
-        let range_hp = DvRange::init(&hp, &var_hp)?;
+        let range_hp = DvRange::init(&hp, &var_hp)
+            .map_err(|err| format!("could not determine HP DV range: {err}"))?;
 
         t.push_str(&format!(
             "#{} {} :L{}\n\n",
@@ -523,11 +529,16 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         let var_spc_defense = StatVariation::init(&level, &pokemon.special_defense, &0, &false);
         let var_speed = StatVariation::init(&level, &pokemon.speed, &0, &false);
 
-        let range_attack = DvRange::init(&attack, &var_attack)?;
-        let range_defense = DvRange::init(&defense, &var_defense)?;
-        let range_spc_attack = DvRange::init(&spc_attack, &var_spc_attack)?;
-        let range_spc_defense = DvRange::init(&spc_defense, &var_spc_defense)?;
-        let range_speed = DvRange::init(&speed, &var_speed)?;
+        let range_attack = DvRange::init(&attack, &var_attack)
+            .map_err(|err| format!("could not determine Attack DV range: {err}"))?;
+        let range_defense = DvRange::init(&defense, &var_defense)
+            .map_err(|err| format!("could not determine Defense DV range: {err}"))?;
+        let range_spc_attack = DvRange::init(&spc_attack, &var_spc_attack)
+            .map_err(|err| format!("could not determine Spc. Attack DV range: {err}"))?;
+        let range_spc_defense = DvRange::init(&spc_defense, &var_spc_defense)
+            .map_err(|err| format!("could not determine Spc. Defense DV range: {err}"))?;
+        let range_speed = DvRange::init(&speed, &var_speed)
+            .map_err(|err| format!("could not determine Speed DV range: {err}"))?;
 
         t.push_str(&format!(
             "#{} {} :L{}\n\n",
