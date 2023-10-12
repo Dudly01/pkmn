@@ -69,10 +69,10 @@ header {
 /* Tooltip text */
 .tooltiptext {
     visibility: hidden;
-    width: 300px;
+    width: 400px;
     background-color: #5f5f5f;
     color: whitesmoke;
-    padding: 5px;
+    padding: 15px;
     border-radius: 6px;
 
     /* Position relative to containing block, the .tooltip */
