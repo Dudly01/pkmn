@@ -32,8 +32,8 @@ jobs:
           # Optional version of wasm-pack to install(eg. 'v0.9.1', 'latest')
           version: 'latest'
 
-      - name: Python dependecy cache
-        uses: actions/setup-python@v2
+      - name: Cache pip dependencies
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           cache: 'pip'
