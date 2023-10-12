@@ -69,7 +69,7 @@ fn fmt_divering_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<Str
 
     // Moves
     for row in learnset.by_leveling_up.iter().skip(1) {
-        let move_name = &row[1];
+        let move_name = &row[2];
         let move_ = moves.get(move_name);
 
         let rt = format!("{:<3}  {:<3}  {}\n", row[0], row[1], fmt_move(move_));
@@ -147,7 +147,7 @@ fn fmt_gsc_divering_learnset_table(
 
     // Moves
     for row in learnset.by_leveling_up.iter().skip(1) {
-        let move_name = &row[1];
+        let move_name = &row[2];
         let move_ = moves.get(move_name);
 
         let rt = format!("{:<3}  {:<3}  {}\n", row[0], row[1], fmt_move(move_));
