@@ -50,10 +50,10 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/core/scripts
         run: |
-          python evo_chains.py
+          python scrape_smogon.py
           python scrape_bulba_images.py
           python scrape_bulba_learnsets.py
-          python scrape_smogon.py
+          python evo_chains.py
 
       - name: Build        
         shell: bash
