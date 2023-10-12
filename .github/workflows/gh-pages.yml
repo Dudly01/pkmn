@@ -60,6 +60,16 @@ jobs:
         working-directory: ${{github.workspace}}/net
         run: wasm-pack build --target web
 
+      - name: Remove clutter        
+        shell: bash
+        working-directory: ${{github.workspace}}/net
+        run: |
+          rm -rf src
+          rm -rf target
+          rm -rf tests
+          rm Cargo.lock
+          rm Cargo.toml
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
         with:
