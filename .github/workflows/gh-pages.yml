@@ -61,12 +61,9 @@ jobs:
         run: wasm-pack build --target web
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: |
-            .net/
-            !.net/src/
-            !.net/target/
+          path: ./net
 
   # Deploy job
   deploy:
