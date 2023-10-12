@@ -32,8 +32,8 @@ jobs:
           # Optional version of wasm-pack to install(eg. 'v0.9.1', 'latest')
           version: 'latest'
 
-      - name: Python dependecy cache
-        uses: actions/setup-python@v2
+      - name: Cache pip dependencies
+        uses: actions/setup-python@v4
         with:
           python-version: '3.9'
           cache: 'pip'
@@ -50,15 +50,25 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/core/scripts
         run: |
-          python evo_chains.py
+          python scrape_smogon.py
           python scrape_bulba_images.py
           python scrape_bulba_learnsets.py
-          python scrape_smogon.py
+          python evo_chains.py
 
       - name: Build        
         shell: bash
         working-directory: ${{github.workspace}}/net
         run: wasm-pack build --target web
+
+      - name: Remove clutter        
+        shell: bash
+        working-directory: ${{github.workspace}}/net
+        run: |
+          rm -rf src
+          rm -rf target
+          rm -rf tests
+          rm Cargo.lock
+          rm Cargo.toml
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v2
