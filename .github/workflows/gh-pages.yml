@@ -32,12 +32,33 @@ jobs:
           # Optional version of wasm-pack to install(eg. 'v0.9.1', 'latest')
           version: 'latest'
 
+      - name: Install Python dependecies
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          cache: 'pip'
+        working-directory: ${{github.workspace}}/core/scripts
+        run: pip install -r requirements.txt
+
       - name: Setup Pages
         uses: actions/configure-pages@v3
 
-      - name: Build
-        working-directory: ${{github.workspace}}/net
+      - name: Get core data
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+          cache: 'pip'
         shell: bash
+        working-directory: ${{github.workspace}}/core/scripts
+        run: |
+          python evo_chains.py
+          python scrape_bulba_images.py
+          python scrape_bulba_learnsets.py
+          python scrape_smogon.py
+
+      - name: Build        
+        shell: bash
+        working-directory: ${{github.workspace}}/net
         run: wasm-pack build --target web
 
       - name: Upload artifact
