@@ -110,7 +110,6 @@ header {
 }
 
 main {
-    overflow: scroll;
     padding: 20px;
     /* To make footer nicer */
     padding-bottom: 10px;
