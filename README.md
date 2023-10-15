@@ -7,6 +7,19 @@ Data processing tools for Pokémon RBY and GSC.
 This section provides a quickstart of using the project.
 For more details, visit the documentation of the individual tools.
 
+## Prepare data for `core`
+
+The `core` relies on data taken from Bulbapedia and Smogon.
+However, only the data that needed manual preparation is committed to the repo.
+The remainder needs to be downloaded via scripts located at `core/scripts` directory:
+
+```
+python core/scripts/scrape_smogon.py
+python core/scripts/scrape_bulba_images.py
+python core/scripts/scrape_bulba_learnsets.py
+python core/scripts/evo_chains.py
+```
+
 ## Building WASM, testing website
 
 ```
