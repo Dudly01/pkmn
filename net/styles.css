@@ -56,8 +56,14 @@ header {
     display: flex;
     flex-direction: row;
     justify-content: end;
-    gap: 10px;
+    gap: 20px;
     flex-wrap: nowrap;
+}
+
+.github-source {
+    /* The link to the project source should not behave as a link in the header */
+    color: whitesmoke;
+    text-decoration: none;
 }
 
 .tooltip {
