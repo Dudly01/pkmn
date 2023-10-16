@@ -41,12 +41,13 @@
     </header>
 
     <main>
-        <p style="margin-top: 0px;">
-            <button id="button_start">Select screen</button>
-            <button id="button_stop">Stop sharing</button>
-            <button id="button_scan">Scan once</button>
-            <button id="button_interval_scan">Start scanning</button>
-        </p>
+        <div class="control-panel">
+            <button class="control-button" id="button_start">Select screen</button>
+            <button class="control-button" id="button_stop">Stop sharing</button>
+            <button class="control-button" id="button_scan">Scan once</button>
+            <button class="control-button" id="button_interval_scan">Start scanning</button>
+        </div>
+
         <p id="output"></p>
         <canvas id="canvas" class="d-none"></canvas>
         <video id="video" autoplay></video>

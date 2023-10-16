@@ -148,19 +148,34 @@ main {
     margin-bottom: 0px;
 }
 
-button {
+.control-panel {
+    display: flex;
+    gap: 6px;
+}
+
+.control-button {
     background-color: #666666;
     border: none;
-    border-radius: 8px;
+    border-radius: 5px;
     font-size: 16px;
-    padding: 10px 15px;
+    padding: 5px;
     color: white;
     text-align: center;
     text-decoration: none;
     display: inline-block;
     cursor: pointer;
+
+    /* Needed or the white-border while hovering would change size */
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
 }
 
-button:active {
+.control-button:hover {
+    border-color: whitesmoke;
+}
+
+.control-button:active {
+    border-color: whitesmoke;
     background-color: #525252;
 }
