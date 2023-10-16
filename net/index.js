@@ -7,6 +7,8 @@ const button_start = document.getElementById("button_start");
 const button_stop = document.getElementById("button_stop");
 const button_scan = document.getElementById("button_scan");
 const button_interval_scan = document.getElementById("button_interval_scan");
+const button_canvas = document.getElementById("button_canvas");
+const button_video = document.getElementById("button_video");
 
 const text_output = document.getElementById("output");
 
@@ -29,6 +31,14 @@ button_scan.onclick = function (e) {
 button_interval_scan.onclick = function (e) {
     periodic_gameboy();
 };
+button_canvas.addEventListener('click', function () {
+    canvas.classList.toggle('hidden');
+    button_canvas.textContent = button_canvas.textContent === "Show snapshot" ? "Hide snapshot" : "Show snapshot";
+});
+button_video.addEventListener('click', function () {
+    video.classList.toggle('hidden');  // The video.style.display is "" at first https://stackoverflow.com/a/44332288/12351436
+    button_video.textContent = button_video.textContent === "Show screen" ? "Hide screen" : "Show screen";
+});
 
 let intervalId;
 

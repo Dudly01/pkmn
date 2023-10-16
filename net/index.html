@@ -46,11 +46,13 @@
             <button class="control-button" id="button_stop">Stop sharing</button>
             <button class="control-button" id="button_scan">Scan once</button>
             <button class="control-button" id="button_interval_scan">Start scanning</button>
+            <button class="control-button" id="button_canvas">Show snapshot</button>
+            <button class="control-button" id="button_video">Show screen</button>
         </div>
 
         <p id="output"></p>
-        <canvas id="canvas" class="d-none"></canvas>
-        <video id="video" autoplay></video>
+        <canvas id="canvas" class="hidden"></canvas>
+        <video id="video" class="hidden" autoplay></video>
         <p id="footer">Created by Dudly01. Pokémon data sourced from
             bulbapedia.bulbagarden.net and Smogon.com. Pokémon is a
             trademark of Nintendo.</p>

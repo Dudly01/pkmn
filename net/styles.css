@@ -179,3 +179,7 @@ main {
     border-color: whitesmoke;
     background-color: #525252;
 }
+
+.hidden {
+    display: none;
+}
