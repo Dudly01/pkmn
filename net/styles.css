@@ -150,6 +150,18 @@ main {
 
 .control-panel {
     display: flex;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.scan-control {
+    display: flex;
+    gap: 6px;
+}
+
+.visibility-control {
+    display: flex;
+    justify-content: flex-end;
     gap: 6px;
 }
 
