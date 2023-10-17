@@ -139,12 +139,10 @@ main {
     white-space: pre-wrap;
 }
 
-#canvas {
-    border: 1px solid black;
-}
 
-#video {
+.media {
     border: 1px solid black;
+    max-width: 100%;
 }
 
 #footer {
