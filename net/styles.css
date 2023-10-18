@@ -67,15 +67,14 @@ header {
 }
 
 .tooltip {
-    /* Position tooltiptext relative to this element */
+    /* Position tooltip-text relative to this element */
     position: relative;
     display: inline-block;
 }
 
-/* Tooltip text */
-.tooltiptext {
+.tooltip-text {
     visibility: hidden;
-    width: 400px;
+    width: max-content;
     background-color: #5f5f5f;
     color: whitesmoke;
     padding: 15px;
@@ -87,7 +86,7 @@ header {
     z-index: 1;
     /* Text height plus padding of header */
     top: 33px;
-    /* Right edge in the middle, shift to the right with 6px border radius, 8px arrow border-width, 15px aesthetic */
+    /* Right edge in the middle, shift to the right with 6px border radius, 8px arrow border-width, 15px padding aesthetic */
     right: calc(50% - 8px - 6px - 15px);
 
     /* Fade in tooltip */
@@ -96,13 +95,13 @@ header {
 }
 
 /* Tooltip arrow */
-.tooltiptext::after {
+.tooltip-text::after {
     content: "";
-    /* Position relative to containing block, the .tooltiptext*/
+    /* Position relative to containing block, the .tooltip-text*/
     position: absolute;
-    /* Bottom right above tooltiptext */
+    /* Bottom just above tooltip-text */
     bottom: 100%;
-    /* 6px tooltiptext border radius, 15px aesthetic */
+    /* 6px tooltip-text border radius, 15px padding aesthetic */
     right: calc(6px + 15px);
     border-width: 8px;
     border-style: solid;
@@ -110,7 +109,7 @@ header {
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
-.tooltip:hover .tooltiptext {
+.tooltip:hover .tooltip-text {
     visibility: visible;
     opacity: 1;
 }
