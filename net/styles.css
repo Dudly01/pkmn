@@ -60,8 +60,8 @@ header {
     flex-wrap: nowrap;
 }
 
-.github-source {
-    /* The link to the project source should not behave as a link in the header */
+/* In the header, links should not behave as a link */
+.header-link {
     color: whitesmoke;
     text-decoration: none;
 }
