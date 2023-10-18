@@ -34,19 +34,17 @@ header {
     gap: 10px;
     grid-template-columns: 1fr 4fr 1fr;
     align-items: center;
+    /* Prevent text from wrapping to the next line */
+    white-space: nowrap;
 }
 
 #header-logo {
     font-size: 18px;
-    /* Prevent text from wrapping to the next line */
-    white-space: nowrap;
     margin-right: 10px;
 }
 
 #header-content {
     text-align: center;
-    /* Prevent text from wrapping to the next line */
-    white-space: nowrap;
     /* Hide overflowing text */
     overflow: hidden;
     /* Display ellipsis (...) for overflowed text */
