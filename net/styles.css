@@ -33,6 +33,7 @@ header {
     display: grid;
     gap: 10px;
     grid-template-columns: 1fr 4fr 1fr;
+    align-items: center;
 }
 
 #header-logo {
