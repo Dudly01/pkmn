@@ -242,6 +242,7 @@ main {
     font-size: 13px;
     font-family: monospace;
     white-space: pre-wrap;
+    min-height: 50px;
 }
 
 
