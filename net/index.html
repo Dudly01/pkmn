@@ -24,23 +24,13 @@
             Processes in the browser.
         </div>
         <div id="header-info">
-            <div class="tooltip">
+            <div id="modal_help_open" class="button-like">
                 <i class="fa fa-question-circle"></i>
                 Help
-                <span class="tooltiptext">
-                    Works with freshly caught Pokémon.
-                    Select the screen showing the Pokémon summary from RBY or GSC and press scan.
-                    Switch between summary screens for different info.
-                </span>
             </div>
-            <div class="tooltip ">
+            <div id="modal_about_open" class="button-like">
                 <i class="fa fa-info-circle"></i>
                 About
-                <span class="tooltiptext">
-                    Pokémon RBY and GSC DV calculator, move and evolution lister.
-                    Aimes to simplify training by showing relevant data.
-                    Processes everything locally using WASM (and Rust).
-                </span>
             </div>
             <div>
                 <a href="https://github.com/Dudly01/pkmn" target="_blank" class="github-source">
@@ -76,6 +66,35 @@
             bulbapedia.bulbagarden.net and Smogon.com. Pokémon is a
             trademark of Nintendo.</p>
     </main>
+
+
+    <div id="modal_help" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Help</h3>
+                <span id="modal_help_close" class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Select the screen showing the Pokémon summary from RBY or GSC and press scan.</p>
+                <p>Switch between summary screens for different info.</p>
+                <p>Works with freshly caught Pokémon.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_about" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>About</h3>
+                <span id="modal_about_close" class="close">&times;</span>
+            </div>
+            <div class="modal-body">
+                <p>Pokémon RBY and GSC DV calculator, move and evolution lister.</p>
+                <p>Aimes to simplify training by showing relevant data.</p>
+                <p>Processes everything locally using WASM (and Rust).</p>
+            </div>
+        </div>
+    </div>
 
 </body>
 

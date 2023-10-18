@@ -100,3 +100,36 @@ async function gameboy() {
     const t1 = performance.now();
     console.log(`Scanning took ${t1 - t0} ms.`);
 }
+
+// Modal boxes for help and about
+
+var modal_help = document.getElementById("modal_help");
+var modal_help_open = document.getElementById("modal_help_open");
+modal_help_open.onclick = function () {
+    modal_help.style.display = "block";
+}
+var modal_help_close = document.getElementById("modal_help_close");
+modal_help_close.onclick = function () {
+    modal_help.style.display = "none";
+}
+
+var modal_about = document.getElementById("modal_about");
+var modal_about_open = document.getElementById("modal_about_open");
+modal_about_open.onclick = function () {
+    modal_about.style.display = "block";
+}
+var modal_about_close = document.getElementById("modal_about_close");
+modal_about_close.onclick = function () {
+    modal_about.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function (event) {
+    if (event.target == modal_help) {
+        modal_help.style.display = "none";
+    }
+
+    if (event.target == modal_about) {
+        modal_about.style.display = "none";
+    }
+}
