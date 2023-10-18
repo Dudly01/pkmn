@@ -63,7 +63,7 @@ header {
 
 /* In the header, links should not behave as a link */
 .header-link {
-    color: whitesmoke;
+    color: inherit;
     text-decoration: none;
 }
 
