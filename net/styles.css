@@ -241,7 +241,8 @@ main {
     color: whitesmoke;
     font-size: 13px;
     font-family: monospace;
-    white-space: pre-wrap;
+    /* pre-line for the default text, pre-wrap otherwise */
+    white-space: pre-line;
     min-height: 50px;
 }
 
