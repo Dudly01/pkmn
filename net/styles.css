@@ -129,8 +129,6 @@ header {
     width: 100%;
     /* Full height */
     height: 100%;
-    /* Enable scroll if needed */
-    overflow: auto;
     /* Fallback color */
     background-color: rgb(0, 0, 0);
     /* Black w/ opacity */
@@ -154,7 +152,11 @@ header {
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
-    animation-duration: 0.4s
+    animation-duration: 0.4s;
+
+    overflow-y: auto;
+    /* The screen, top padding, bottom padding */
+    max-height: calc(100% - 100px - 100px);
 }
 
 /* Add Animation */
