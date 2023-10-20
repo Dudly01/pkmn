@@ -102,6 +102,29 @@ def export_pokemon(smogon_json: dict, dst_path: Path) -> None:
             csv_writer.writerow(row)
 
 
+def export_items(smogon_json: dict, dst_path: Path) -> None:
+    """Exports the item data to a CSV file."""
+
+    header = [
+        "name",
+        "description",
+    ]
+
+    rows = []
+    for item_dict in smogon_json["injectRpcs"][1][1]["items"]:
+        row = [item_dict[col] for col in header]
+        rows.append(row)
+
+    rows.sort(key=lambda x: x[0])  # Sort by name
+
+    with dst_path.open("w", encoding="utf-8") as f:
+        csv_writer = csv.writer(f)
+
+        csv_writer.writerow(header)
+        for row in rows:
+            csv_writer.writerow(row)
+
+
 def main():
     gen_urls: list[tuple[str, str]] = [
         ("rb", "https://www.smogon.com/dex/rb/pokemon/"),
@@ -125,6 +148,10 @@ def main():
         csv_path = Path(dst_dir, f"smogon_{gen_name}_pokemon.csv")
         print(f"Writing pokemon to {csv_path}")
         export_pokemon(smogon_json=json_content, dst_path=csv_path)
+
+        csv_path = Path(dst_dir, f"smogon_{gen_name}_items.csv")
+        print(f"Writing items to {csv_path}")
+        export_items(smogon_json=json_content, dst_path=csv_path)
 
     return
 
