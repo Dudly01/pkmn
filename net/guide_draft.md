@@ -1,5 +1,7 @@
 # Guide
 
+
+
 ## Introduction
 
 PKMN is a Pokémon RBY (Gen I) and GSC (Gen II) DV calculator, move and evolution lister.
@@ -41,12 +43,17 @@ Details like the shared DV value for Spc. Att and Spc. Def, the relation of HP D
 
 ## Troubleshooting
 
-This section will continue the troubleshooting steps.
-Until then, make sure the Game Boy screen has a dark border and has the original aspect ratio.
+Follow these steps in case troubles are encountered:
 
-If the screen or a field is not recognized, try resizing the image until success.
-Using a Game Boy resolution other than the original 160x144 can introduce distortions.
-This can prevent the characters from being recognized.
+- Choose a screen with the Game Boy screen on it.
+- Have no white border around the Game Boy screen.
+- Use the original Game Boy screen aspect ratio.
+- Have only one Game Boy visible, otherwise the biggest will be scanned.
+- Show the Pokémon summary on the Game Boy.
+- Use the original Game Boy resolution, or resize until there are no distortions. Play around until successful scan.
+- Avoid covering text with the cursor.
+- Show snapshot or screen on the control panel to verify what is being scanned.
+- Try resolving issue based on error message.
 
 ## Legal
 
