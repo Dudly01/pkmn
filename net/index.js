@@ -7,6 +7,8 @@ const button_start = document.getElementById("button_start");
 const button_stop = document.getElementById("button_stop");
 const button_scan = document.getElementById("button_scan");
 const button_interval_scan = document.getElementById("button_interval_scan");
+const button_canvas = document.getElementById("button_canvas");
+const button_video = document.getElementById("button_video");
 
 const text_output = document.getElementById("output");
 
@@ -29,6 +31,14 @@ button_scan.onclick = function (e) {
 button_interval_scan.onclick = function (e) {
     periodic_gameboy();
 };
+button_canvas.addEventListener('click', function () {
+    canvas.classList.toggle('hidden');
+    button_canvas.textContent = button_canvas.textContent === "Show snapshot" ? "Hide snapshot" : "Show snapshot";
+});
+button_video.addEventListener('click', function () {
+    video.classList.toggle('hidden');  // The video.style.display is "" at first https://stackoverflow.com/a/44332288/12351436
+    button_video.textContent = button_video.textContent === "Show screen" ? "Hide screen" : "Show screen";
+});
 
 let intervalId;
 
@@ -86,7 +96,29 @@ async function gameboy() {
     } catch (error) {
         text_output.textContent = error;
     }
+    // pre-line for the default text makes html easier to edit
+    // pre-wrap is necessery to keep formatting
+    text_output.style.whiteSpace = "pre-wrap";
 
     const t1 = performance.now();
     console.log(`Scanning took ${t1 - t0} ms.`);
+}
+
+// Modal boxes
+
+var modal_guide = document.getElementById("modal_guide");
+var modal_guide_open = document.getElementById("modal_guide_open");
+modal_guide_open.onclick = function () {
+    modal_guide.style.display = "block";
+}
+var modal_guide_close = document.getElementById("modal_guide_close");
+modal_guide_close.onclick = function () {
+    modal_guide.style.display = "none";
+}
+
+// When the user clicks anywhere outside of a modal, close it
+window.onclick = function (event) {
+    if (event.target == modal_guide) {
+        modal_guide.style.display = "none";
+    }
 }
