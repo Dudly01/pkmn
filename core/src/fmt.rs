@@ -2,6 +2,25 @@
 
 use crate::learnset::Learnset;
 use crate::moves::{GscMoves, Move, Moves};
+use crate::stats::DvRange;
+
+/// Returns the header of the stat table.
+pub fn fmt_stat_header() -> String {
+    let h = format!(
+        "{:>4}  {:>4}  {:>5}  {}\n",
+        "Stat", "Base", "Value", "DV Range"
+    );
+    h
+}
+
+/// Returns a row of the stat table.
+pub fn fmt_stat_row(stat: &str, base_stat: &i32, stat_value: &i32, dv_range: &DvRange) -> String {
+    let h = format!(
+        "{:>4}  {:>4}  {:>5}  {:>3} - {:>2}\n",
+        stat, base_stat, stat_value, dv_range.min, dv_range.max
+    );
+    h
+}
 
 pub fn fmt_move_header() -> String {
     format!(
