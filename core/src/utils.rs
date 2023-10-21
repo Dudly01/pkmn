@@ -21,6 +21,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let gsc_learnsets = pkmn::learnset::GscLearnsets::new();
     let gsc_evo_chains = pkmn::evos::load_gsc_evos();
     let gsc_moves = pkmn::moves::GscMoves::new();
+    let gsc_items = pkmn::items::GscItems::new();
 
     let rby_summary_1 = pkmn::gameboy::RbySummary1::new();
     let rby_summary_2 = pkmn::gameboy::RbySummary2::new();
@@ -331,6 +332,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
 
         let level = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.level, &chars);
 
+        let item = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.item, &chars);
+
         let move_1 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.move_1, &chars);
 
         let move_2 = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_2.move_2, &chars);
@@ -346,6 +349,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             t.push_str("GSC Summary 2\n");
             t.push_str(&format!("Ndex: {ndex:?}\n"));
             t.push_str(&format!("Level: {level:?}\n"));
+            t.push_str(&format!("Item: {item:?}\n"));
             t.push_str(&format!("Move 1: {move_1:?}\n"));
             t.push_str(&format!("Move 2: {move_2:?}\n"));
             t.push_str(&format!("Move 3: {move_3:?}\n"));
@@ -363,6 +367,11 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             .trim()
             .parse::<i32>()
             .map_err(|_| format!("could not parse level '{level}' to an integer"))?;
+
+        let item_name = item
+            .map_err(|err| format!("could not read item: {err}"))?
+            .trim()
+            .to_string();
 
         let move_1 = move_1
             .map_err(|err| format!("could not read move_1: {err}"))?
@@ -391,6 +400,13 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
             "#{} {} :L{}\n\n",
             pokemon.ndex, pokemon.name, level
         ));
+
+        t.push_str(&format!("Item:\n"));
+        let item = gsc_items.get(&item_name);
+        match item {
+            Some(item) => t.push_str(&format!("{:<12}  {}\n\n", item_name, item.description)),
+            None => t.push_str(&format!("{:<12}  {}\n\n", item_name, "NO DATA")),
+        }
 
         t.push_str(&format!("{}\n", &fmt::fmt_move_header()));
         for move_name in [&move_1, &move_2, &move_3, &move_4] {

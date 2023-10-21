@@ -550,6 +550,8 @@ pub struct GscSummary2 {
     pub ndex: Position,
     pub level: Position,
 
+    pub item: Position,
+
     pub move_1: Position,
     pub move_2: Position,
     pub move_3: Position,
@@ -572,6 +574,12 @@ impl GscSummary2 {
                 x: 120,
                 y: 0,
                 width: 23,
+                height: 7,
+            },
+            item: Position {
+                x: 64,
+                y: 64,
+                width: 95,
                 height: 7,
             },
             move_1: Position {
