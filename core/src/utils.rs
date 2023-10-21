@@ -191,7 +191,7 @@ fn scan_rby_summary_2(
             "-" => text_result.push_str("-\n"),
             _ => {
                 let move_ = rby_moves.get(&move_name);
-                text_result.push_str(&format!("{}\n", fmt::fmt_move(move_)));
+                text_result.push_str(&format!("{}\n", fmt::fmt_move_row(move_)));
             }
         }
     }
@@ -386,7 +386,7 @@ fn scan_gsc_summary_2(
             "-" => t.push_str("-\n"),
             _ => {
                 let move_ = gsc_moves.get(&move_name);
-                t.push_str(&format!("{}\n", fmt::fmt_move(move_)));
+                t.push_str(&format!("{}\n", fmt::fmt_move_row(move_)));
             }
         }
     }

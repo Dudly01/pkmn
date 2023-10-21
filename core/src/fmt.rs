@@ -29,7 +29,7 @@ pub fn fmt_move_header() -> String {
     )
 }
 
-pub fn fmt_move(move_: Option<&Move>) -> String {
+pub fn fmt_move_row(move_: Option<&Move>) -> String {
     match move_ {
         Some(m) => {
             format!(
@@ -65,7 +65,7 @@ fn fmt_shared_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<Strin
         let move_name = &row[1];
         let move_ = moves.get(move_name);
 
-        let rt = format!("{:<3}  {}\n", row[0], fmt_move(move_));
+        let rt = format!("{:<3}  {}\n", row[0], fmt_move_row(move_));
         t.push_str(&rt);
     }
 
@@ -91,7 +91,7 @@ fn fmt_divering_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<Str
         let move_name = &row[2];
         let move_ = moves.get(move_name);
 
-        let rt = format!("{:<3}  {:<3}  {}\n", row[0], row[1], fmt_move(move_));
+        let rt = format!("{:<3}  {:<3}  {}\n", row[0], row[1], fmt_move_row(move_));
 
         t.push_str(&rt);
     }
@@ -140,7 +140,7 @@ fn fmt_gsc_shared_learnset_table(learnset: &Learnset, moves: &GscMoves) -> Resul
         let move_name = &row[1];
         let move_ = moves.get(move_name);
 
-        let rt = format!("{:<3}  {}\n", row[0], fmt_move(move_));
+        let rt = format!("{:<3}  {}\n", row[0], fmt_move_row(move_));
         t.push_str(&rt);
     }
 
@@ -169,7 +169,7 @@ fn fmt_gsc_divering_learnset_table(
         let move_name = &row[2];
         let move_ = moves.get(move_name);
 
-        let rt = format!("{:<3}  {:<3}  {}\n", row[0], row[1], fmt_move(move_));
+        let rt = format!("{:<3}  {:<3}  {}\n", row[0], row[1], fmt_move_row(move_));
 
         t.push_str(&rt);
     }
