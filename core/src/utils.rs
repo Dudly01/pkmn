@@ -50,34 +50,36 @@ fn scan_rby_summary_1(
         pokemon.ndex, pokemon.name, content.level
     ));
 
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}  {}\n",
-        "Stat", "Base", "Value", "DV [min-max]"
+    t.push_str(&fmt::fmt_stat_header());
+    t.push_str(&fmt::fmt_stat_row(
+        "HP",
+        &pokemon.hp,
+        &content.hp,
+        &range_hp,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "HP", pokemon.hp, content.hp, range_hp.min, range_hp.max
+    t.push_str(&fmt::fmt_stat_row(
+        "ATT",
+        &pokemon.attack,
+        &content.attack,
+        &range_attack,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "ATT", pokemon.attack, content.attack, range_attack.min, range_attack.max
+    t.push_str(&fmt::fmt_stat_row(
+        "DEF",
+        &pokemon.defense,
+        &content.defense,
+        &range_defense,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "DEF", pokemon.defense, content.defense, range_defense.min, range_defense.max
+    t.push_str(&fmt::fmt_stat_row(
+        "SPD",
+        &pokemon.speed,
+        &content.speed,
+        &range_speed,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "SPD", pokemon.speed, content.speed, range_speed.min, range_speed.max
-    ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "SPC", pokemon.special, content.special, range_special.min, range_special.max
+    t.push_str(&fmt::fmt_stat_row(
+        "SPC",
+        &pokemon.special,
+        &content.special,
+        &range_special,
     ));
 
     t.push_str("\nDV-Value Table\n");
@@ -266,15 +268,8 @@ fn scan_gsc_summary_1(
         pokemon.ndex, pokemon.name, level
     ));
 
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}  {}\n",
-        "Stat", "Base", "Value", "DV [min-max]"
-    ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "HP", pokemon.hp, hp, range_hp.min, range_hp.max
-    ));
+    t.push_str(&fmt::fmt_stat_header());
+    t.push_str(&fmt::fmt_stat_row("HP", &pokemon.hp, &hp, &range_hp));
 
     // Returns the notification char upon equality, space otherwise.
     let notif_char = |eq: bool| -> char {
@@ -542,34 +537,36 @@ fn scan_gsc_summary_3(
         pokemon.ndex, pokemon.name, level
     ));
 
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}  {}\n",
-        "Stat", "Base", "Value", "DV [min-max]"
+    t.push_str(&fmt::fmt_stat_header());
+    t.push_str(&fmt::fmt_stat_row(
+        "ATT",
+        &pokemon.attack,
+        &attack,
+        &range_attack,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "ATT", pokemon.attack, attack, range_attack.min, range_attack.max
+    t.push_str(&fmt::fmt_stat_row(
+        "DEF",
+        &pokemon.defense,
+        &defense,
+        &range_defense,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "DEF", pokemon.defense, defense, range_defense.min, range_defense.max
+    t.push_str(&fmt::fmt_stat_row(
+        "SPA",
+        &pokemon.special_attack,
+        &spc_attack,
+        &range_spc_attack,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "SPA", pokemon.special_attack, spc_attack, range_spc_attack.min, range_spc_attack.max
+    t.push_str(&fmt::fmt_stat_row(
+        "SPD",
+        &pokemon.special_defense,
+        &spc_defense,
+        &range_spc_defense,
     ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "SPD", pokemon.special_attack, spc_defense, range_spc_defense.min, range_spc_defense.max
-    ));
-
-    t.push_str(&format!(
-        "{:>4}  {:>4}  {:>4}    {}-{}\n",
-        "SPE", pokemon.speed, speed, range_speed.min, range_speed.max
+    t.push_str(&fmt::fmt_stat_row(
+        "SPE",
+        &pokemon.speed,
+        &speed,
+        &range_speed,
     ));
 
     t.push_str("\nDV-Value Table\n");
