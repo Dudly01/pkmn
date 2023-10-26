@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PKMN minimal</title>
+    <script src="index.js" type="module"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="pokeball.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <div class="top-navigation-container">
+        <header class="top-navigation container">
+
+            <div class="top-navigation-logo">
+                <a href="." class="brand-logo">
+                    <img src="pokeball.svg" width="18" />
+                    PKMN
+                </a>
+            </div>
+
+            <div class="top-navigation-slogan">
+                Pokémon RBY and GSC DV calculator, move and evolution lister.
+            </div>
+
+            <div class="top-navigation-main">
+                <div>
+                    <a href="https://github.com/Dudly01/pkmn" target="_blank" class="header-link">
+                        <i class="fa fa-github"></i>
+                        Github
+                    </a>
+                </div>
+            </div>
+
+        </header>
+    </div>
+
+
+    <main class="blog-post-container container">
+
+        <aside class="document-toc">
+            <header>
+                <h2 class="document-toc-heading">On the website</h2>
+            </header>
+            <ul class="document-toc-list">
+                <li class="document-toc-item"><a href="#app" class="document-toc-link">App</a></li>
+                <li class="document-toc-item"><a href="#pkmn" class="document-toc-link">PKMN</a></li>
+                <li class="document-toc-item"><a href="#quickstart" class="document-toc-link">Quickstart</a></li>
+                <li class="document-toc-item"><a href="#limitations" class="document-toc-link">Limitations</a></li>
+                <li class="document-toc-item"><a href="#help_and_troubleshooting" class="document-toc-link">Help and
+                        Troubleshooting</a></li>
+                <li class="document-toc-item"><a href="#legal" class="document-toc-link">Legal</a></li>
+            </ul>
+        </aside>
+
+        <article class="blog-post">
+            <div id="app">
+
+                <section class="app-control-panel">
+                    <div class="control-panel-scan">
+                        <button class="control-button" id="button_start">Select screen</button>
+                        <button class="control-button" id="button_stop">Stop sharing</button>
+                        <button class="control-button" id="button_scan">Scan once</button>
+                        <button class="control-button" id="button_interval_scan">Start scanning</button>
+                    </div>
+
+                    <div class="control-panel-feedback">
+                        <button class="control-button" id="button_canvas">Show snapshot</button>
+                        <button class="control-button" id="button_video">Show screen</button>
+                    </div>
+                </section>
+
+                <pre id="output">
+Quickstart:
+
+1. Select the screen with the Pokémon summary on it.
+2. Scan once or periodically.
+3. See the scan result here.
+
+For more info and help, check out the article below.</pre>
+
+                <div>
+                    <canvas id="canvas" class="media hidden"></canvas>
+                    <video id="video" class="media hidden" autoplay></video>
+                </div>
+
+            </div>
+
+            <h1 id="pkmn">PKMN</h1>
+
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elit augue, interdum ut tristique nec,
+                lacinia quis augue. Nullam quis finibus augue. Pellentesque finibus mi purus, sed porta lacus convallis
+                eget. Vestibulum molestie, purus et feugiat lobortis, nisi tellus auctor nunc, nec ullamcorper massa
+                metus at nibh. Nulla quis luctus diam. Pellentesque gravida vitae purus dapibus volutpat. Donec
+                faucibus, risus vel rhoncus volutpat, tortor dui ornare felis, viverra imperdiet dolor mi eget sapien.
+                Pellentesque ac bibendum nisi. Duis blandit ut enim eu congue. Aliquam elementum nec nisl vitae cursus.
+                Proin pellentesque hendrerit velit non cursus.</p>
+
+            <h2 id="quickstart">Quickstart</h2>
+
+            <p>Curabitur vitae purus malesuada libero ullamcorper aliquam eu sed arcu. Lorem ipsum dolor sit amet,
+                consectetur adipiscing elit. Aliquam varius ultrices nulla. In tempus nisi a urna semper, ut iaculis
+                nunc mattis. Sed non libero a ligula mollis eleifend a nec nulla. Praesent semper tempus enim,
+                scelerisque tincidunt massa consequat sit amet. Sed aliquet tristique ligula sed pretium. Mauris
+                malesuada quis elit in porttitor. Phasellus volutpat facilisis magna, sit amet tincidunt massa elementum
+                quis. Curabitur sollicitudin ligula diam, vitae sodales nisi facilisis eget. Duis sit amet cursus
+                turpis. Aliquam sit amet dui et neque condimentum ornare. In ac justo cursus, mollis nibh at, accumsan
+                mi. Fusce lacinia facilisis lorem tincidunt malesuada. Ut feugiat egestas posuere.</p>
+            <p>Aliquam erat volutpat. Aenean mattis nibh ut libero varius eleifend. Sed rhoncus arcu tellus, ut interdum
+                erat scelerisque ac. Phasellus ut nisl rutrum, cursus metus aliquam, dapibus est. Donec auctor sagittis
+                ex. In quam eros, posuere nec lobortis sed, pretium dignissim orci. Phasellus commodo purus ut pharetra
+                pretium. Sed ut feugiat massa, fringilla semper elit.</p>
+            <p>Phasellus et leo et velit molestie euismod. Donec dictum, ex quis placerat mattis, tortor magna pulvinar
+                urna, ac egestas ligula velit vitae quam. Etiam sed rutrum massa. In ut molestie purus, id congue massa.
+                Donec libero libero, auctor eu metus viverra, sodales aliquet urna. Donec elementum luctus purus, in
+                bibendum metus blandit et. Mauris sollicitudin ultricies tellus, rutrum aliquet mi interdum sit amet.
+            </p>
+
+            <pre>
+name: "Lint"
+
+on:
+    push:
+    branches: [ master ]
+    pull_request:
+    branches: [ master ]
+
+jobs:
+    lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+        python-version: "3.10"
+    - name: Install dependencies
+        run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Lint with flake8
+        run: |
+        # stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics</pre>
+
+
+            <p>Nunc et condimentum eros. Nunc id tincidunt nibh. Fusce finibus, dolor et sollicitudin vestibulum, est
+                risus vulputate eros, ac mattis dolor odio ac quam. Vivamus facilisis efficitur quam ac feugiat.
+                Maecenas congue velit purus, in luctus ante commodo sit amet. Nunc cursus, lacus congue dignissim
+                ullamcorper, tellus quam tristique nunc, sit amet aliquet lectus nisl vel urna. Praesent euismod, sapien
+                at fringilla hendrerit, lorem nibh sollicitudin lectus, vel vestibulum diam elit sit amet odio. Nullam
+                nec venenatis felis. Nulla a convallis lectus, ac interdum ex. Donec blandit blandit lacus, ut bibendum
+                nulla maximus in. Nunc nisl leo, elementum nec pharetra eu, scelerisque in sapien. Praesent purus
+                mauris, condimentum ac varius ut, fermentum sed sapien. Sed egestas felis augue, et convallis odio
+                efficitur nec. Curabitur finibus erat eget orci convallis, ut ullamcorper risus ultricies. Morbi
+                pulvinar mollis turpis vitae tempor.</p>
+
+            <h2 id="limitations">Limitations</h2>
+
+            <p>Fusce auctor ex ac volutpat tristique. Quisque efficitur, elit id mollis dictum, velit turpis tristique
+                purus, id feugiat velit nisi vel erat. Integer sollicitudin nunc in justo mollis rhoncus. Donec
+                hendrerit nec velit eget mattis. Sed dui tortor, vulputate id efficitur ut, euismod nec neque. Curabitur
+                fermentum facilisis nibh, id euismod ipsum rutrum quis. Vestibulum eu euismod libero. Praesent dapibus
+                scelerisque nunc id suscipit. Pellentesque quis varius dolor.</p>
+            <p>Quisque non pharetra leo. Cras eget posuere nisl. Sed vestibulum maximus quam eleifend dignissim. Mauris
+                luctus in magna feugiat finibus. Aliquam erat volutpat. Proin mollis eget nisl sed efficitur. Integer
+                augue nulla, pretium at viverra venenatis, venenatis at nisi. Nullam condimentum pellentesque felis,
+                vitae finibus elit molestie et. Sed facilisis elit dui, in eleifend ipsum egestas at. Duis eget tellus
+                ipsum. Cras placerat convallis massa, id condimentum diam lobortis a. Vestibulum ante ipsum primis in
+                faucibus orci luctus et ultrices posuere cubilia curae; Vivamus id molestie libero.</p>
+
+            <h2 id="help_and_troubleshooting">Help and Troubleshooting</h2>
+
+            <p>Quisque interdum enim a metus blandit consequat vitae at elit. In elementum metus eu ullamcorper mattis.
+                Fusce id mi nibh. Vivamus eleifend ligula nec risus dapibus feugiat. Vivamus a blandit purus. Praesent
+                dignissim massa in diam sodales, sit amet cursus mi scelerisque. Cras dictum justo vel arcu suscipit
+                porttitor. Donec laoreet dolor nulla, nec dictum nibh malesuada non. Praesent in molestie ex. Maecenas
+                finibus ipsum eu libero dapibus luctus. Vivamus mattis facilisis arcu vel consectetur. Vestibulum vel
+                malesuada turpis, eget vulputate mi.</p>
+            <p>Suspendisse vehicula justo purus, sit amet congue tellus porttitor eget. Cras rutrum felis id elementum
+                hendrerit. Sed et ex eu magna porttitor hendrerit. Curabitur dignissim mollis egestas. Vivamus id ex mi.
+                Maecenas nec congue nibh, et ullamcorper purus. Proin eu nunc a nisl ornare rhoncus. In porta blandit
+                condimentum. Suspendisse vestibulum vel turpis scelerisque maximus. Praesent sed velit et sapien lacinia
+                hendrerit. Cras luctus ullamcorper suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et
+                ultrices posuere cubilia curae;</p>
+
+            <h2 id="legal">Legal</h2>
+
+            <p>Mauris facilisis diam id ultrices semper. Etiam a tortor arcu. Class aptent taciti sociosqu ad litora
+                torquent per conubia nostra, per inceptos himenaeos. Vestibulum felis ipsum, fermentum sed neque ut,
+                mollis maximus dolor. Morbi eu nisl lobortis, convallis risus non, laoreet sem. Fusce in fringilla
+                metus. Etiam feugiat magna et convallis interdum. Sed dignissim malesuada placerat. </p>
+
+            <p>End</p>
+
+        </article>
+
+    </main>
+
+
+</body>
+
+</html>
