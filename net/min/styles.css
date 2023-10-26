@@ -191,6 +191,7 @@ pre {
     display: flex;
     justify-content: space-between;
     gap: var(--gutter);
+    flex-wrap: wrap;
 }
 
 .control-button:hover {
