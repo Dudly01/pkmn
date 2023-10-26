@@ -68,9 +68,19 @@ body {
     }
 }
 
-.nav-link {
-    color: inherit;
+.brand-logo {
     text-decoration: none;
+    color: inherit;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.nav-link:hover {
+    text-decoration: none;
+    color: var(--button-secondary-hover);
 }
 
 .container {
@@ -197,10 +207,6 @@ pre {
 .control-button:hover {
     cursor: pointer;
 }
-
-
-
-
 
 
 /* Old code of mine */
