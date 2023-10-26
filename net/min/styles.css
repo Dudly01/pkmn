@@ -27,61 +27,29 @@ body {
 .top-navigation {
     height: var(--top-nav-height);
 
-    display: grid;
-    gap: 3rem;
-    grid-gap: 3rem;
-    grid-template-areas: "logo";
-    align-content: center;
+    display: flex;
+    align-items: center;
+    gap: var(--gutter);
+
+    /* Prevent text from wrapping to the next line */
+    white-space: nowrap;
 }
 
-@media (min-width: 992px) {
-    .top-navigation {
-        grid-template-areas: "logo main";
-        grid-template-columns: minmax(auto, 100%) minmax(0, 12rem);
-    }
-}
+.top-navigation-logo {}
 
-@media (min-width: 1200px) {
-    .top-navigation {
-        grid-template-areas: "logo slogan main";
-        grid-template-columns: minmax(auto, 1fr) minmax(0, 52rem) minmax(15rem, 1fr);
-    }
-}
+.top-navigation-main {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--gutter);
+    /* Occupy all available space */
+    flex: 1 1;
+    overflow: auto;
 
-@media (min-width: 1441px) {
-    .top-navigation {
-        grid-template-areas: "logo slogan main";
-        grid-template-columns: minmax(15rem, 1fr) minmax(0, 70rem) minmax(15rem, 1fr);
-    }
-}
-
-.top-navigation-logo {
-    grid-area: logo;
-    height: 1.5rem;
-    margin-top: .3rem;    
 }
 
 .top-navigation-slogan {
-    display: none;
-    padding-left: 1rem;
-    padding-right: 1rem;
-}
-
-@media (min-width: 992px) {
-    .top-navigation-slogan {
-        grid-area: slogan;
-        display: block;
-        /* Hide overflowing text */
-        overflow: hidden;
-        /* Display ellipsis (...) for overflowed text */
-        text-overflow: ellipsis;
-    }
-}
-
-.top-navigation-main {
-    grid-area: main;
-    display: flex;
-    flex-direction: row;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .nav-link {
@@ -97,7 +65,7 @@ body {
     padding-right: var(--gutter);
 }
 
-.blog-post-container {    
+.blog-post-container {
     display: grid;
     gap: 3rem;
     grid-gap: 3rem;
