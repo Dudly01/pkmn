@@ -35,7 +35,6 @@ body {
     white-space: nowrap;
 }
 
-.top-navigation-logo {}
 
 .top-navigation-main {
     display: flex;
@@ -50,6 +49,23 @@ body {
 .top-navigation-slogan {
     overflow: hidden;
     text-overflow: ellipsis;
+    display: none;
+}
+
+.top-navigation-slogan-short {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}
+
+@media (min-width: 992px) {
+    .top-navigation-slogan {
+        display: block;
+    }
+
+    .top-navigation-slogan-short {
+        display: none;
+    }
 }
 
 .nav-link {
