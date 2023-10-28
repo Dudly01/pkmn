@@ -195,8 +195,7 @@ pre {
 }
 
 pre {
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: auto;
 }
 
 .app-control-panel {
