@@ -98,113 +98,78 @@ For more info and help, check out the article below.</pre>
 
             <h1 id="pkmn">PKMN</h1>
 
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elit augue, interdum ut tristique nec,
-                lacinia quis augue. Nullam quis finibus augue. Pellentesque finibus mi purus, sed porta lacus convallis
-                eget. Vestibulum molestie, purus et feugiat lobortis, nisi tellus auctor nunc, nec ullamcorper massa
-                metus at nibh. Nulla quis luctus diam. Pellentesque gravida vitae purus dapibus volutpat. Donec
-                faucibus, risus vel rhoncus volutpat, tortor dui ornare felis, viverra imperdiet dolor mi eget sapien.
-                Pellentesque ac bibendum nisi. Duis blandit ut enim eu congue. Aliquam elementum nec nisl vitae cursus.
-                Proin pellentesque hendrerit velit non cursus.</p>
+            <p>PKMN is a Pokémon RBY (Gen I) and GSC (Gen II) DV calculator, move and
+                evolution lister.<br>
+                It aides trainers with their journey of becoming the champion.</p>
+
+            <p>See the potential of the freshly caught Pokémon.<br>
+                Spare effort by focusing only on the very best, without the hassle of DV
+                calculators.</p>
+
+            <p>Read the details and side effects of the moves.<br>
+                Battle confidently without learning from trial-and-error.</p>
+
+            <p>See the evolutions of your Pokémon, when and what moves they learn through
+                leveling up.<br>
+                Raise your partner without missing a crucial move. No need to keep several
+                browser tabs open.</p>
+
+            <p>Read directly from the Game Boy screen, process in the browser.<br>
+                No data leaves the computer. No program needs to be installed.</p>
 
             <h2 id="quickstart">Quickstart</h2>
 
-            <p>Curabitur vitae purus malesuada libero ullamcorper aliquam eu sed arcu. Lorem ipsum dolor sit amet,
-                consectetur adipiscing elit. Aliquam varius ultrices nulla. In tempus nisi a urna semper, ut iaculis
-                nunc mattis. Sed non libero a ligula mollis eleifend a nec nulla. Praesent semper tempus enim,
-                scelerisque tincidunt massa consequat sit amet. Sed aliquet tristique ligula sed pretium. Mauris
-                malesuada quis elit in porttitor. Phasellus volutpat facilisis magna, sit amet tincidunt massa elementum
-                quis. Curabitur sollicitudin ligula diam, vitae sodales nisi facilisis eget. Duis sit amet cursus
-                turpis. Aliquam sit amet dui et neque condimentum ornare. In ac justo cursus, mollis nibh at, accumsan
-                mi. Fusce lacinia facilisis lorem tincidunt malesuada. Ut feugiat egestas posuere.</p>
-            <p>Aliquam erat volutpat. Aenean mattis nibh ut libero varius eleifend. Sed rhoncus arcu tellus, ut interdum
-                erat scelerisque ac. Phasellus ut nisl rutrum, cursus metus aliquam, dapibus est. Donec auctor sagittis
-                ex. In quam eros, posuere nec lobortis sed, pretium dignissim orci. Phasellus commodo purus ut pharetra
-                pretium. Sed ut feugiat massa, fringilla semper elit.</p>
-            <p>Phasellus et leo et velit molestie euismod. Donec dictum, ex quis placerat mattis, tortor magna pulvinar
-                urna, ac egestas ligula velit vitae quam. Etiam sed rutrum massa. In ut molestie purus, id congue massa.
-                Donec libero libero, auctor eu metus viverra, sodales aliquet urna. Donec elementum luctus purus, in
-                bibendum metus blandit et. Mauris sollicitudin ultricies tellus, rutrum aliquet mi interdum sit amet.
-            </p>
-
-            <pre>
-name: "Lint"
-
-on:
-    push:
-    branches: [ master ]
-    pull_request:
-    branches: [ master ]
-
-jobs:
-    lint:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-        uses: actions/setup-python@v4
-        with:
-        python-version: "3.10"
-    - name: Install dependencies
-        run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-        run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics</pre>
-
-
-            <p>Nunc et condimentum eros. Nunc id tincidunt nibh. Fusce finibus, dolor et sollicitudin vestibulum, est
-                risus vulputate eros, ac mattis dolor odio ac quam. Vivamus facilisis efficitur quam ac feugiat.
-                Maecenas congue velit purus, in luctus ante commodo sit amet. Nunc cursus, lacus congue dignissim
-                ullamcorper, tellus quam tristique nunc, sit amet aliquet lectus nisl vel urna. Praesent euismod, sapien
-                at fringilla hendrerit, lorem nibh sollicitudin lectus, vel vestibulum diam elit sit amet odio. Nullam
-                nec venenatis felis. Nulla a convallis lectus, ac interdum ex. Donec blandit blandit lacus, ut bibendum
-                nulla maximus in. Nunc nisl leo, elementum nec pharetra eu, scelerisque in sapien. Praesent purus
-                mauris, condimentum ac varius ut, fermentum sed sapien. Sed egestas felis augue, et convallis odio
-                efficitur nec. Curabitur finibus erat eget orci convallis, ut ullamcorper risus ultricies. Morbi
-                pulvinar mollis turpis vitae tempor.</p>
+            <ol>
+                <li>Select the screen with the Pokémon summary.</li>
+                <li>Select to scan once or periodically.</li>
+                <li>Check the result of the scan.</li>
+            </ol>
 
             <h2 id="limitations">Limitations</h2>
 
-            <p>Fusce auctor ex ac volutpat tristique. Quisque efficitur, elit id mollis dictum, velit turpis tristique
-                purus, id feugiat velit nisi vel erat. Integer sollicitudin nunc in justo mollis rhoncus. Donec
-                hendrerit nec velit eget mattis. Sed dui tortor, vulputate id efficitur ut, euismod nec neque. Curabitur
-                fermentum facilisis nibh, id euismod ipsum rutrum quis. Vestibulum eu euismod libero. Praesent dapibus
-                scelerisque nunc id suscipit. Pellentesque quis varius dolor.</p>
-            <p>Quisque non pharetra leo. Cras eget posuere nisl. Sed vestibulum maximus quam eleifend dignissim. Mauris
-                luctus in magna feugiat finibus. Aliquam erat volutpat. Proin mollis eget nisl sed efficitur. Integer
-                augue nulla, pretium at viverra venenatis, venenatis at nisi. Nullam condimentum pellentesque felis,
-                vitae finibus elit molestie et. Sed facilisis elit dui, in eleifend ipsum egestas at. Duis eget tellus
-                ipsum. Cras placerat convallis massa, id condimentum diam lobortis a. Vestibulum ante ipsum primis in
-                faucibus orci luctus et ultrices posuere cubilia curae; Vivamus id molestie libero.</p>
+            <p>The app works with the English version of Pokémon RBY (Gen I) and GSC (Gen II).</p>
+
+            <p>The relevant data are accessed through the summary screens of the game.
+                No other screens are recognized.</p>
+
+            <p>Scanning works with Game Boy emulators, images, and videos within certain conditions.
+                The image needs to be clean, to have the original width-height ratio, and to not have a white
+                border. Upon failure, the error is presented to the user.</p>
+
+            <p>The tool can only approximate the DVs of freshly caught Pokémon precisely.
+                Through battles, Pokémon gain stat experience that affects their stat value.
+                As the accumulated amount of this experience is hidden from the player, the calculator assumes it to
+                be zero.
+                Therefore the more experience is gained, the less accurate the DV approximation is.</p>
+
+            <p>The stat DVs are calculated separately from one another.
+                Details like the shared DV value for Spc. Att and Spc. Def, the relation of HP DV to other stat DVs,
+                or the effects of gender in Gen II, are not considered.</p>
 
             <h2 id="help_and_troubleshooting">Help and Troubleshooting</h2>
 
-            <p>Quisque interdum enim a metus blandit consequat vitae at elit. In elementum metus eu ullamcorper mattis.
-                Fusce id mi nibh. Vivamus eleifend ligula nec risus dapibus feugiat. Vivamus a blandit purus. Praesent
-                dignissim massa in diam sodales, sit amet cursus mi scelerisque. Cras dictum justo vel arcu suscipit
-                porttitor. Donec laoreet dolor nulla, nec dictum nibh malesuada non. Praesent in molestie ex. Maecenas
-                finibus ipsum eu libero dapibus luctus. Vivamus mattis facilisis arcu vel consectetur. Vestibulum vel
-                malesuada turpis, eget vulputate mi.</p>
-            <p>Suspendisse vehicula justo purus, sit amet congue tellus porttitor eget. Cras rutrum felis id elementum
-                hendrerit. Sed et ex eu magna porttitor hendrerit. Curabitur dignissim mollis egestas. Vivamus id ex mi.
-                Maecenas nec congue nibh, et ullamcorper purus. Proin eu nunc a nisl ornare rhoncus. In porta blandit
-                condimentum. Suspendisse vestibulum vel turpis scelerisque maximus. Praesent sed velit et sapien lacinia
-                hendrerit. Cras luctus ullamcorper suscipit. Vestibulum ante ipsum primis in faucibus orci luctus et
-                ultrices posuere cubilia curae;</p>
+            <ul>
+                <li>Choose a screen with the Game Boy screen on it.</li>
+                <li>Have no white border around the Game Boy screen.</li>
+                <li>Use the original Game Boy screen aspect ratio.</li>
+                <li>Have only one Game Boy visible, otherwise the biggest will be scanned.</li>
+                <li>Show the Pokémon summary on the Game Boy.</li>
+                <li>Use the original Game Boy resolution, or resize until there are no distortions. Play around
+                    until successful scan.</li>
+                <li>Avoid covering text with the cursor.</li>
+                <li>Show snapshot or screen on the control panel to verify what is being scanned.</li>
+                <li>Try resolving the issue based on the error message.</li>
+            </ul>
 
             <h2 id="legal">Legal</h2>
 
-            <p>Mauris facilisis diam id ultrices semper. Etiam a tortor arcu. Class aptent taciti sociosqu ad litora
-                torquent per conubia nostra, per inceptos himenaeos. Vestibulum felis ipsum, fermentum sed neque ut,
-                mollis maximus dolor. Morbi eu nisl lobortis, convallis risus non, laoreet sem. Fusce in fringilla
-                metus. Etiam feugiat magna et convallis interdum. Sed dignissim malesuada placerat. </p>
+            <p>Created by Dudly01. The source is available on GitHub.</p>
 
-            <p>End</p>
+            <p>All the Pokémon data is sourced from bulbapedia.bulbagarden.net and smogon.com.</p>
+
+            <p>Pokémon is a trademark of Nintendo.</p>
+
+            <p>The website aesthetics were shamelessly taken from MDN Web Docs.</p>
 
         </article>
 
