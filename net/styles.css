@@ -154,7 +154,6 @@ body {
 .document-toc-item {
     border-left: 2px solid var(--border-secondary);
     color: var(--text-secondary);
-    display: block;
     padding: .5rem 1rem;
     text-decoration: none;
 }
@@ -164,6 +163,7 @@ body {
 }
 
 .document-toc-link {
+    display: block;
     color: inherit;
     text-decoration: none;
 }
