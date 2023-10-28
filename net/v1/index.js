@@ -1,4 +1,4 @@
-import init, * as wasm from './pkg/net.js';
+import init, * as wasm from '../pkg/net.js';
 
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
