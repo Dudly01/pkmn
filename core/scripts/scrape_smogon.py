@@ -18,11 +18,23 @@ def get_smogon_json_string(url: str) -> str:
 
     lines = html_text.splitlines()
     json_text = None
+    substring_start = "dexSettings = "
+    substring_end = "</script>"
     for line in lines:
-        if "dexSettings = " not in line:
+        if substring_start not in line:
             continue
-        start = line.find("{")  # Skip "dexSettings = "
-        json_text = line[start:]
+
+        start = line.find(substring_start)
+        if start == -1:
+            raise RuntimeError("Data json start not found in HTML source")
+        start += len(substring_start)
+
+        end = line.find(substring_end, start)
+        if end == -1:
+            # No </script>, then use whole line
+            end = len(line)
+
+        json_text = line[start:end]
         break
 
     if json_text is None:
