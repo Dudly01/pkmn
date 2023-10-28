@@ -96,9 +96,6 @@ async function gameboy() {
     } catch (error) {
         text_output.textContent = error;
     }
-    // pre-line for the default text makes html easier to edit
-    // pre-wrap is necessery to keep formatting
-    text_output.style.whiteSpace = "pre-wrap";
 
     const t1 = performance.now();
     console.log(`Scanning took ${t1 - t0} ms.`);
