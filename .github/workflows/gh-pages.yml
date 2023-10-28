@@ -55,6 +55,12 @@ jobs:
           python scrape_bulba_learnsets.py
           python evo_chains.py
 
+      - name: Insert project version into index.html
+        shell: bash
+        working-directory: ${{github.workspace}}/net/scripts
+        run: |
+          python version.py
+
       - name: Build        
         shell: bash
         working-directory: ${{github.workspace}}/net

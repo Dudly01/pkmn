@@ -1,4 +1,4 @@
-import init, * as wasm from './pkg/net.js';
+import init, * as wasm from '../pkg/net.js';
 
 const video = document.getElementById("video");
 const canvas = document.getElementById("canvas");
@@ -104,3 +104,21 @@ async function gameboy() {
     console.log(`Scanning took ${t1 - t0} ms.`);
 }
 
+// Modal boxes
+
+var modal_guide = document.getElementById("modal_guide");
+var modal_guide_open = document.getElementById("modal_guide_open");
+modal_guide_open.onclick = function () {
+    modal_guide.style.display = "block";
+}
+var modal_guide_close = document.getElementById("modal_guide_close");
+modal_guide_close.onclick = function () {
+    modal_guide.style.display = "none";
+}
+
+// When the user clicks anywhere outside of a modal, close it
+window.onclick = function (event) {
+    if (event.target == modal_guide) {
+        modal_guide.style.display = "none";
+    }
+}

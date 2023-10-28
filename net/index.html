@@ -3,10 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PKMN</title>
-    <script src="./index.js" type="module"></script>
+    <script src="index.js" type="module"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="pokeball.svg">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -14,143 +12,174 @@
 
 <body>
 
-    <header>
-        <div id="header-logo">
-            <a href="." class="header-link">
-                <img src="pokeball.svg" width="18px" />
-                PKMN
-            </a>
-        </div>
-        <div id="header-content">
-            Pokémon RBY and GSC DV calculator, move and evolution lister.
-            Reads from the Game Boy screen.
-            Processes in the browser.
-        </div>
-        <div id="header-info">
-            <div id="modal_guide_open" class="button-like">
-                <i class="fa fa-info-circle"></i>
-                Guide
-            </div>
-            <div>
-                <a href="https://github.com/Dudly01/pkmn" target="_blank" class="header-link">
-                    <i class="fa fa-github"></i>
-                    Github
+    <div class="top-navigation-container">
+        <header class="top-navigation container">
+
+            <div class="top-navigation-logo">
+                <a href="." class="brand-logo">
+                    <img src="pokeball.svg" width="18" />
+                    PKMN
                 </a>
             </div>
-        </div>
-    </header>
 
-    <main>
-        <div class="control-panel">
-            <div class="scan-control">
-                <button class="control-button" id="button_start">Select screen</button>
-                <button class="control-button" id="button_stop">Stop sharing</button>
-                <button class="control-button" id="button_scan">Scan once</button>
-                <button class="control-button" id="button_interval_scan">Start scanning</button>
+            <div class="top-navigation-main">
+                <div class="top-navigation-slogan">
+                    Pokémon RBY and GSC DV calculator, move and evolution lister. Reads from the Game Boy screen.
+                    Processes in the browser.
+                </div>
+
+                <div class="top-navigation-slogan-short">
+                    Pokémon RBY and GSC DV calculator, move and evolution lister.
+                </div>
+
+                <div>
+                    <a href="https://github.com/Dudly01/pkmn" target="_blank" class="nav-link">
+                        <i class="fa fa-github"></i>
+                        Github
+                    </a>
+                </div>
             </div>
-            <div class="visibility-control">
-                <button class="control-button" id="button_canvas">Show snapshot</button>
-                <button class="control-button" id="button_video">Show screen</button>
-            </div>
-        </div>
 
-        <p id="output">1. Select the screen with the Pokémon summary on the Game Boy.
-            2. Scan once or start a periodic scanning.
-            3. See the result here.
-
-            For more info and help, check out the guide.
-        </p>
-
-        <div>
-            <canvas id="canvas" class="media hidden"></canvas>
-            <video id="video" class="media hidden" autoplay></video>
-        </div>
-
-        <p id="footer">Created by Dudly01. Pokémon data sourced from
-            bulbapedia.bulbagarden.net and Smogon.com. Pokémon is a
-            trademark of Nintendo.</p>
-    </main>
-
-    <div id="modal_guide" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Guide</h3>
-                <span id="modal_guide_close" class="close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <h2>Introduction</h2>
-
-                <p>PKMN is a Pokémon RBY (Gen I) and GSC (Gen II) DV calculator, move and evolution lister.<br>
-                    It aides trainers with their journey of becoming the champion.</p>
-
-                <p>See the potential of the freshly caught Pokémon.<br>
-                    Spare effort by focusing only on the very best, without the hassle of DV calculators.</p>
-
-                <p>Read the details and side effects of the moves.<br>
-                    Battle confidently without learning from trial-and-error.</p>
-
-                <p>See the evolutions of your Pokémon, when and what moves they learn through leveling up.<br>
-                    Raise your partner without missing a crucial move. No need to keep several browser tabs open.</p>
-
-                <p>Read directly from the Game Boy screen, process in the browser.<br>
-                    No data leaves the computer. No program needs to be installed.</p>
-
-                <h2>Quickstart</h2>
-
-                <ol>
-                    <li>Select the screen with the Pokémon summary.</li>
-                    <li>Select to scan once or periodically.</li>
-                    <li>Check the result of the scan.</li>
-                </ol>
-
-                <h2>Limitations</h2>
-
-                <p>The app works with the English version of Pokémon RBY (Gen I) and GSC (Gen II).</p>
-
-                <p>The relevant data are accessed through the summary screens of the game.
-                    No other screens are recognized.</p>
-
-                <p>Scanning works with Game Boy emulators, images, and videos within certain conditions.
-                    The image needs to be clean, to have the original width-height ratio, and to not have a white
-                    border. Upon failure, the error is presented to the user.</p>
-
-                <p>The tool can only approximate the DVs of freshly caught Pokémon precisely.
-                    Through battles, Pokémon gain stat experience that affects their stat value.
-                    As the accumulated amount of this experience is hidden from the player, the calculator assumes it to
-                    be zero.
-                    Therefore the more experience is gained, the less accurate the DV approximation is.</p>
-
-                <p>The stat DVs are calculated separately from one another.
-                    Details like the shared DV value for Spc. Att and Spc. Def, the relation of HP DV to other stat DVs,
-                    or the effects of gender in Gen II, are not considered.</p>
-
-                <h2>Troubleshooting</h2>
-
-                <ul>
-                    <li>Choose a screen with the Game Boy screen on it.</li>
-                    <li>Have no white border around the Game Boy screen.</li>
-                    <li>Use the original Game Boy screen aspect ratio.</li>
-                    <li>Have only one Game Boy visible, otherwise the biggest will be scanned.</li>
-                    <li>Show the Pokémon summary on the Game Boy.</li>
-                    <li>Use the original Game Boy resolution, or resize until there are no distortions. Play around
-                        until successful scan.</li>
-                    <li>Avoid covering text with the cursor.</li>
-                    <li>Show snapshot or screen on the control panel to verify what is being scanned.</li>
-                    <li>Try resolving the issue based on the error message.</li>
-                </ul>
-
-                <h2>Legal</h2>
-
-                <p>Created by Dudly01. The source is available on GitHub.</p>
-
-                <p>All the Pokémon data is sourced from bulbapedia.bulbagarden.net and smogon.com.</p>
-
-                <p>Pokémon is a trademark of Nintendo.</p>
-
-
-            </div>
-        </div>
+        </header>
     </div>
+
+
+    <main class="blog-post-container container">
+
+        <div class="sticky-toc-container">
+            <aside class="document-toc">
+                <header>
+                    <h2 class="document-toc-heading">On the website</h2>
+                </header>
+                <ul class="document-toc-list">
+                    <li class="document-toc-item"><a href="#app" class="document-toc-link">App</a></li>
+                    <li class="document-toc-item"><a href="#pkmn" class="document-toc-link">PKMN</a></li>
+                    <li class="document-toc-item"><a href="#quickstart" class="document-toc-link">Quickstart</a></li>
+                    <li class="document-toc-item"><a href="#limitations" class="document-toc-link">Limitations</a></li>
+                    <li class="document-toc-item"><a href="#help_and_troubleshooting" class="document-toc-link">Help and
+                            Troubleshooting</a></li>
+                    <li class="document-toc-item"><a href="#credits" class="document-toc-link">Credits</a></li>
+                </ul>
+            </aside>
+        </div>
+
+        <article class="blog-post">
+            <div id="app">
+
+                <section class="app-control-panel">
+                    <div class="control-panel-scan">
+                        <button class="control-button" id="button_start">Select screen</button>
+                        <button class="control-button" id="button_stop">Stop sharing</button>
+                        <button class="control-button" id="button_scan">Scan once</button>
+                        <button class="control-button" id="button_interval_scan">Start scanning</button>
+                    </div>
+
+                    <div class="control-panel-feedback">
+                        <button class="control-button" id="button_canvas">Show snapshot</button>
+                        <button class="control-button" id="button_video">Show screen</button>
+                    </div>
+                </section>
+
+                <pre id="output">
+Quickstart:
+
+1. Select the screen with the Pokémon summary on it.
+2. Scan once or periodically.
+3. See the scan result here.
+
+For more info and help, check out the article below.</pre>
+
+                <div>
+                    <canvas id="canvas" class="media hidden"></canvas>
+                    <video id="video" class="media hidden" autoplay></video>
+                </div>
+
+            </div>
+
+            <h1 id="pkmn">PKMN</h1>
+
+            <p>PKMN is a Pokémon RBY (Gen I) and GSC (Gen II) DV calculator, move and
+                evolution lister.<br>
+                It aides trainers with their journey of becoming the champion.</p>
+
+            <p>See the potential of the freshly caught Pokémon.<br>
+                Spare effort by focusing only on the very best, without the hassle of DV
+                calculators.</p>
+
+            <p>Read the details and side effects of the moves.<br>
+                Battle confidently without learning from trial-and-error.</p>
+
+            <p>See the evolutions of your Pokémon, when and what moves they learn through
+                leveling up.<br>
+                Raise your partner without missing a crucial move. No need to keep several
+                browser tabs open.</p>
+
+            <p>Read directly from the Game Boy screen, process in the browser.<br>
+                No data leaves the computer. No program needs to be installed.</p>
+
+            <h2 id="quickstart">Quickstart</h2>
+
+            <ol>
+                <li>Select the screen with the Pokémon summary.</li>
+                <li>Select to scan once or periodically.</li>
+                <li>Check the result of the scan.</li>
+            </ol>
+
+            <h2 id="limitations">Limitations</h2>
+
+            <p>The app works with the English version of Pokémon RBY (Gen I) and GSC (Gen II).</p>
+
+            <p>The relevant data are accessed through the summary screens of the game.
+                No other screens are recognized.</p>
+
+            <p>Scanning works with Game Boy emulators, images, and videos within certain conditions.
+                The image needs to be clean, to have the original width-height ratio, and to not have a white
+                border. Upon failure, the error is presented to the user.</p>
+
+            <p>The tool can only approximate the DVs of freshly caught Pokémon precisely.
+                Through battles, Pokémon gain stat experience that affects their stat value.
+                As the accumulated amount of this experience is hidden from the player, the calculator assumes it to
+                be zero.
+                Therefore the more experience is gained, the less accurate the DV approximation is.</p>
+
+            <p>The stat DVs are calculated separately from one another.
+                Details like the shared DV value for Spc. Att and Spc. Def, the relation of HP DV to other stat DVs,
+                or the effects of gender in Gen II, are not considered.</p>
+
+            <h2 id="help_and_troubleshooting">Help and Troubleshooting</h2>
+
+            <ul>
+                <li>Choose a screen with the Game Boy screen on it.</li>
+                <li>Have no white border around the Game Boy screen.</li>
+                <li>Use the original Game Boy screen aspect ratio.</li>
+                <li>Have only one Game Boy visible, otherwise the biggest will be scanned.</li>
+                <li>Show the Pokémon summary on the Game Boy.</li>
+                <li>Use the original Game Boy resolution, or resize until there are no distortions. Play around
+                    until successful scan.</li>
+                <li>Avoid covering text with the cursor.</li>
+                <li>Show snapshot or screen on the control panel to verify what is being scanned.</li>
+                <li>Try resolving the issue based on the error message.</li>
+            </ul>
+
+            <h2 id="credits">Credits</h2>
+
+            <p>Created by Dudly01.</p>
+
+            <p>Pokémon data sourced from
+                <a href="https://bulbapedia.bulbagarden.net">Bulbapedia</a>,
+                <a href="https://www.serebii.net/">Serebii</a> and
+                <a href="https://www.smogon.com/">Smogon</a>.
+            </p>
+
+            <p>Pokémon is a trademark of Nintendo.</p>
+
+            <p>Website aesthetics were shamelessly taken from
+                <a href="https://developer.mozilla.org/">MDN Web Docs</a>.
+            </p>
+
+        </article>
+
+    </main>
 
 </body>
 
