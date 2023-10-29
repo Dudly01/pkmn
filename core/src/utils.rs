@@ -198,8 +198,8 @@ fn scan_rby_summary_2(
         }
     }
 
-    text_result.push_str(&"\nEvo chain(s):\n");
-    println!("Evo chains:\n");
+    text_result.push_str(&"\nEvo chain(s)\n");
+    println!("Evo chains\n");
     for chain in evo_chains {
         text_result.push_str(&format!("{}\n", chain.replace("->", "   ->   ")));
     }
@@ -421,7 +421,7 @@ fn scan_gsc_summary_2(
         .collect::<Result<Vec<_>, _>>()
         .map_err(|err| format!("could not collect learnsets for evo chain: {err}"))?;
 
-    t.push_str(&"\nEvo chain(s):\n");
+    t.push_str(&"\nEvo chain(s)\n");
     for chain in evo_chains {
         t.push_str(&format!("{}\n", chain.replace("->", "   ->   ")));
     }
