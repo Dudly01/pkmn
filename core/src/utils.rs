@@ -46,7 +46,7 @@ fn scan_rby_summary_1(
     let mut t = String::new();
 
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, content.level
     ));
 
@@ -110,7 +110,7 @@ fn scan_rby_summary_1(
 
     for i in 0..16 {
         t.push_str(&format!(
-            "{:>3} {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
+            "{:>3}  {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
             i,
             var_hp[i],
             notif_hp[i],
@@ -180,6 +180,8 @@ fn scan_rby_summary_2(
 
     let mut text_result = String::with_capacity(256);
 
+    text_result.push_str(&format!("No.{} {}\n\n", ndex, pkmn_name,));
+
     text_result.push_str(&format!("{}\n", &fmt::fmt_move_header()));
     for move_name in [
         &content.move_1,
@@ -196,8 +198,8 @@ fn scan_rby_summary_2(
         }
     }
 
-    text_result.push_str(&"\nEvo chain(s):\n");
-    println!("Evo chains:\n");
+    text_result.push_str(&"\nEvo chain(s)\n");
+    println!("Evo chains\n");
     for chain in evo_chains {
         text_result.push_str(&format!("{}\n", chain.replace("->", "   ->   ")));
     }
@@ -264,7 +266,7 @@ fn scan_gsc_summary_1(
         .map_err(|err| format!("could not determine HP DV range: {err}"))?;
 
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, level
     ));
 
@@ -284,7 +286,7 @@ fn scan_gsc_summary_1(
     t.push_str("\nDV-Value Table\n");
     t.push_str(&format!("{:>3}  {:>3}\n", "DV", "HP",));
     for i in 0..16 {
-        t.push_str(&format!("{:>3} {:>3}{}\n", i, var_hp[i], notif_hp[i],));
+        t.push_str(&format!("{:>3}  {:>3}{}\n", i, var_hp[i], notif_hp[i],));
     }
 
     return Ok(t);
@@ -369,11 +371,11 @@ fn scan_gsc_summary_2(
         .get_ndex(ndex)
         .ok_or(format!("could not find Pokemon at ndex '{ndex}'"))?;
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, level
     ));
 
-    t.push_str(&format!("Item:\n"));
+    t.push_str(&format!("Item\n"));
     let item = gsc_items.get(&item_name);
     match item {
         Some(item) => t.push_str(&format!("{:<12}  {}\n\n", item_name, item.description)),
@@ -419,7 +421,7 @@ fn scan_gsc_summary_2(
         .collect::<Result<Vec<_>, _>>()
         .map_err(|err| format!("could not collect learnsets for evo chain: {err}"))?;
 
-    t.push_str(&"\nEvo chain(s):\n");
+    t.push_str(&"\nEvo chain(s)\n");
     for chain in evo_chains {
         t.push_str(&format!("{}\n", chain.replace("->", "   ->   ")));
     }
@@ -533,7 +535,7 @@ fn scan_gsc_summary_3(
         .map_err(|err| format!("could not determine Speed DV range: {err}"))?;
 
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, level
     ));
 
@@ -595,7 +597,7 @@ fn scan_gsc_summary_3(
 
     for i in 0..16 {
         t.push_str(&format!(
-            "{:>3} {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
+            "{:>3}  {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
             i,
             var_attack[i],
             notif_attack[i],
