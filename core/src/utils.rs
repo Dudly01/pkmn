@@ -21,7 +21,7 @@ fn scan_rby_summary_1(
         .read_fields(&img_gameboy, &chars)
         .map_err(|err| format!("could not read RBY summary 1: {err}"))?;
 
-    let ndex: usize = content.pkmn_no as usize;
+    let ndex: usize = content.ndex as usize;
     let pokemon = rby_pokedex
         .get_ndex(ndex)
         .ok_or(format!("could not find Pokemon with ndex '{ndex}'"))?;
@@ -143,9 +143,9 @@ fn scan_rby_summary_2(
     };
 
     let ndex: usize = content
-        .pkmn_no
+        .ndex
         .parse()
-        .map_err(|_| format!("could not parse ndex '{}' into an integer", content.pkmn_no))?;
+        .map_err(|_| format!("could not parse ndex '{}' into an integer", content.ndex))?;
 
     let pkmn_name = rby_pokedex
         .get_ndex(ndex)
