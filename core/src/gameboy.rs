@@ -120,8 +120,8 @@ impl RbySummary1 {
         let field_width = 23;
         let field_height = 7;
 
-        let x_pkmn_no = 24;
-        let y_pkmn_no = 56;
+        let x_ndex = 24;
+        let y_ndex = 56;
 
         let x_level = 120;
         let y_level = 16;
@@ -145,8 +145,8 @@ impl RbySummary1 {
             width: 160,
             height: 144,
             pkmn_ndex_pos: Position {
-                x: x_pkmn_no,
-                y: y_pkmn_no,
+                x: x_ndex,
+                y: y_ndex,
                 width: field_width,
                 height: field_height,
             },
@@ -253,12 +253,12 @@ impl RbySummary1 {
             return Err("Mismatch in image and layout dimensions.".to_string());
         }
 
-        let pkmn_no = read_field(img, &self.pkmn_ndex_pos, chars)
+        let ndex = read_field(img, &self.pkmn_ndex_pos, chars)
             .map_err(|err| format!("could not read ndex: {err}"))?;
-        let pkmn_no = pkmn_no
+        let ndex = ndex
             .trim()
             .parse::<i32>()
-            .map_err(|_| format!("could not parse ndex '{pkmn_no}' to i32"))?;
+            .map_err(|_| format!("could not parse ndex '{ndex}' to i32"))?;
 
         let level = read_field(img, &self.level_field_pos, chars)
             .map_err(|err| format!("could not read level: {err}"))?;
@@ -303,7 +303,7 @@ impl RbySummary1 {
             .map_err(|_| format!("could not parse special '{special}' to i32"))?;
 
         let content = RbySummaryContent {
-            pkmn_no,
+            ndex,
             level,
             hp,
             attack,
@@ -318,7 +318,7 @@ impl RbySummary1 {
 /// The content of the RBY summary screen 1.
 #[derive(PartialEq, PartialOrd, Clone)]
 pub struct RbySummaryContent {
-    pub pkmn_no: i32,
+    pub ndex: i32,
     pub level: i32,
     pub hp: i32,
     pub attack: i32,
@@ -344,15 +344,15 @@ impl RbySummary2 {
         let field_width = 23;
         let field_height = 7;
 
-        let x_pkmn_no = 24;
-        let y_pkmn_no = 56;
+        let x_ndex = 24;
+        let y_ndex = 56;
 
         RbySummary2 {
             width: 160,
             height: 144,
             pkmn_ndex_pos: Position {
-                x: x_pkmn_no,
-                y: y_pkmn_no,
+                x: x_ndex,
+                y: y_ndex,
                 width: field_width,
                 height: field_height,
             },
@@ -420,7 +420,7 @@ impl RbySummary2 {
             return Err("Mismatch in image and layout dimensions.".to_string());
         }
 
-        let pkmn_no = read_field(img, &self.pkmn_ndex_pos, chars)
+        let ndex = read_field(img, &self.pkmn_ndex_pos, chars)
             .map_err(|err| format!("could not read ndex: {err}"))?
             .trim()
             .to_string();
@@ -446,7 +446,7 @@ impl RbySummary2 {
             .to_string();
 
         let content = RbySummaryContent2 {
-            pkmn_no,
+            ndex,
             move_1,
             move_2,
             move_3,
@@ -459,7 +459,7 @@ impl RbySummary2 {
 /// The contents of the RBY summary screen 2.
 #[derive(PartialEq, PartialOrd, Clone)]
 pub struct RbySummaryContent2 {
-    pub pkmn_no: String,
+    pub ndex: String,
     pub move_1: String,
     pub move_2: String,
     pub move_3: String,

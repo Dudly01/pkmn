@@ -56,7 +56,7 @@
                     <li class="document-toc-item"><a href="#pkmn" class="document-toc-link">PKMN</a></li>
                     <li class="document-toc-item"><a href="#quickstart" class="document-toc-link">Quickstart</a></li>
                     <li class="document-toc-item"><a href="#limitations" class="document-toc-link">Limitations</a></li>
-                    <li class="document-toc-item"><a href="#help_and_troubleshooting" class="document-toc-link">Help and
+                    <li class="document-toc-item"><a href="#help-and-troubleshooting" class="document-toc-link">Help and
                             Troubleshooting</a></li>
                     <li class="document-toc-item"><a href="#credits" class="document-toc-link">Credits</a></li>
                 </ul>
@@ -127,39 +127,78 @@ For more info and help, check out the article below.</pre>
 
             <h2 id="limitations">Limitations</h2>
 
-            <p>The app works with the English version of Pokémon RBY (Gen I) and GSC (Gen II).</p>
+            <p>The app is not expected to work on mobile.</p>
 
-            <p>The relevant data are accessed through the summary screens of the game.
-                No other screens are recognized.</p>
+            <p>Only the English version of Pokémon RBY (Gen I) and GSC (Gen II) are supported.</p>
 
-            <p>Scanning works with Game Boy emulators, images, and videos within certain conditions.
-                The image needs to be clean, to have the original width-height ratio, and to not have a white
-                border. Upon failure, the error is presented to the user.</p>
+            <p>Scanning could work with Game Boy emulators, images, and videos if the conditions are met.
+                The image needs to be fully visible, to be clear, to have the original 10:9 aspect ratio, and to not
+                have a white border.</p>
 
-            <p>The tool can only approximate the DVs of freshly caught Pokémon precisely.
-                Through battles, Pokémon gain stat experience that affects their stat value.
-                As the accumulated amount of this experience is hidden from the player, the calculator assumes it to
-                be zero.
-                Therefore the more experience is gained, the less accurate the DV approximation is.</p>
+            <p>The tool can only approximate the DVs of freshly caught Pokémon.
+                Stat experience gained through battles or through items (like Protein, Iron, Carbos, etc.)
+                increase the corresponding stat value. However, the total collected stat experience
+                is hidden from the player. As a result, the calculator assumes it to be zero.
+                The more stat experience a Pokémon gains, the less precise the calculator is.</p>
 
-            <p>The stat DVs are calculated separately from one another.
-                Details like the shared DV value for Spc. Att and Spc. Def, the relation of HP DV to other stat DVs,
+            <p>DVs are calculated only from the corrsponding stat value.
+                Details like the shared DV value for Spc. Att and Spc. Def, the relation of HP DV to other DVs,
                 or the effects of gender in Gen II, are not considered.</p>
 
-            <h2 id="help_and_troubleshooting">Help and Troubleshooting</h2>
+            <h2 id="help-and-troubleshooting">Help and Troubleshooting</h2>
+
+            Despite its limitations, the scanner is rather flexible. However, upon encountering issues, proceed with the
+            following steps.
 
             <ul>
                 <li>Choose a screen with the Game Boy screen on it.</li>
                 <li>Have no white border around the Game Boy screen.</li>
-                <li>Use the original Game Boy screen aspect ratio.</li>
+                <li>Use the original 10:9 Game Boy screen aspect ratio.</li>
                 <li>Have only one Game Boy visible, otherwise the biggest will be scanned.</li>
                 <li>Show the Pokémon summary on the Game Boy.</li>
                 <li>Use the original Game Boy resolution, or resize until there are no distortions. Play around
                     until successful scan.</li>
                 <li>Avoid covering text with the cursor.</li>
                 <li>Show snapshot or screen on the control panel to verify what is being scanned.</li>
-                <li>Try resolving the issue based on the error message.</li>
             </ul>
+
+            In case the issue remains, read further on for more specific instructions.
+
+            <h3>expected image with minimal size of 160x144, got 1x1</h3>
+
+            <p>This error appears, if the source window gets minimized.
+                Open it up again and switch between the windows without minimizing them.</p>
+
+            <h3>could not locate Game Boy screen</h3>
+
+            <p>The Game Boy screen was not found on the source screen.
+                Make sure that it is indeed present on that.
+                The Game Boy screen needs to be fully visible, without anything - including the cursor - covering the
+                border.
+                The screen needs to be in the original 10:9 aspect ratio.
+                Furthermore, the screen should not have a white border.</p>
+
+            <h3>could not recognize screen layout</h3>
+
+            <p>This error appears if the Game Boy screen has been (likely) found, but the screen it is showing is
+                unrecognized.
+                Make sure that the Game Boy is showing any of the summary screens, or switch to it otherwise.
+                In addition to this, in rare occasions removing the cursor from the Game Boy screen can resolve the
+                issue.
+            </p>
+
+            <h3>could not determine XXX DV range: stat value not found in stat variation XXX</h3>
+
+            <p>This error appears, if a stat has an unexpected(ly high) value. The Pokémon likely gained stat experience
+                through
+                battling or through items like Protein, Iron, Carbos, etc.</p>
+
+            <h3>could not read XXX: could not read character #X: could not recognize character</h3>
+
+            <p>A field could not be read from the screen.
+                Make sure that nothing obstructs the visibility of the field, including the cursor.
+                Make sure that the image is not blurry.
+                Try resizing the Game Boy screen until this error goes away.</p>
 
             <h2 id="credits">Credits</h2>
 

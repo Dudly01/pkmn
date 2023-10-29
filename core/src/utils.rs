@@ -21,7 +21,7 @@ fn scan_rby_summary_1(
         .read_fields(&img_gameboy, &chars)
         .map_err(|err| format!("could not read RBY summary 1: {err}"))?;
 
-    let ndex: usize = content.pkmn_no as usize;
+    let ndex: usize = content.ndex as usize;
     let pokemon = rby_pokedex
         .get_ndex(ndex)
         .ok_or(format!("could not find Pokemon with ndex '{ndex}'"))?;
@@ -139,13 +139,13 @@ fn scan_rby_summary_2(
 ) -> Result<String, String> {
     let content = rby_summary_2.read_fields(&img_gameboy, &chars);
     let Ok(content) = content else {
-            return Err("Could not read summary screen 2 content!".to_string());
-        };
+        return Err("Could not read summary screen 2 content!".to_string());
+    };
 
     let ndex: usize = content
-        .pkmn_no
+        .ndex
         .parse()
-        .map_err(|_| format!("could not parse ndex '{}' into an integer", content.pkmn_no))?;
+        .map_err(|_| format!("could not parse ndex '{}' into an integer", content.ndex))?;
 
     let pkmn_name = rby_pokedex
         .get_ndex(ndex)
@@ -617,6 +617,14 @@ fn scan_gsc_summary_3(
 /// The summary screen 1 is for printing the stat DVs.
 /// The summary screen 2 us for printing the learnset and evolution chain.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
+    let (w, h) = (img_screen.width(), img_screen.height());
+    let (w_min, h_min) = (160, 144);
+    if w < w_min || h < h_min {
+        return Err(format!(
+            "expected image with minimal size of {w_min}x{h_min}, got {w}x{h}"
+        ));
+    }
+
     // Init data
     let chars = pkmn::char::Charset::new();
 
@@ -639,10 +647,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let gsc_summary_3 = pkmn::gameboy::GscSummary3::new();
 
     // Do actual scanning
-    let gameboy_pos = pkmn::gameboy::locate_screen(&img_screen);
-    let Some(gameboy_pos) = gameboy_pos else {
-        return Err("No GameBoy screen was found!".to_string());
-    };
+    let gameboy_pos =
+        pkmn::gameboy::locate_screen(&img_screen).ok_or("could not locate Game Boy screen")?;
 
     let img_gameboy = img_screen
         .clone()
@@ -711,5 +717,5 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         return result;
     }
 
-    return Err("Screen found but not recognised.".to_string());
+    return Err("could not recognize screen layout".to_string());
 }
