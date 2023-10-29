@@ -180,6 +180,8 @@ fn scan_rby_summary_2(
 
     let mut text_result = String::with_capacity(256);
 
+    text_result.push_str(&format!("#{} {}\n\n", ndex, pkmn_name,));
+
     text_result.push_str(&format!("{}\n", &fmt::fmt_move_header()));
     for move_name in [
         &content.move_1,
