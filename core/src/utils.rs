@@ -139,8 +139,8 @@ fn scan_rby_summary_2(
 ) -> Result<String, String> {
     let content = rby_summary_2.read_fields(&img_gameboy, &chars);
     let Ok(content) = content else {
-            return Err("Could not read summary screen 2 content!".to_string());
-        };
+        return Err("Could not read summary screen 2 content!".to_string());
+    };
 
     let ndex: usize = content
         .pkmn_no
@@ -617,6 +617,14 @@ fn scan_gsc_summary_3(
 /// The summary screen 1 is for printing the stat DVs.
 /// The summary screen 2 us for printing the learnset and evolution chain.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
+    let (w, h) = (img_screen.width(), img_screen.height());
+    let (w_min, h_min) = (160, 144);
+    if w < w_min || h < h_min {
+        return Err(format!(
+            "expected image with minimal size of {w_min}x{h_min}, got {w}x{h}"
+        ));
+    }
+
     // Init data
     let chars = pkmn::char::Charset::new();
 
