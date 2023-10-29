@@ -639,10 +639,8 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let gsc_summary_3 = pkmn::gameboy::GscSummary3::new();
 
     // Do actual scanning
-    let gameboy_pos = pkmn::gameboy::locate_screen(&img_screen);
-    let Some(gameboy_pos) = gameboy_pos else {
-        return Err("No GameBoy screen was found!".to_string());
-    };
+    let gameboy_pos =
+        pkmn::gameboy::locate_screen(&img_screen).ok_or("could not locate Game Boy screen")?;
 
     let img_gameboy = img_screen
         .clone()
