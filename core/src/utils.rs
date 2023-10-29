@@ -375,7 +375,7 @@ fn scan_gsc_summary_2(
         pokemon.ndex, pokemon.name, level
     ));
 
-    t.push_str(&format!("Item:\n"));
+    t.push_str(&format!("Item\n"));
     let item = gsc_items.get(&item_name);
     match item {
         Some(item) => t.push_str(&format!("{:<12}  {}\n\n", item_name, item.description)),
