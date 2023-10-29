@@ -717,5 +717,5 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
         return result;
     }
 
-    return Err("Screen found but not recognised.".to_string());
+    return Err("could not recognize screen layout".to_string());
 }
