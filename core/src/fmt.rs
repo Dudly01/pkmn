@@ -53,7 +53,7 @@ fn fmt_shared_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<Strin
 
     // Pokemon
     t.push_str(&format!(
-        "#{} {} learnset:\n",
+        "No.{} {} learnset:\n",
         learnset.ndex, learnset.pokemon
     ));
 
@@ -79,7 +79,7 @@ fn fmt_divering_learnset_table(learnset: &Learnset, moves: &Moves) -> Result<Str
 
     // Pokemon
     t.push_str(&format!(
-        "#{} {} learnset:\n",
+        "No.{} {} learnset:\n",
         learnset.ndex, learnset.pokemon
     ));
 
@@ -128,7 +128,7 @@ fn fmt_gsc_shared_learnset_table(learnset: &Learnset, moves: &GscMoves) -> Resul
 
     // Pokemon
     t.push_str(&format!(
-        "#{} {} learnset:\n",
+        "No.{} {} learnset:\n",
         learnset.ndex, learnset.pokemon
     ));
 
@@ -157,7 +157,7 @@ fn fmt_gsc_divering_learnset_table(
 
     // Pokemon
     t.push_str(&format!(
-        "#{} {} learnset:\n",
+        "No.{} {} learnset:\n",
         learnset.ndex, learnset.pokemon
     ));
 

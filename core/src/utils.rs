@@ -46,7 +46,7 @@ fn scan_rby_summary_1(
     let mut t = String::new();
 
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, content.level
     ));
 
@@ -180,7 +180,7 @@ fn scan_rby_summary_2(
 
     let mut text_result = String::with_capacity(256);
 
-    text_result.push_str(&format!("#{} {}\n\n", ndex, pkmn_name,));
+    text_result.push_str(&format!("No.{} {}\n\n", ndex, pkmn_name,));
 
     text_result.push_str(&format!("{}\n", &fmt::fmt_move_header()));
     for move_name in [
@@ -266,7 +266,7 @@ fn scan_gsc_summary_1(
         .map_err(|err| format!("could not determine HP DV range: {err}"))?;
 
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, level
     ));
 
@@ -371,7 +371,7 @@ fn scan_gsc_summary_2(
         .get_ndex(ndex)
         .ok_or(format!("could not find Pokemon at ndex '{ndex}'"))?;
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, level
     ));
 
@@ -535,7 +535,7 @@ fn scan_gsc_summary_3(
         .map_err(|err| format!("could not determine Speed DV range: {err}"))?;
 
     t.push_str(&format!(
-        "#{} {} :L{}\n\n",
+        "No.{} {} :L{}\n\n",
         pokemon.ndex, pokemon.name, level
     ));
 
