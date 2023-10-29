@@ -110,7 +110,7 @@ fn scan_rby_summary_1(
 
     for i in 0..16 {
         t.push_str(&format!(
-            "{:>3} {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
+            "{:>3}  {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
             i,
             var_hp[i],
             notif_hp[i],
@@ -286,7 +286,7 @@ fn scan_gsc_summary_1(
     t.push_str("\nDV-Value Table\n");
     t.push_str(&format!("{:>3}  {:>3}\n", "DV", "HP",));
     for i in 0..16 {
-        t.push_str(&format!("{:>3} {:>3}{}\n", i, var_hp[i], notif_hp[i],));
+        t.push_str(&format!("{:>3}  {:>3}{}\n", i, var_hp[i], notif_hp[i],));
     }
 
     return Ok(t);
@@ -597,7 +597,7 @@ fn scan_gsc_summary_3(
 
     for i in 0..16 {
         t.push_str(&format!(
-            "{:>3} {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
+            "{:>3}  {:>3}{} {:>3}{} {:>3}{} {:>3}{} {:>3}{}\n",
             i,
             var_attack[i],
             notif_attack[i],
