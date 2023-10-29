@@ -25,7 +25,7 @@ pub fn fmt_stat_row(stat: &str, base_stat: &i32, stat_value: &i32, dv_range: &Dv
 pub fn fmt_move_header() -> String {
     format!(
         "{:<15}  {:<8}  {:<12}  {:>3}  {:>4}  {:>2}  {}",
-        "Name", "Type", "Cat", "Pow", "Acc", "PP", "Desc"
+        "Move", "Type", "Cat", "Pow", "Acc", "PP", "Desc"
     )
 }
 
