@@ -264,7 +264,7 @@ def scrape_gen_learnset(gen: str, category_url: str) -> None:
         # normed_table = norm_learnset_table(table)
 
         entry = {
-            "ndex": ndex,
+            "ndex": ndex.strip("0"),
             "pokemon": pokemon,
             "by_leveling_up": table,
         }

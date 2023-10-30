@@ -76,7 +76,7 @@ def export_pokemon(smogon_json: dict, dst_path: Path) -> None:
 
     header = [
         "name",
-        "dex_number",
+        "ndex",
         "type1",
         "type2",
         "hp",

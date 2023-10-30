@@ -1,6 +1,5 @@
 #[derive(Debug, serde::Deserialize)]
 pub struct RbyPokemon {
-    #[serde(rename = "dex_number")]
     pub ndex: i32,
     pub name: String,
     pub type1: String,
@@ -54,7 +53,6 @@ impl RbyPokedex {
 
 #[derive(Debug, serde::Deserialize)]
 pub struct GscPokemon {
-    #[serde(rename = "dex_number")]
     pub ndex: i32,
     pub name: String,
     pub type1: String,
