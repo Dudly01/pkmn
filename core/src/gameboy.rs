@@ -111,7 +111,7 @@ pub struct RbySummary1 {
     pub defense_field_pos: Position,
     pub speed_field_pos: Position,
     pub special_field_pos: Position,
-    pub slash_positions: [Position; 5],
+    pub slash_positions: [Position; 4],
 }
 
 impl RbySummary1 {
@@ -196,12 +196,6 @@ impl RbySummary1 {
                 Position {
                     x: 120,
                     y: 49,
-                    width: 7,
-                    height: 7,
-                },
-                Position {
-                    x: 120,
-                    y: 73,
                     width: 7,
                     height: 7,
                 },
