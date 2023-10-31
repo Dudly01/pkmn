@@ -29,7 +29,7 @@ body {
 
     display: flex;
     align-items: center;
-    gap: var(--gutter);
+    gap: calc(2 * var(--gutter));
 
     /* Prevent text from wrapping to the next line */
     white-space: nowrap;
