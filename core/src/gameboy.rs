@@ -81,8 +81,18 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
 
     // find_contours() does not find the border on an all-white image.
     // Add black marker pixel as a work-around.
-    *img.get_pixel_mut_checked(0, 0)
-        .expect("image has no pixels") = Luma([0]);
+
+    // for x in 0..img.width() {
+    //     *img.get_pixel_mut_checked(x, 0)
+    //     .expect("image has no pixels") = Luma([0]);
+    // }
+
+    // *img.get_pixel_mut_checked(0, 0)
+    //     .expect("image has no pixels") = Luma([0]);
+
+    // let (x_max, y_max) = (img.width() - 1, img.height() - 1);
+    // *img.get_pixel_mut_checked(x_max, y_max)
+    //     .expect("image dimensions changed") = Luma([0]);
 
     let contours = imageproc::contours::find_contours::<i32>(&img);
 
