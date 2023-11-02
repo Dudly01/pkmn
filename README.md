@@ -1,11 +1,12 @@
 # pkmn
 
-Data processing tools for Pokémon RBY and GSC.
+pkmn is a Pokémon RBY and GSC toolbox written in Rust.
+It features DV calculation, move and evolution datasets, Game Boy screen localization and OCR. 
+[Try the webapp here.](https://dudly01.github.io/pkmn/)
 
 # Getting started
 
-This section provides a quickstart of using the project.
-For more details, visit the documentation of the individual tools.
+This section includes the basic steps of using the tool.
 
 ## Prepare data for `core`
 
@@ -20,13 +21,28 @@ python core/scripts/scrape_bulba_learnsets.py
 python core/scripts/evo_chains.py
 ```
 
+## Examples
+
+The `core/examples` directory contains executables that showcase the usage and functionality of the project.
+They can be run from the `core` directory with:
+
+```
+# App scanning the main display of the computer
+cargo run --example desktop --release
+
+# App scanning a screenshot at the given path
+cargo run --example screenshot --release
+```
+
+The `core/src/utils` module showcases a higher level usage of the available features.
+
 ## Building WASM, testing website
 
 ```
 # Installs wasm-pack
 cargo install wasm-pack
 
-# Builds WASM code
+# Builds WASM code, run from `net` dir
 wasm-pack build --target web
 
 # Starts local webserver
@@ -60,7 +76,7 @@ cargo bench -- --baseline <name>
 
 The CodeLLDB VSCode extension enables running Python scripts
 during a debugging session from the Debug Console.
-Therefore it is possible to visualize images.
+This can be used for visualizing images.
 
 For helpful scripts and more info, peek into `core/scripts/debug_vis.py`.
 
@@ -92,13 +108,31 @@ As [comment mentiones](https://github.com/serde-rs/json/issues/409#issuecomment-
 cargo update
 ```
 
-# Sources
+# References
 
-## Pokemon
-Bulbapedia https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_base_stats_(Generation_I)
-Neoseeker https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html
-Smogon https://www.smogon.com/ingame/guides/rby_gsc_stats
+This section encloses the useful sources used in the development of the project.
 
-## JS app 
-https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65
-https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
+Pokémon data taken from
+[Bulbapedia](https://bulbapedia.bulbagarden.net/),
+[Serebii](https://www.serebii.net/),
+[Smogon](https://www.smogon.com/),
+([Neoseeker](https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html) in early stages) 
+.
+
+Pokémon is a trademark of Nintendo.
+
+Useful webdev resources include 
+[MDN Web Docs](https://developer.mozilla.org/),
+CSS-TRICKS' 
+[Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
+and 
+[Grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
+guides.
+
+Website aesthetics were heavily inspired by the 
+[MDN Web Docs](https://developer.mozilla.org/)
+.
+
+Honorary mentions:
+- https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65
+- https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
