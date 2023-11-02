@@ -74,7 +74,27 @@ pub fn search_screen_gsc(contours: &Vec<Contour<i32>>) -> Vec<Position> {
 ///
 /// Works with the Summary screens of RBY and GSC.
 pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
-    let mut img = img.to_luma8();
+    let img = img.to_luma8();
+    let pixels_orig = img.as_raw();
+
+    let (w_old, h_old) = (img.width(), img.height());
+
+    let border_width = 10; // pixels
+    let w_new = w_old + 2 * border_width;
+    let h_new = h_old + 2 * border_width;
+    let capacity = (w_new * h_new) as usize;
+    let mut pixels_bordered = vec![0; capacity];
+
+    let (offset_i, offset_j) = (border_width, border_width);
+    for i in 0..h_old {
+        for j in 0..w_old {
+            let old_idx = i * w_old + j;
+            let new_idx = (i + offset_i) * w_new + (j + offset_j);
+            pixels_bordered[new_idx as usize] = pixels_orig[old_idx as usize];
+        }
+    }
+    let mut img =
+        GrayImage::from_raw(w_new, h_new, pixels_bordered).expect("failed to add border to image");
 
     let threshold_val = 140; // Can be anything in [30, 240]
     threshold_mut(&mut img, threshold_val);
@@ -105,7 +125,16 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
         .max_by_key(|&p| p.width * p.height);
 
     match biggest {
-        Some(a) => Some(*a),
+        Some(a) => {
+            // Undo border offset
+            let pos_orig = Position {
+                x: a.x - border_width,
+                y: a.y - border_width,
+                width: a.width,
+                height: a.height,
+            };
+            Some(pos_orig)
+        }
         None => None,
     }
 }
