@@ -79,7 +79,7 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
 
     let (w_old, h_old) = (img.width(), img.height());
 
-    let border_width = 10; // pixels
+    let border_width = 1; // pixels
     let w_new = w_old + 2 * border_width;
     let h_new = h_old + 2 * border_width;
     let capacity = (w_new * h_new) as usize;
