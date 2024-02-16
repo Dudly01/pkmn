@@ -15,6 +15,11 @@ However, only the data that needed manual preparation is committed to the repo.
 The remainder needs to be downloaded via scripts located at `core/scripts` directory:
 
 ```
+# Install packages
+conda install --yes --file core/scripts/requirements.txt  # To use conda for most
+pip install -r core/scripts/requirements.txt
+
+# Run scripts
 python core/scripts/scrape_smogon.py
 python core/scripts/scrape_bulba_images.py
 python core/scripts/scrape_bulba_learnsets.py
