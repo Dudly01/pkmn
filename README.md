@@ -6,7 +6,19 @@ It features DV calculation, move and evolution datasets, Game Boy screen localiz
 
 # Getting started
 
-This section includes the basic steps of using the tool.
+Steps for setting up the developer environment and getting familiar with the project layout.
+
+## Dependencies
+
+Certain crates may require additional libraries.
+
+```
+# For scrap
+sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
+
+# For show-image
+sudo apt-get install pkg-config libfontconfig1-dev
+```
 
 ## Prepare data for `core`
 
@@ -15,6 +27,11 @@ However, only the data that needed manual preparation is committed to the repo.
 The remainder needs to be downloaded via scripts located at `core/scripts` directory:
 
 ```
+# Install packages
+conda install --yes --file core/scripts/requirements.txt  # To use conda for most
+pip install -r core/scripts/requirements.txt
+
+# Run scripts
 python core/scripts/scrape_smogon.py
 python core/scripts/scrape_bulba_images.py
 python core/scripts/scrape_bulba_learnsets.py
@@ -75,7 +92,7 @@ cargo bench -- --baseline <name>
 ## Debug visualization
 
 The CodeLLDB VSCode extension enables running Python scripts
-during a debugging session from the Debug Console.
+from the Debug Console during a debugging session.
 This can be used for visualizing images.
 
 For helpful scripts and more info, peek into `core/scripts/debug_vis.py`.
@@ -84,26 +101,14 @@ For helpful scripts and more info, peek into `core/scripts/debug_vis.py`.
 In order to install packages for use in CodeLLDB, use the 
 LLDB: Command Prompt command in VSCode, followed by `pip install --user <package>`.
 
-
 # Troubleshooting
 
 This section provides information on issues encountered during the develpment.
 
-## Missing dependencies
-
-Some crates may require the installation of certain libraries.
-
-```
-# For scrap
-sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
-
-# For show-image
-sudo apt-get install pkg-config libfontconfig1-dev
-```
 
 ## Cargo version conflict
 
-As [comment mentiones](https://github.com/serde-rs/json/issues/409#issuecomment-362696245), update the crates:
+As [comment mentiones](https://github.com/serde-rs/json/issues/409#issuecomment-362696245), update the crates with:
 ```
 cargo update
 ```
