@@ -29,6 +29,9 @@ import lldb  # LLDB auto import
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
 
 matplotlib.use("agg")
 
@@ -142,6 +145,17 @@ def show():
     debugger.display_html(document, position=2)
 
 
+def show_plotly(fig: go.Figure):
+    """Shows the Plotly Figure in a VSCode tab."""
+
+    div = plotly.io.to_html(fig, include_plotlyjs=False, full_html=False)
+    document = f'<html><script src="https://cdn.plot.ly/plotly-latest.min.js"></script>{div}</html>'
+
+    html = plotly.io.to_html(fig)
+
+    debugger.display_html(html, position=2)
+
+
 def plot_roi(roi):
     """Plots a crate::roi::Roi instance."""
     roi = debugger.unwrap(roi)
@@ -176,8 +190,8 @@ def plot_roi(roi):
 
     data_of_interest = data[y_pos : y_pos + height_pos, x_pos : x_pos + width_pos]
 
-    plt.imshow(data_of_interest, cmap="gist_gray", interpolation="nearest")
-    show()
+    fig = px.imshow(data_of_interest)
+    show_plotly(fig)
     print("width: {}".format(width_pos))
     print("height: {}".format(height_pos))
     print("color space: {}".format(color_space))
@@ -211,9 +225,8 @@ def plot_img(image):
     data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
 
-    # cmap is ignored for RGB(A) data
-    plt.imshow(data, cmap="gist_gray", interpolation="nearest")
-    show()
+    fig = px.imshow(data)
+    show_plotly(fig)
     print("width: {}".format(width))
     print("height: {}".format(height))
     print("color space: {}".format(color_space))
