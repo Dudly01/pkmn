@@ -205,7 +205,18 @@ def plot_roi(roi):
 
     data_of_interest = data[y_pos : y_pos + height_pos, x_pos : x_pos + width_pos]
 
-    fig = px.imshow(data_of_interest)
+    if channel_count != 1:
+        fig = px.imshow(data_of_interest)
+    else:
+        # Plotly does not like if last dim equals to 1
+        data_of_interest = data_of_interest[..., 0]  # Gets rid of last dim
+        fig = px.imshow(
+            data_of_interest,
+            color_continuous_scale="gray",
+            range_color=[0, np.iinfo(numpy_dtype).max],  # 
+        )
+        fig.update_layout(coloraxis_showscale=False)
+
     show_plotly(fig)
     print("width: {}".format(width_pos))
     print("height: {}".format(height_pos))
@@ -240,7 +251,18 @@ def plot_img(image):
     data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
 
-    fig = px.imshow(data)
+    if channel_count != 1:
+        fig = px.imshow(data)
+    else:
+        # Plotly does not like if last dim equals to 1
+        data = data[..., 0]  # Gets rid of last dim
+        fig = px.imshow(
+            data,
+            color_continuous_scale="gray",
+            range_color=[0, np.iinfo(numpy_dtype).max],
+        )
+        fig.update_layout(coloraxis_showscale=False)
+
     show_plotly(fig)
     print("width: {}".format(width))
     print("height: {}".format(height))
