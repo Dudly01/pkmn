@@ -148,10 +148,10 @@ def show():
 def show_plotly(fig: go.Figure):
     """Shows the Plotly Figure in a VSCode tab."""
 
-    div = plotly.io.to_html(fig, include_plotlyjs=False, full_html=False)
-    document = f'<html><script src="https://cdn.plot.ly/plotly-latest.min.js"></script>{div}</html>'
+    # html = plotly.io.to_html(fig)  # Full html is way bigger in size
 
-    html = plotly.io.to_html(fig)
+    div = plotly.io.to_html(fig, include_plotlyjs=False, full_html=False)
+    html = f'<html><script src="https://cdn.plot.ly/plotly-latest.min.js"></script>{div}</html>'
 
     debugger.display_html(html, position=2)
 
