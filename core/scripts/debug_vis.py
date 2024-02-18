@@ -29,6 +29,9 @@ import lldb  # LLDB auto import
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
+import plotly
+import plotly.express as px
+import plotly.graph_objects as go
 
 matplotlib.use("agg")
 
@@ -142,6 +145,32 @@ def show():
     debugger.display_html(document, position=2)
 
 
+def show_plotly(fig: go.Figure):
+    """Shows the Plotly Figure in a VSCode tab."""
+
+    fig.update_layout(
+        dragmode="pan",  # Default selection no longer zoom
+        xaxis={"mirror": "allticks", "side": "top"},
+    )
+    config = {
+        "scrollZoom": True,
+        "displaylogo": False,
+    }
+
+    # html = plotly.io.to_html(fig)  # Full html is way bigger in size
+    div = plotly.io.to_html(fig, config, include_plotlyjs=False, full_html=False)
+    html = f'<html><script src="https://cdn.plot.ly/plotly-latest.min.js"></script>{div}</html>'
+
+    # debugger.display_html(html, position=2)  # Old deprecated approach
+
+    wv = debugger.create_webview(
+        html,
+        title="debug_vis",
+        view_column=2,
+        enable_scripts=True,
+    )
+
+
 def plot_roi(roi):
     """Plots a crate::roi::Roi instance."""
     roi = debugger.unwrap(roi)
@@ -176,8 +205,19 @@ def plot_roi(roi):
 
     data_of_interest = data[y_pos : y_pos + height_pos, x_pos : x_pos + width_pos]
 
-    plt.imshow(data_of_interest, cmap="gist_gray", interpolation="nearest")
-    show()
+    if channel_count != 1:
+        fig = px.imshow(data_of_interest)
+    else:
+        # Plotly does not like if last dim equals to 1
+        data_of_interest = data_of_interest[..., 0]  # Gets rid of last dim
+        fig = px.imshow(
+            data_of_interest,
+            color_continuous_scale="gray",
+            range_color=[0, np.iinfo(numpy_dtype).max],  # 
+        )
+        fig.update_layout(coloraxis_showscale=False)
+
+    show_plotly(fig)
     print("width: {}".format(width_pos))
     print("height: {}".format(height_pos))
     print("color space: {}".format(color_space))
@@ -211,9 +251,19 @@ def plot_img(image):
     data = lldb.process.ReadMemory(addr, byte_count, lldb.SBError())
     data = np.frombuffer(data, dtype=numpy_dtype).reshape(shape)
 
-    # cmap is ignored for RGB(A) data
-    plt.imshow(data, cmap="gist_gray", interpolation="nearest")
-    show()
+    if channel_count != 1:
+        fig = px.imshow(data)
+    else:
+        # Plotly does not like if last dim equals to 1
+        data = data[..., 0]  # Gets rid of last dim
+        fig = px.imshow(
+            data,
+            color_continuous_scale="gray",
+            range_color=[0, np.iinfo(numpy_dtype).max],
+        )
+        fig.update_layout(coloraxis_showscale=False)
+
+    show_plotly(fig)
     print("width: {}".format(width))
     print("height: {}".format(height))
     print("color space: {}".format(color_space))
