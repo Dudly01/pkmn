@@ -148,12 +148,27 @@ def show():
 def show_plotly(fig: go.Figure):
     """Shows the Plotly Figure in a VSCode tab."""
 
-    # html = plotly.io.to_html(fig)  # Full html is way bigger in size
+    fig.update_layout(
+        dragmode="pan",  # Default selection no longer zoom
+        xaxis={"mirror": "allticks", "side": "top"},
+    )
+    config = {
+        "scrollZoom": True,
+        "displaylogo": False,
+    }
 
-    div = plotly.io.to_html(fig, include_plotlyjs=False, full_html=False)
+    # html = plotly.io.to_html(fig)  # Full html is way bigger in size
+    div = plotly.io.to_html(fig, config, include_plotlyjs=False, full_html=False)
     html = f'<html><script src="https://cdn.plot.ly/plotly-latest.min.js"></script>{div}</html>'
 
-    debugger.display_html(html, position=2)
+    # debugger.display_html(html, position=2)  # Old deprecated approach
+
+    wv = debugger.create_webview(
+        html,
+        title="debug_vis",
+        view_column=2,
+        enable_scripts=True,
+    )
 
 
 def plot_roi(roi):
