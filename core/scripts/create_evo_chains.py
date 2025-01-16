@@ -146,7 +146,8 @@ def create_evo_chains(evolutions: dict[str, dict[str, str]]) -> list[str]:
             complete_paths.append(evo_path)
             continue
 
-        for evo_name, evo_trigger in evolutions[curr_pokemon].items():
+        for evo_name, evo_trigger in reversed(evolutions[curr_pokemon].items()):
+            # Reverse iter to compensate FILO deque
             curr_evo_path = f"{evo_path}->{evo_trigger}->{evo_name}"
             pokemons_to_visit.appendleft((evo_name, curr_evo_path))
 
