@@ -4,11 +4,11 @@ pkmn is a Pokémon RBY and GSC toolbox written in Rust.
 It features DV calculation, move and evolution datasets, Game Boy screen localization and OCR. 
 [Try the webapp here.](https://dudly01.github.io/pkmn/)
 
-# Getting started
+## Getting started
 
 Steps for setting up the developer environment and getting familiar with the project layout.
 
-## Dependencies
+### Dependencies
 
 Certain crates may require additional libraries.
 
@@ -20,7 +20,7 @@ sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
 sudo apt-get install pkg-config libfontconfig1-dev
 ```
 
-## Prepare data for `core`
+### Prepare data for `core`
 
 The `core` relies on data taken from Bulbapedia and Smogon.
 However, only the data that needed manual preparation is committed to the repo.
@@ -38,7 +38,7 @@ python core/scripts/scrape_bulba_learnsets.py
 python core/scripts/evo_chains.py
 ```
 
-## Examples
+### Examples
 
 The `core/examples` directory contains executables that showcase the usage and functionality of the project.
 They can be run from the `core` directory with:
@@ -53,7 +53,7 @@ cargo run --example screenshot --release
 
 The `core/src/utils` module showcases a higher level usage of the available features.
 
-## Building WASM, testing website
+### Building WASM, testing website
 
 ```
 # Installs wasm-pack
@@ -71,7 +71,7 @@ Access other `.html` files with their relative path.
 
 Hard-refresh Firefox with `Ctrl + F5` in case changes do not show up.
 
-## Benchmarks
+### Benchmarks
 
 The project uses [Criterion.rs](https://github.com/bheisler/criterion.rs).
 
@@ -89,7 +89,7 @@ cargo bench -- --save-baseline <name>
 cargo bench -- --baseline <name>
 ```
 
-## Debug visualization
+### Debug visualization
 
 The CodeLLDB VSCode extension enables running Python scripts
 from the Debug Console during a debugging session.
@@ -101,19 +101,19 @@ For helpful scripts and more info, peek into `core/scripts/debug_vis.py`.
 In order to install packages for use in CodeLLDB, use the 
 LLDB: Command Prompt command in VSCode, followed by `pip install --user <package>`.
 
-# Troubleshooting
+## Troubleshooting
 
 This section provides information on issues encountered during the develpment.
 
 
-## Cargo version conflict
+### Cargo version conflict
 
 As [comment mentiones](https://github.com/serde-rs/json/issues/409#issuecomment-362696245), update the crates with:
 ```
 cargo update
 ```
 
-# References
+## References
 
 This section encloses the useful sources used in the development of the project.
 
