@@ -6,11 +6,11 @@ It features DV calculation, move and evolution datasets, Game Boy screen localiz
 
 ## Getting started
 
-Steps for setting up the developer environment and getting familiar with the project layout.
+This section describes the steps of using the project from source on Linux.
 
 ### Dependencies
 
-Certain crates may require additional libraries.
+Certain crates may require the installation of additional libraries. These are the ones I had to get for my system:
 
 ```
 # For scrap
@@ -20,23 +20,32 @@ sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
 sudo apt-get install pkg-config libfontconfig1-dev
 ```
 
-### Prepare data for `core`
+### Prepare data
 
-The `core` relies on data taken from Bulbapedia and Smogon.
-However, only the data that needed manual preparation is committed to the repo.
-The remainder needs to be downloaded via scripts located at `core/scripts` directory:
+The project uses data from Bulbapedia and Smogon. As not all of it has been commited (yet) to the repo, it needs to be prepared via Python scripts located in `core/scripts`.
 
+To do so, install the required Python packages first. Using conda, it can be done with:
+
+```sh
+conda install --yes --file core/scripts/requirements.txt  
 ```
-# Install packages
-conda install --yes --file core/scripts/requirements.txt  # To use conda for most
+
+With pip, this would change to:
+
+```sh
 pip install -r core/scripts/requirements.txt
-
-# Run scripts
-python core/scripts/scrape_smogon.py
-python core/scripts/scrape_bulba_images.py
-python core/scripts/scrape_bulba_learnsets.py
-python core/scripts/evo_chains.py
 ```
+
+Afterwards, the necessary scripts can be run with:
+
+```sh
+python core/scripts/scrape_smogon.py;
+python core/scripts/scrape_bulba_images.py;
+python core/scripts/scrape_bulba_learnsets.py;
+python core/scripts/evo_chains.py;
+```
+
+The data should be ready within 1-2 minutes.
 
 ### Examples
 
