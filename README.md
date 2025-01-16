@@ -47,7 +47,7 @@ Afterwards, the necessary scripts can be run with:
 python core/scripts/scrape_smogon.py;
 python core/scripts/scrape_bulba_images.py;
 python core/scripts/scrape_bulba_learnsets.py;
-python core/scripts/evo_chains.py;
+python core/scripts/create_evo_chains.py;
 ```
 
 The data should be ready within 1-2 minutes.
