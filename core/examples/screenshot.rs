@@ -1,22 +1,20 @@
-/// Finds the GameBoy on the "screenshot.png", shows images in windows, shows stats in terminal.
-use image::io::Reader as ImageReader;
-use show_image;
+//! Shows the specified image to the user and prints the result of the scan.
 
 use core as pkmn;
+use show_image;
+use std::io;
 
 #[show_image::main]
 fn main() -> Result<(), String> {
-    let window_gameboy = show_image::create_window("GameBoy", Default::default()).unwrap();
+    // File is checked at compile-time
+    // Path is relative to the examples dir
+    const EXAMPLE_IMG: &[u8] = include_bytes!("../data/Crystal_summary_1.png");
+    let image = image::load_from_memory(EXAMPLE_IMG).expect("Failed to load image");
 
-    let img_path = "../Yellow_summary_1.png";
-    let image_initial = ImageReader::open(img_path).unwrap().decode().unwrap();
+    let window_gameboy = show_image::create_window("Game Boy", Default::default()).unwrap();
+    window_gameboy.set_image("Game Boy", image.clone()).unwrap();
 
-    window_gameboy
-        .set_image("GameBoy", image_initial.clone())
-        .unwrap();
-
-    let scan_result = pkmn::utils::scan_img(image_initial);
-
+    let scan_result = pkmn::utils::scan_img(image);
     let text_output = match scan_result {
         Ok(text_output) => text_output,
         Err(error) => error,
@@ -24,18 +22,12 @@ fn main() -> Result<(), String> {
 
     println!("{}", text_output);
 
-    // Print keyboard events until Escape is pressed, then exit.
-    // If the user closes the window, the channel is closed and the loop also exits.
-    for event in window_gameboy.event_channel().unwrap() {
-        if let show_image::event::WindowEvent::KeyboardInput(event) = event {
-            println!("{:#?}", event);
-            if event.input.key_code == Some(show_image::event::VirtualKeyCode::Escape)
-                && event.input.state.is_pressed()
-            {
-                return Ok(());
-            }
-        }
-    }
+    // Block till user reacts
+    println!("Press Enter to exit.");
+    let mut user_answer = String::new();
+    io::stdin()
+        .read_line(&mut user_answer)
+        .expect("Failed to read line");
 
     Ok(())
 }
