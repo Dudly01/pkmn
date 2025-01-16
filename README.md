@@ -124,6 +124,8 @@ The benchmarks are not exhaustive.
 
 ### Debug visualization
 
+**No longer seems to work: lldb.process is None when reading from memory.**
+
 The VS Code extension called CodeLLDB enables users to run Python scripts during a debugging session. With this, it is possible to plot images and to inspect them visually. For more info, visit [core/scripts/debug_vis.py](core/scripts/debug_vis.py).
 
 ## Troubleshooting
