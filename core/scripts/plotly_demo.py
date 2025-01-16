@@ -1,10 +1,11 @@
 """Demo script for playing with plotly.
 
+Creates .html files with images as interactive plots.
+
 Sources:
 - https://plotly.com/python/imshow/
 - https://stackoverflow.com/questions/37683147
 """
-
 
 from pathlib import Path
 
@@ -40,7 +41,7 @@ def main():
 
     # Returns a full standalone HTML
     html = plotly.io.to_html(fig, config)
-    Path("plotly2.html").write_text(html)
+    Path("plotly2.html").write_text(html, encoding="utf-8")
 
 
 if __name__ == "__main__":
