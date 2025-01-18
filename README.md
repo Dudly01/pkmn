@@ -2,6 +2,23 @@
 
 pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and finding learnsets, evolutions and the stats of known moves for your team members. No need to search online or insert data into calculators: pkmn shows you the info for the Pokémon you have on the screen. [Try the webapp here.](https://dudly01.github.io/pkmn/).
 
+<!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=3 orderedList=false} -->
+
+<!-- code_chunk_output -->
+
+- [Getting started](#getting-started)
+  - [Dependencies](#dependencies)
+  - [Prepare data](#prepare-data)
+  - [Build desktop app](#build-desktop-app)
+  - [Build WASM and test webapp locally](#build-wasm-and-test-webapp-locally)
+  - [Benchmarks](#benchmarks)
+  - [Debug visualization](#debug-visualization)
+- [Troubleshooting](#troubleshooting)
+  - [Cargo version conflict](#cargo-version-conflict)
+- [References](#references)
+
+<!-- /code_chunk_output -->
+
 ## Getting started
 
 This section describes the steps of using the project from its source on Linux. User experience on Windows may vary.
