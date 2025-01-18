@@ -1,4 +1,4 @@
-//! A dev app used for creating the Game Boy screen-locating functionality.
+//! A dev app used in creating the Game Boy screen-locating functionality.
 
 use core::gameboy::{search_screen_gsc, search_screen_rby};
 use image::{io::Reader as ImageReader, Luma};

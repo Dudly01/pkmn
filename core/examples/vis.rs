@@ -1,4 +1,4 @@
-//! Helper example for developing Python debug scripts.
+//! Dev app used in developing debug visualization scripts using CodeLLDB and Python.
 
 use core::{position::Position, roi::Roi};
 
