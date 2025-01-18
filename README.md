@@ -108,9 +108,7 @@ Afterwards, start a local webserver with:
 python -m http.server
 ```
 
-The webapp can be accessed by visiting [http://localhost:8000/](http://localhost:8000/) (8000 is the port selected by default).
-
-Using [http://0.0.0.0:8000/](http://0.0.0.0:8000/) may prevent the screen-sharing from working. If changes do not show up, try hard-refreshing the page (Ctrl + F5 in Firefox).
+The webapp can be accessed by visiting [http://localhost:8000/](http://localhost:8000/) (8000 is the port selected by default). Visiting [http://0.0.0.0:8000/](http://0.0.0.0:8000/) may prevent the screen-sharing from working. If changes do not show up, try to hard-refresh the page (Ctrl + F5 in Firefox).
 
 ### Benchmarks
 
