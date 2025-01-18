@@ -1,13 +1,6 @@
 # pkmn
 
-pkmn is a set of tools for Generation I (Red, Blue, and Yellow) and Generation II (Gold, Silver, and Crystal) Game Boy Pokémon games.
-
-It aims to simplify finding learnsets, evolutions and the stats of the known moves and to simplify calculating DVs. No need to enter data manually, pkmn reads the info directly from the Game Boy screen. [Try the webapp here.](https://dudly01.github.io/pkmn/)
-
-It aims to simplify looking up information for the Pokémon that is currently inspected on the Game Boy screen. The information includes the evolutions, learnsets, stats of the known moves and the possible DVs. [Try the webapp here.](https://dudly01.github.io/pkmn/)
-
-pkmn 
-
+pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and finding learnsets, evolutions and the stats of known moves for your team members. No need to search online or insert data into calculators: pkmn shows you the info for the Pokémon you have on the screen. [Try the webapp here.](https://dudly01.github.io/pkmn/).
 
 ## Getting started
 
