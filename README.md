@@ -64,17 +64,17 @@ The data should be ready within 1-2 minutes.
 
 ### Build desktop app
 
-The `desktop` example located in the `core` package is a desktop version of the webapp. It locates the Game Boy on the primary display and prints the results to the terminal. To run the app, navigate to the **core directory** and run:
+The `desktop` example located in the `core` package is the desktop version of the webapp. It locates the Game Boy on the primary display and prints the results to the terminal. To run the app, navigate to the **core directory** and run:
 
 ```sh
 cargo run --example desktop --release
 ```
 
-Make sure the terminal is large enough for the text to fit! 
+Make sure the terminal is large enough for the text to fit! The usage instructions are bundled with the [webapp](https://dudly01.github.io/pkmn/).
 
 #### Other examples
 
-The other app in `core/examples` were primarily used for development. From the `core` directory, they can be listed with:
+The other apps in `core/examples` were primarily used for development. From the `core` directory, they can be listed with:
 
 ```sh
 cargo run --example
@@ -154,27 +154,15 @@ cargo update
 
 This section encloses the useful sources used in the development of the project.
 
-Pokémon data taken from
-[Bulbapedia](https://bulbapedia.bulbagarden.net/),
-[Serebii](https://www.serebii.net/),
-[Smogon](https://www.smogon.com/),
-([Neoseeker](https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html) in early stages) 
-.
+Pokémon data taken from [Bulbapedia](https://bulbapedia.bulbagarden.net/), [Serebii](https://www.serebii.net/), [Smogon](https://www.smogon.com/), ([Neoseeker](https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html) in early stages).
 
 Pokémon is a trademark of Nintendo.
 
-Useful webdev resources include 
-[MDN Web Docs](https://developer.mozilla.org/),
-CSS-TRICKS' 
-[Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
-and 
-[Grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
-guides.
+Useful webdev resources include [MDN Web Docs](https://developer.mozilla.org/), CSS-TRICKS' [Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) and [Grid](https://css-tricks.com/snippets/css/complete-guide-grid/) guides.
 
-Website aesthetics were heavily inspired by the 
-[MDN Web Docs](https://developer.mozilla.org/)
-.
+Website aesthetics were heavily inspired by the [MDN Web Docs](https://developer.mozilla.org/)
 
 Honorary mentions:
-- https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65
+
+- https://dev.to/bibekkakati/ capture-screen-and-stream-like-zoom-using-javascript-1b65
 - https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
