@@ -1,4 +1,4 @@
-//! Shows the specified image to the user and prints the result of the scan.
+//! Shows the results of locating and scanning the summary screen on the provided image.
 
 use core as pkmn;
 use show_image;
