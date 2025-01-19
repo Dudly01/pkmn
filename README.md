@@ -1,6 +1,6 @@
 # pkmn
 
-pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and finding learnsets, evolutions and the stats of known moves for your team members. No need to search online or insert data into calculators: pkmn shows you the info for the Pokémon you have on the screen. [Try the webapp here.](https://dudly01.github.io/pkmn/).
+pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and finding learnsets, evolutions and the stats of known moves for your team members. No need to search online or insert data into calculators: pkmn shows you the info for the Pokémon you have on the screen. [Try the webapp here.](https://dudly01.github.io/pkmn/)
 
 <!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=3 orderedList=false} -->
 
@@ -12,7 +12,7 @@ pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and fin
   - [Build desktop app](#build-desktop-app)
   - [Build WASM and test webapp locally](#build-wasm-and-test-webapp-locally)
   - [Benchmarks](#benchmarks)
-  - [Debug visualization](#debug-visualization)
+  - [~~Debug visualization~~](#debug-visualization)
 - [Troubleshooting](#troubleshooting)
   - [Cargo version conflict](#cargo-version-conflict)
 - [References](#references)
@@ -130,9 +130,9 @@ cargo bench -- --baseline <name>
 
 The benchmarks are not exhaustive.
 
-### Debug visualization
+### ~~Debug visualization~~
 
-**No longer seems to work: lldb.process is None when reading from memory.**
+**No longer seems to work:** `lldb.process` is `None` when reading from memory.
 
 The VS Code extension called CodeLLDB enables users to run Python scripts during a debugging session. With this, it is possible to plot images and to inspect them visually. For more info, visit [core/scripts/debug_vis.py](core/scripts/debug_vis.py).
 
