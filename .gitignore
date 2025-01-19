@@ -15,6 +15,7 @@ net/Cargo.lock
 net/bin/
 net/pkg/
 net/wasm-pack.log
+net/pandoc_output.html
 
 # Data files
 # Ignored until resolved format
