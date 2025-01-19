@@ -150,17 +150,8 @@ cargo update
 
 ## References
 
-This section encloses the useful sources used in the development of the project.
+This project would not have been possible without [Bulbapedia](https://bulbapedia.bulbagarden.net/), [Smogon](https://www.smogon.com/) and [Serebii.net](https://www.serebii.net/). The website aesthetics were borrowed from the [MDN Blog](https://developer.mozilla.org/en-US/blog/). 
 
-Pokémon data taken from [Bulbapedia](https://bulbapedia.bulbagarden.net/), [Serebii](https://www.serebii.net/), [Smogon](https://www.smogon.com/), ([Neoseeker](https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html) in early stages).
+Other sources include [Neoseeker](https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html), [a screen capture tutorial](https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65) and CSS-TRICKS' [Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) and [Grid](https://css-tricks.com/snippets/css/complete-guide-grid/) guides.
 
 Pokémon is a trademark of Nintendo.
-
-Useful webdev resources include [MDN Web Docs](https://developer.mozilla.org/), CSS-TRICKS' [Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) and [Grid](https://css-tricks.com/snippets/css/complete-guide-grid/) guides.
-
-Website aesthetics were heavily inspired by the [MDN Web Docs](https://developer.mozilla.org/)
-
-Honorary mentions:
-
-- https://dev.to/bibekkakati/ capture-screen-and-stream-like-zoom-using-javascript-1b65
-- https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture
