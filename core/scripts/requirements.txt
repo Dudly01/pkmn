@@ -1,5 +1,7 @@
 bs4
-tqdm
-requests
-numpy
 matplotlib
+numpy
+pandas
+plotly
+requests
+tqdm

@@ -1,9 +1,8 @@
-/// Finds the GameBoy on the primary display and shows the result in the terminal.
+/// Finds the Game Boy on the primary display and shows the result in the terminal.
 pub mod screen_capturer;
 
 use crossterm::{
     cursor,
-    style::Print,
     terminal::{self, Clear},
     ExecutableCommand, Result,
 };

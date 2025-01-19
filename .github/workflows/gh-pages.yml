@@ -53,7 +53,7 @@ jobs:
           python scrape_smogon.py
           python scrape_bulba_images.py
           python scrape_bulba_learnsets.py
-          python evo_chains.py
+          python create_evo_chains.py
 
       - name: Insert project version into index.html
         shell: bash

@@ -1,18 +1,33 @@
-# pkmn
+# <img src="net/pokeball.svg" style="height: 1.0em; vertical-align: middle;"/> pkmn
 
-pkmn is a Pokémon RBY and GSC toolbox written in Rust.
-It features DV calculation, move and evolution datasets, Game Boy screen localization and OCR. 
-[Try the webapp here.](https://dudly01.github.io/pkmn/)
+pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and finding learnsets, evolutions and the stats of known moves for your team members. No need to search online or insert data into calculators: pkmn shows you the info for the Pokémon you have on the screen. [Try the webapp here.](https://dudly01.github.io/pkmn/)
 
-# Getting started
+<!-- @import "[TOC]" {cmd="toc" depthFrom=2 depthTo=3 orderedList=false} -->
 
-Steps for setting up the developer environment and getting familiar with the project layout.
+<!-- code_chunk_output -->
 
-## Dependencies
+- [Getting started](#getting-started)
+  - [Dependencies](#dependencies)
+  - [Prepare data](#prepare-data)
+  - [Build desktop app](#build-desktop-app)
+  - [Build WASM and test webapp locally](#build-wasm-and-test-webapp-locally)
+  - [Benchmarks](#benchmarks)
+  - [~~Debug visualization~~](#debug-visualization)
+- [Troubleshooting](#troubleshooting)
+  - [Cargo version conflict](#cargo-version-conflict)
+- [References](#references)
 
-Certain crates may require additional libraries.
+<!-- /code_chunk_output -->
 
-```
+## Getting started
+
+This section describes the steps of using the project from its source on Linux. User experience on Windows may vary.
+
+### Dependencies
+
+Certain crates may require the installation of additional libraries. These are the ones I had to get for my system:
+
+```sh
 # For scrap
 sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
 
@@ -20,62 +35,86 @@ sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
 sudo apt-get install pkg-config libfontconfig1-dev
 ```
 
-## Prepare data for `core`
+### Prepare data
 
-The `core` relies on data taken from Bulbapedia and Smogon.
-However, only the data that needed manual preparation is committed to the repo.
-The remainder needs to be downloaded via scripts located at `core/scripts` directory:
+The project uses data from Bulbapedia and Smogon. As not all of it has been commited (yet) to the repo, the preparation scripts need to be called manually.
 
+To do so, first, install the required Python packages. Using conda, it can be done with:
+
+```sh
+conda install --yes --file core/scripts/requirements.txt  
 ```
-# Install packages
-conda install --yes --file core/scripts/requirements.txt  # To use conda for most
+
+With pip, this would change to:
+
+```sh
 pip install -r core/scripts/requirements.txt
-
-# Run scripts
-python core/scripts/scrape_smogon.py
-python core/scripts/scrape_bulba_images.py
-python core/scripts/scrape_bulba_learnsets.py
-python core/scripts/evo_chains.py
 ```
 
-## Examples
+Afterwards, the necessary scripts can be run with:
 
-The `core/examples` directory contains executables that showcase the usage and functionality of the project.
-They can be run from the `core` directory with:
-
+```sh
+python core/scripts/scrape_smogon.py;
+python core/scripts/scrape_bulba_images.py;
+python core/scripts/scrape_bulba_learnsets.py;
+python core/scripts/create_evo_chains.py;
 ```
-# App scanning the main display of the computer
+
+The data should be ready within 1-2 minutes.
+
+### Build desktop app
+
+The `desktop` example located in the `core` package is the desktop version of the webapp. It locates the Game Boy on the primary display and prints the results to the terminal. To run the app, navigate to the **core directory** and run:
+
+```sh
 cargo run --example desktop --release
-
-# App scanning a screenshot at the given path
-cargo run --example screenshot --release
 ```
 
-The `core/src/utils` module showcases a higher level usage of the available features.
+Make sure the terminal is large enough for the text to fit! The usage instructions are bundled with the [webapp](https://dudly01.github.io/pkmn/).
 
-## Building WASM, testing website
+#### Other examples
 
+The other apps in `core/examples` were primarily used for development. From the `core` directory, they can be listed with:
+
+```sh
+cargo run --example
 ```
-# Installs wasm-pack
+
+To run one, use:
+
+```sh
+cargo run --example <example_name> --release
+```
+
+However, there is likely little use of them to others.
+
+### Build WASM and test webapp locally
+
+The projects uses wasm-pack to build the WebAssembly (WASM) package. To install it, use cargo:
+
+```sh
 cargo install wasm-pack
+```
 
-# Builds WASM code, run from `net` dir
+To build the package, navigate to the **net directory** and run:
+
+```sh
 wasm-pack build --target web
+```
 
-# Starts local webserver
+Afterwards, start a local webserver with:
+
+```sh
 python -m http.server
 ```
 
-Visit http://localhost:8000/ to see `index.html`.
-Access other `.html` files with their relative path.
+The webapp can be accessed by visiting [http://localhost:8000/](http://localhost:8000/) (8000 is the port selected by default). Visiting [http://0.0.0.0:8000/](http://0.0.0.0:8000/) may prevent the screen-sharing from working. If changes do not show up, try to hard-refresh the page (Ctrl + F5 in Firefox).
 
-Hard-refresh Firefox with `Ctrl + F5` in case changes do not show up.
-
-## Benchmarks
+### Benchmarks
 
 The project uses [Criterion.rs](https://github.com/bheisler/criterion.rs).
 
-```
+```sh
 # Runs benchmarks
 cargo bench
 
@@ -89,55 +128,30 @@ cargo bench -- --save-baseline <name>
 cargo bench -- --baseline <name>
 ```
 
-## Debug visualization
+The benchmarks are not exhaustive.
 
-The CodeLLDB VSCode extension enables running Python scripts
-from the Debug Console during a debugging session.
-This can be used for visualizing images.
+### ~~Debug visualization~~
 
-For helpful scripts and more info, peek into `core/scripts/debug_vis.py`.
+**No longer seems to work:** `lldb.process` is `None` when reading from memory.
 
-[CodeLLDB bundles its own copy of Python.](https://github.com/vadimcn/codelldb/blob/master/MANUAL.md#installing-packages)
-In order to install packages for use in CodeLLDB, use the 
-LLDB: Command Prompt command in VSCode, followed by `pip install --user <package>`.
+The VS Code extension called CodeLLDB enables users to run Python scripts during a debugging session. With this, it is possible to plot images and to inspect them visually. For more info, visit [core/scripts/debug_vis.py](core/scripts/debug_vis.py).
 
-# Troubleshooting
+## Troubleshooting
 
-This section provides information on issues encountered during the develpment.
+This section provides information on issues encountered during the development.
 
+### Cargo version conflict
 
-## Cargo version conflict
+As [this comment mentions](https://github.com/serde-rs/json/issues/409#issuecomment-362696245), update the crates:
 
-As [comment mentiones](https://github.com/serde-rs/json/issues/409#issuecomment-362696245), update the crates with:
-```
+```sh
 cargo update
 ```
 
-# References
+## References
 
-This section encloses the useful sources used in the development of the project.
+This project would not have been possible without [Bulbapedia](https://bulbapedia.bulbagarden.net/), [Smogon](https://www.smogon.com/) and [Serebii.net](https://www.serebii.net/). The website aesthetics were borrowed from the [MDN Blog](https://developer.mozilla.org/en-US/blog/). 
 
-Pokémon data taken from
-[Bulbapedia](https://bulbapedia.bulbagarden.net/),
-[Serebii](https://www.serebii.net/),
-[Smogon](https://www.smogon.com/),
-([Neoseeker](https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html) in early stages) 
-.
+Other sources include [Neoseeker](https://www.neoseeker.com/pokemon-red/faqs/2740069-pokemon-rb-save-state-hacking.html), [a screen capture tutorial](https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65) and CSS-TRICKS' [Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/) and [Grid](https://css-tricks.com/snippets/css/complete-guide-grid/) guides.
 
 Pokémon is a trademark of Nintendo.
-
-Useful webdev resources include 
-[MDN Web Docs](https://developer.mozilla.org/),
-CSS-TRICKS' 
-[Flexbox](https://css-tricks.com/snippets/css/a-guide-to-flexbox/)
-and 
-[Grid](https://css-tricks.com/snippets/css/complete-guide-grid/)
-guides.
-
-Website aesthetics were heavily inspired by the 
-[MDN Web Docs](https://developer.mozilla.org/)
-.
-
-Honorary mentions:
-- https://dev.to/bibekkakati/capture-screen-and-stream-like-zoom-using-javascript-1b65
-- https://developer.mozilla.org/en-US/docs/Web/API/Screen_Capture_API/Using_Screen_Capture

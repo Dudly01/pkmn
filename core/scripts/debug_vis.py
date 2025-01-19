@@ -1,24 +1,65 @@
-"""Debug functionality to be used with CodeLLDB and the Debug console.
+"""This module implements functions to simplify debugging programs that handle images.
 
-Module needs to be imported in the launch.json:
-```
-"initCommands": [
-    "command script import ${workspaceFolder}/path/to/module"
-]
+NOTE THAT THIS NO LONGER SEEMS TO WORK, ALWAYS GET "AttributeError: 'NoneType' object
+has no attribute 'ReadMemory'".
+
+CodeLLDB is a debugger extension for VS Code that enables running Python code from
+the Debug Console during a debug session. With this, it is possible to show an image.
+
+First, install the dependencies to the Python bundled with CodeLLDB [1]. To do so,
+use the `LLDB: Command Prompt` command in VSCode (Ctrl+Shift+P) to open a terminal,
+then use pip:
+
+```sh
+pip install numpy matplotlib plotly pandas
 ```
 
-The numpy and matplotlib packages need to be installed to the Python
-bundles with CodeLLDB. Use the `LLDB: Command Prompt` command in VSCode
-followed by:
+Afterwards, set up a configuration within the launch.json. Doing it for 
+`core/examples/viz.rs` would be:
 
 ```
-pip install numpy matplotlib
+{
+    "type": "lldb",
+    "request": "launch",
+    "name": "Example vis",
+    "cargo": {
+        "args": [
+            "build",
+            "--manifest-path=${workspaceFolder}/core/Cargo.toml",
+            "--example=vis",
+            "--package=core"
+        ],
+        "filter": {
+            "name": "vis",
+            "kind": "example"
+        }
+    },
+    "args": [],
+    "cwd": "${workspaceFolder}/core",
+    "initCommands": [
+        "command script import ${workspaceFolder}/core/scripts/debug_vis.py" // <<<<< This is the important bit
+    ]
+}
 ```
 
-The function can be called from the debug console:
+Note how this module (.py file) is imported in the "configurations" section.
+
+Once ready, go to the Run and Debug view and select the configuration to start
+debugging. (If using the example config, then select "Example vis".)While paused
+on a breakpoint, the Python functions can be called from the DEBUG CONSOLE tab.
+
 ```
-?/py debug_vis.plot_rgb8($img_addr, $width, $height)
+# Prints various info
+?/py debug_vis.info($target_variable)
+
+# Plots vector as an iamge
+?/py debug_vis.plot_img($img_dyn)
 ```
+
+For more info about debugging, visit [2].
+
+[1] https://github.com/vadimcn/codelldb/blob/master/MANUAL.md#installing-packages
+[2] https://code.visualstudio.com/docs/editor/debugging
 """
 
 import base64
@@ -53,6 +94,9 @@ def get_rust_numpy_equiv(rust_type: str):
         "i64": np.int64,
         "f32": np.float32,
         "f64": np.float64,
+        "unsigned char": np.uint8,
+        "unsigned short": np.uint16,
+        "float": np.float32,
     }
 
     if rust_type not in rust_to_numpy_type:
