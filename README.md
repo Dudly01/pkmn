@@ -1,4 +1,4 @@
-# pkmn
+# <img src="net/pokeball.svg" style="height: 1.0em; vertical-align: middle;"/> pkmn
 
 pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and finding learnsets, evolutions and the stats of known moves for your team members. No need to search online or insert data into calculators: pkmn shows you the info for the Pokémon you have on the screen. [Try the webapp here.](https://dudly01.github.io/pkmn/)
 
@@ -142,7 +142,7 @@ This section provides information on issues encountered during the development.
 
 ### Cargo version conflict
 
-As [comment mentiones](https://github.com/serde-rs/json/issues/409#issuecomment-362696245), update the crates with:
+As [this comment mentions](https://github.com/serde-rs/json/issues/409#issuecomment-362696245), update the crates:
 
 ```sh
 cargo update
