@@ -15,6 +15,7 @@ PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows learnsets, 
 
 ## Quickstart
 
+1. Open the summary screen (STATS) of a Pokémon in the game.
 1. Click "Select screen" to select the window or screen that shows the game.
 1. Click "Scan once" to scan the screen once and "Start scanning" to scan it continuosly.
 1. See the results of the scan.
