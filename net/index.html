@@ -1,71 +1,54 @@
 <!DOCTYPE html>
+
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8" />
     <title>PKMN</title>
     <script src="index.js" type="module"></script>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="pokeball.svg">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="styles.css" rel="stylesheet" />
+    <link href="pokeball.svg" rel="icon" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 </head>
 
 <body>
-
     <div class="top-navigation-container">
         <header class="top-navigation container">
-
-            <div class="top-navigation-logo">
-                <a href="." class="brand-logo">
-                    <img src="pokeball.svg" width="18" />
-                    PKMN
-                </a>
+            <div class="top-navigation-title">
+                <a class="title-logo" href="."><img src="pokeball.svg" style="height: 1.0em; vertical-align: sub;" />
+                    PKMN</a>
             </div>
-
             <div class="top-navigation-main">
-                <div class="top-navigation-slogan">
-                    A Pokémon RBY and GSC DV calculator, move and evolution lister.
-                    Reads from the Game Boy screen. Processes in the browser.
-                </div>
-
-                <div class="top-navigation-slogan-short">
-                    A Pokémon RBY and GSC DV calculator, move and evolution lister.
-                </div>
-
                 <div>
-                    <a href="https://github.com/Dudly01/pkmn" target="_blank" class="nav-link">
+                    <a class="nav-link" href="https://github.com/Dudly01/pkmn" target="_blank">
                         <i class="fa fa-github"></i>
                         Github
                     </a>
                 </div>
             </div>
-
         </header>
     </div>
-
-
     <main class="blog-post-container container">
-
-        <div class="sticky-toc-container">
-            <aside class="document-toc">
-                <header>
-                    <h2 class="document-toc-heading">On the website</h2>
-                </header>
-                <ul class="document-toc-list">
-                    <li class="document-toc-item"><a href="#app" class="document-toc-link">App</a></li>
-                    <li class="document-toc-item"><a href="#pkmn" class="document-toc-link">PKMN</a></li>
-                    <li class="document-toc-item"><a href="#quickstart" class="document-toc-link">Quickstart</a></li>
-                    <li class="document-toc-item"><a href="#limitations" class="document-toc-link">Limitations</a></li>
-                    <li class="document-toc-item"><a href="#help-and-troubleshooting" class="document-toc-link">Help and
-                            Troubleshooting</a></li>
-                    <li class="document-toc-item"><a href="#credits" class="document-toc-link">Credits</a></li>
-                </ul>
+        <div class="toc-container">
+            <aside class="toc">
+                <nav class="document-toc-container">
+                    <section class="document-toc">
+                        <header>
+                            <h2 class="document-toc-heading">Contents</h2>
+                        </header>
+                        <!-- This is where the TOC goes -->
+                        <ul>
+                            <li><a href="#quickstart">Quickstart</a></li>
+                            <li><a href="#details">Details</a></li>
+                            <li><a href="#troubleshooting">Troubleshooting</a></li>
+                            <li><a href="#credits">Credits</a></li>
+                        </ul>
+                    </section>
+                </nav>
             </aside>
         </div>
-
-        <article class="blog-post">
+        <div class="blog-post">
             <div id="app">
-
                 <section class="app-control-panel">
                     <div class="control-panel-scan">
                         <button class="control-button" id="button_start">Select screen</button>
@@ -73,156 +56,141 @@
                         <button class="control-button" id="button_scan">Scan once</button>
                         <button class="control-button" id="button_interval_scan">Start scanning</button>
                     </div>
-
                     <div class="control-panel-feedback">
                         <button class="control-button" id="button_canvas">Show snapshot</button>
                         <button class="control-button" id="button_video">Show screen</button>
                     </div>
                 </section>
-
                 <pre id="output">
 Quickstart:
 
-1. Select the screen with the Pokémon summary on it.
-2. Scan once or periodically.
-3. See the scan result here.
-
-For more info and help, check out the article below.</pre>
-
+1. Open the summary screen (STATS) of a Pokémon in the game.
+2. Click "Select screen" to select the window or screen that shows the game.
+3. Click "Scan once" to scan the screen once and "Start scanning" to scan it continuosly.
+4. See the results of the scan here.
+                </pre>
                 <div>
-                    <canvas id="canvas" class="media hidden"></canvas>
-                    <video id="video" class="media hidden" autoplay></video>
+                    <canvas class="media hidden" id="canvas"></canvas>
+                    <video autoplay="" class="media hidden" id="video"></video>
                 </div>
-
             </div>
-
-            <h1 id="pkmn">PKMN</h1>
-
-            <p>PKMN is a DV calculator, move and evolution lister webapp for Pokémon RBY (Gen I) and GSC (Gen II).
-                It reads directly from the Game Boy screen and processes everything in the browser.</p>
-
-            <p><b>See the potential of the freshly caught Pokémon.</b><br>
-                Spare effort by focusing only on the very best, without the hassle of DV calculators.</p>
-
-            <p><b>Read the details and side effects of the moves.</b><br>
-                Battle confidently without learning from trial-and-error.</p>
-
-            <p><b>See the evolutions of your Pokémon, when and what moves they learn through leveling up.</b><br>
-                Raise your partner without missing a crucial move. No need to keep several browser tabs open.</p>
-
-            <p><b>Read directly from the Game Boy screen then process it in the browser.</b><br>
-                No manual data entry. No installation. No data leaves the device.</p>
-
-            <p><i>"Optimize the fun out of the game. Rob yourself from the joy of exploration."</i> - Anonymus</p>
-
-            <h2 id="quickstart">Quickstart</h2>
-
-            <ol>
-                <li>Select the screen with the Pokémon summary.</li>
-                <li>Select to scan once or periodically.</li>
-                <li>Check the result of the scan.</li>
-            </ol>
-
-            <h2 id="limitations">Limitations</h2>
-
-            <p>The app was tested on desktop browsers.</p>
-
-            <p>As of now, only the English version of the games is supported.
-                However, as the field positions are similar across the language variants,
-                the scanner may have partial functionaly. For example, the DV calculation
-                is known to work for Pokémon Gelbe Edition, but the moves are not recognized
-                and the Pokémon names will be in English.</p>
-
-            <p>The app can scan Game Boy emulators, videos and screenshots, if the conditions are met.
-                The Game Boy screen needs to be fully visible, to be clean and not blurry, to have the original 10:9
-                aspect ratio, and to have no white borders.
-                Photos taken from monitors will not work.</p>
-
-            <p>The tool should be used for approximating the DVs of freshly caught Pokémon. Through battles and
-                certain items, Pokémon gain stat experience, which contributes to its stats.
-                As the accumulated stat experience is hidden, the calculator assumes it to be zero.
-                Therefore the more a Pokémon has trained, the less accurate its DV estimation will be.</p>
-
-            <p>DVs are calculated from the level, the base stat and the current stat value of a Pokémon.
-                Finer details such as the shared DV value for Spc. Att and Spc. Def, the relation of HP DV to other DVs,
-                or the effects of Gen II gender are not taken into account. To learn more, visit
-                <a href="https://bulbapedia.bulbagarden.net/wiki/Individual_values#Generation_I_and_II">Bulbapedia</a>.
-            </p>
-
-            <h2 id="help-and-troubleshooting">Help and Troubleshooting</h2>
-
-            Upon encountering errors, try the following steps:
-
-            <ul>
-                <li>Choose a screen with the Game Boy screen on it.</li>
-                <li>Have no white border around the Game Boy screen.</li>
-                <li>Use the original 10:9 Game Boy screen aspect ratio.</li>
-                <li>Have only one Game Boy visible, otherwise the biggest will be scanned.</li>
-                <li>Show the Pokémon summary on the Game Boy.</li>
-                <li>Use the original Game Boy resolution or one without distortions.
-                    Experiment with resizing the screen until successful scan.</li>
-                <li>Avoid covering text with the cursor.</li>
-                <li>Show snapshot or screen on the control panel to verify what is being scanned.</li>
-            </ul>
-
-            In case the issue remains, read further on for more specific instructions.
-
-            <h3>expected image with minimal size of 160x144, got 1x1</h3>
-
-            <p>This error appears, if the source window gets minimized.
-                Open it up again and switch between the windows without minimizing them.</p>
-
-            <h3>could not locate Game Boy screen</h3>
-
-            <p>The Game Boy screen was not found on the source screen.
-                Make sure that it is indeed present on that.
-                The Game Boy screen needs to be fully visible, without anything - including the cursor - covering the
-                border.
-                The screen needs to be in the original 10:9 aspect ratio.
-                Furthermore, the screen should not have a white border.</p>
-
-            <h3>could not recognize screen layout</h3>
-
-            <p>This error appears if the Game Boy screen has been (likely) found, but the screen it is showing is
-                unrecognized.
-                Make sure that the Game Boy is showing any of the summary screens, or switch to it otherwise.
-                In addition to this, in rare occasions removing the cursor from the Game Boy screen can resolve the
-                issue.
-            </p>
-
-            <h3>could not determine XXX DV range: stat value not found in stat variation XXX</h3>
-
-            <p>This error appears if a stat has an unexpected(ly high) value. The Pokémon likely gained stat experience
-                through
-                battling or through items like Protein, Iron, Carbos, etc.</p>
-
-            <h3>could not read XXX: could not read character #X: could not recognize character</h3>
-
-            <p>A field could not be read from the screen.
-                Make sure that nothing obstructs the visibility of the field, including the cursor.
-                Make sure that the image is not blurry.
-                Try resizing the Game Boy screen until this error goes away.</p>
-
-            <h2 id="credits">Credits</h2>
-
-            <p>Created by Dudly01.</p>
-
-            <p>Pokémon data sourced from
-                <a href="https://bulbapedia.bulbagarden.net">Bulbapedia</a>,
-                <a href="https://www.serebii.net/">Serebii</a> and
-                <a href="https://www.smogon.com/">Smogon</a>.
-            </p>
-
-            <p>Pokémon is a trademark of Nintendo.</p>
-
-            <p>Website aesthetics were shamelessly taken from
-                <a href="https://developer.mozilla.org/">MDN Web Docs</a>.
-            </p>
-
-        </article>
-
+            <article>
+                <!-- This is where the content goes -->
+                <h1 id="pkmn">PKMN</h1>
+                <p>PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows
+                    learnsets, evolutions and the details of known moves. No need to insert
+                    data into calculators or search online: PKMN shows you the info for the
+                    Pokémon you have selected in the game. It reads directly from the screen
+                    and processes everything in the browser; no data leaves your
+                    computer!</p>
+                <h2 id="quickstart">Quickstart</h2>
+                <ol type="1">
+                    <li>Open the summary screen (STATS) of a Pokémon in the game.</li>
+                    <li>Click “Select screen” to select the window or screen that shows the
+                        game.</li>
+                    <li>Click “Scan once” to scan the screen once and “Start scanning” to
+                        scan it continuosly.</li>
+                    <li>See the results of the scan.</li>
+                </ol>
+                <h2 id="details">Details</h2>
+                <p>The app is intended for the English version of Pokémon RBY and GSC.
+                    However, it may function partially for other language variants as well.
+                    For example, the DV calculation is known to work with Pokémon Gelbe
+                    Edition.</p>
+                <p>PKMN can scan emulators, screenshots and videos – if the conditions
+                    are met. The game screen needs to be fully visible, to have the original
+                    10:9 aspect ratio, to have no direct white borders and to be not blurry
+                    or distorted. The Super Game Boy borders need to be disabled. Scanning
+                    is not expected to work with photos taken with a camera.</p>
+                <p>The DV calculation works for recently caught Pokémon. Through
+                    battling and consuming certain items, Pokémon gain stat experience that
+                    contributes to their total stat values. As this experience is hidden,
+                    the calculator assumes it to be 0. Bulbapedia describes <a
+                        href="https://bulbapedia.bulbagarden.net/wiki/Effort_values#Stat_experience"
+                        target="_blank">stat
+                        experience<i aria_hidden="true" class="fa fa-external-link"></i></a> in more details.</p>
+                <p>DVs are calculated from the level, the base stat and the current stat
+                    value of a Pokémon. Finer details, such as the shared DV value for Spc.
+                    Att and Spc. Def, the effects of Gen II gender and the connection
+                    between the HP DV and other DVs are not yet taken into account. To learn
+                    more, visit <a href="https://bulbapedia.bulbagarden.net/wiki/Individual_values#Generation_I_and_II"
+                        target="_blank">Bulbapedia<i aria_hidden="true" class="fa fa-external-link"></i></a>.</p>
+                <p>The app was tested with Firefox on PC.</p>
+                <h2 id="troubleshooting">Troubleshooting</h2>
+                <p>When encountering issues, following these steps can generally solve
+                    the majority of them:</p>
+                <ul>
+                    <li>Refresh the page.</li>
+                    <li>Select the screen or window that shows the game.</li>
+                    <li>Make sure that there is no white border directly around the Game Boy
+                        screen.</li>
+                    <li>Disable the Super Game Boy borders.</li>
+                    <li>Use the original 10:9 aspect ratio for the game.</li>
+                    <li>Make sure that the screen is fully visible. Avoid covering the game
+                        with the cursor.</li>
+                    <li>Experiment with resizing the screen, especially if not using the
+                        original resolution.</li>
+                    <li>Make sure that the game shows the Pokémon summary (stats)
+                        screen.</li>
+                    <li>When multiple games are visible, the one with the bigger screen will
+                        be scanned.</li>
+                    <li>Click “Show snapshot” to see the image that was scanned last.</li>
+                    <li>Click “Show screen” to show the window or screen that the app
+                        receives as input.</li>
+                </ul>
+                <p>With the help of the error messages, this process may be
+                    simplified.</p>
+                <p><strong>expected image with minimal size of 160x144, got
+                        1x1</strong>:<br />
+                    This error appears if the source window is minimized.</p>
+                <p><strong>could not locate Game Boy screen</strong>:<br />
+                    The Game Boy screen was not found on the shared window or screen. Make
+                    sure it is indeed there. The game needs to be fully visible (mind the
+                    cursor), in the original 10:9 aspect ratio and have no white borders
+                    around. The Super Game Boy borders need to be disabled.</p>
+                <p><strong>could not recognize screen layout</strong>:<br />
+                    This error indicates that the Game Boy screen was found (likely
+                    correctly) and the game screen is not recognized. First, make sure that
+                    the game shows a Pokémon summary (stats) screen. Having the cursor on
+                    the Game Boy screen can also be a cause.</p>
+                <p><strong>could not determine XXX DV range: stat value not found in
+                        stat variation XXX</strong>:<br />
+                    This error appears if a stat has an unexpected(ly high) value. The
+                    Pokémon likely gained stat experience through battling or consuming
+                    certain items. The DV can not be calculated just from the visible stats
+                    anymore.</p>
+                <p><strong>could not read XXX: could not read character #X: could not
+                        recognize character</strong>:<br />
+                    A specific field could not be read because a character (letter) is not
+                    recognized. The game should be fully visible and not even the cursor
+                    should covers the texts. Make sure the image is not blurry and try
+                    resizing the game screen until the error goes away.</p>
+                <p>If in doubt, use the “Show snapshot” button to to see the image that
+                    was scanned last, and the “Show screen” to see the window or screen that
+                    the app receives as input.</p>
+                <h2 id="credits">Credits</h2>
+                <p>This project would not have been possible without <a href="https://bulbapedia.bulbagarden.net/"
+                        target="_blank">Bulbapedia<i aria_hidden="true" class="fa fa-external-link"></i></a>, <a
+                        href="https://www.smogon.com/" target="_blank">Smogon<i aria_hidden="true"
+                            class="fa fa-external-link"></i></a> and <a href="https://www.serebii.net/"
+                        target="_blank">Serebii.net<i aria_hidden="true" class="fa fa-external-link"></i></a>. The
+                    website aesthetics
+                    were borrowed from the <a href="https://developer.mozilla.org/en-US/blog/" target="_blank">MDN
+                        Blog<i aria_hidden="true" class="fa fa-external-link"></i></a>. Pokémon
+                    is a trademark of Nintendo.</p>
+            </article>
+        </div>
     </main>
-
+    <div class="page-footer-container">
+        <footer class="page-footer container">
+            <div>
+                <span>Created by Dudly01.</span>
+                <span>Website aesthetics borrowed from the
+                    <a href="https://developer.mozilla.org/en-US/blog/" rel="noopener noreferrer" target="_blank">MDN
+                        Blog<i class="fa fa-external-link"></i></a>.</span>
+            </div>
+        </footer>
+    </div>
 </body>
 
 </html>

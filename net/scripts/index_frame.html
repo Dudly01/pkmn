@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PKMN</title>
+    <script src="index.js" type="module"></script>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="pokeball.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+
+    <div class="top-navigation-container">
+        <header class="top-navigation container">
+
+            <div class="top-navigation-title">
+                <a href="." class="title-logo"><img src="pokeball.svg"
+                        style="height: 1.0em; vertical-align: sub;" /> PKMN</a>
+            </div>
+
+            <div class="top-navigation-main">
+                <div>
+                    <a href="https://github.com/Dudly01/pkmn" target="_blank" class="nav-link">
+                        <i class="fa fa-github"></i>
+                        Github
+                    </a>
+                </div>
+            </div>
+
+        </header>
+    </div>
+
+
+    <main class="blog-post-container container">
+
+        <div class="toc-container">
+            <aside class="toc">
+                <nav class="document-toc-container">
+                    <section class="document-toc">
+                        <header>
+                            <h2 class="document-toc-heading">Contents</h2>
+                        </header>
+
+                        <!-- This is where the TOC goes -->
+
+                    </section>
+                </nav>
+            </aside>
+        </div>
+
+        <div class="blog-post">
+            <div id="app">
+                <section class="app-control-panel">
+                    <div class="control-panel-scan">
+                        <button class="control-button" id="button_start">Select screen</button>
+                        <button class="control-button" id="button_stop">Stop sharing</button>
+                        <button class="control-button" id="button_scan">Scan once</button>
+                        <button class="control-button" id="button_interval_scan">Start scanning</button>
+                    </div>
+
+                    <div class="control-panel-feedback">
+                        <button class="control-button" id="button_canvas">Show snapshot</button>
+                        <button class="control-button" id="button_video">Show screen</button>
+                    </div>
+                </section>
+
+                <pre id="output">
+Quickstart:
+
+1. Open the summary screen (STATS) of a Pokémon in the game.
+2. Click "Select screen" to select the window or screen that shows the game.
+3. Click "Scan once" to scan the screen once and "Start scanning" to scan it continuosly.
+4. See the results of the scan here.
+                </pre>
+
+                <div>
+                    <canvas id="canvas" class="media hidden"></canvas>
+                    <video id="video" class="media hidden" autoplay></video>
+                </div>
+
+            </div>
+
+            <article>
+
+                <!-- This is where the content goes -->
+
+            </article>
+        </div>
+    </main>
+
+    <div class="page-footer-container">
+        <footer class="page-footer container">
+
+            <div>
+                <span>Created by Dudly01.</span>
+                <span>Website aesthetics borrowed from the
+                    <a target="_blank" rel="noopener noreferrer" href="https://developer.mozilla.org/en-US/blog/">MDN
+                        Blog<i class="fa fa-external-link"></i></a>.</span>
+            </div>
+
+        </footer>
+    </div>
+
+</body>
+
+</html>
