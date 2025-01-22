@@ -1,4 +1,4 @@
-# <img src="net/pokeball.svg" style="height: 1.0em; vertical-align: middle;"/> pkmn
+# pkmn
 
 pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and finding learnsets, evolutions and the details of known moves. No need insert data into calculators or to search online: pkmn shows you the info for the Pokémon you have on the screen. [Try the webapp here.](https://dudly01.github.io/pkmn/)
 
