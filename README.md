@@ -99,16 +99,18 @@ cargo install wasm-pack
 To build the package, navigate to the **net directory** and run:
 
 ```sh
-wasm-pack build --target web
+wasm-pack build --target web --out-dir static/pkg
 ```
 
-Afterwards, start a local webserver with:
+Afterwards, start a local webserver from `net/static` with:
 
 ```sh
 python -m http.server
 ```
 
 The webapp can be accessed by visiting [http://localhost:8000/](http://localhost:8000/) (8000 is the port selected by default). Visiting [http://0.0.0.0:8000/](http://0.0.0.0:8000/) may prevent the screen-sharing from working. If changes do not show up, try to hard-refresh the page (Ctrl + F5 in Firefox).
+
+The `index.html` is updated by the script `create_index_html.py` located in `net/scripts`. It combines the `index.md` and the  `index_frame.html` files located in the same directory.
 
 ### Benchmarks
 

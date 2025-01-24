@@ -9,7 +9,7 @@ def main():
     version_path = pkmn_dir / "version.txt"
     version = version_path.read_text().strip()
 
-    index_html_path = pkmn_dir / "net" / "index.html"
+    index_html_path = pkmn_dir / "net" / "static" / "index.html"
     html_content = index_html_path.read_text()
 
     target_text = "Created by Dudly01"  # NO full-stop!
