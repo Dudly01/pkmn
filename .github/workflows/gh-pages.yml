@@ -64,22 +64,12 @@ jobs:
       - name: Build        
         shell: bash
         working-directory: ${{github.workspace}}/net
-        run: wasm-pack build --target web
-
-      - name: Remove clutter        
-        shell: bash
-        working-directory: ${{github.workspace}}/net
-        run: |
-          rm -rf src
-          rm -rf target
-          rm -rf tests
-          rm Cargo.lock
-          rm Cargo.toml
+        run: wasm-pack build --target web --out-dir static/pkg
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: ./net
+          path: ./net/static
 
   # Deploy job
   deploy:

@@ -1,23 +1,19 @@
-# Rust build files
-core/target/*
-
-# Images for development
-*.png
-
 # Libraries do not have this in version control
 # https://doc.rust-lang.org/cargo/faq.html#why-do-binaries-have-cargolock-in-version-control-but-not-libraries
 Cargo.lock
 
+# Rust build files
+core/target
+
 # Net package
 net/target
-net/**/*.rs.bk
-net/Cargo.lock
-net/bin/
-net/pkg/
-net/wasm-pack.log
-net/pandoc_output.html
+net/static/pkg
+pandoc_output.html
 
 # Data files
 # Ignored until resolved format
 core/data/
 core/data_manual/
+
+# Images for development
+*.png

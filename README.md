@@ -99,10 +99,10 @@ cargo install wasm-pack
 To build the package, navigate to the **net directory** and run:
 
 ```sh
-wasm-pack build --target web
+wasm-pack build --target web --out-dir static/pkg
 ```
 
-Afterwards, start a local webserver with:
+Afterwards, start a local webserver from `net/static` with:
 
 ```sh
 python -m http.server
