@@ -87,7 +87,7 @@ def insert_markdown_content(
 def main():
     project_root = Path(__file__).parents[2]
     insert_markdown_content(
-        content_path=project_root / "net" / "index.md",
+        content_path=project_root / "net" / "scripts" / "index.md",
         html_frame_path=project_root / "net" / "scripts" / "index_frame.html",
         out_dir=project_root / "net" / "static",
     )

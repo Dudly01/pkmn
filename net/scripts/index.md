@@ -65,7 +65,7 @@ This error appears if a stat has an unexpected(ly high) value. The Pokémon like
 **could not read XXX: could not read character #X: could not recognize character**:  
 A specific field could not be read because a character (letter) is not recognized. The game should be fully visible and not even the cursor should covers the texts. Make sure the image is not blurry and try resizing the game screen until the error goes away.
 
-If in doubt, use the "Show snapshot" button to to see the image that was scanned last, and the "Show screen" to see the window or screen that the app receives as input.
+If in doubt, use the "Show snapshot" button to to see the image that was scanned last, and the "Show screen" button to see the window or screen that the app receives as input.
 
 ## Credits
 
