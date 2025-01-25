@@ -8,7 +8,7 @@ use std::io;
 fn main() -> Result<(), String> {
     // File is checked at compile-time
     // Path is relative to the examples dir
-    const EXAMPLE_IMG: &[u8] = include_bytes!("../data/Crystal_summary_1.png");
+    const EXAMPLE_IMG: &[u8] = include_bytes!("../data/images/Crystal_summary_1.png");
     let image = image::load_from_memory(EXAMPLE_IMG).expect("Failed to load image");
 
     let window_gameboy = show_image::create_window("Game Boy", Default::default()).unwrap();
