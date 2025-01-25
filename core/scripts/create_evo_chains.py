@@ -1,6 +1,6 @@
-"""Creates the evolution chain txt files expected by core from evo_chains.csv.
+"""Creates the evolution chain txt files expected by core from bulba_evo_chains.csv.
 
-The evo_chains.csv file had to be created by hand:
+The bulba_evo_chains.csv file had to be created by hand:
  - Visit https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family.
  - Copy the table into Open Office Calc (a spreadsheet editor).
  - Verify cell structure and layout. (Look at diverging families and Sylveon).
@@ -157,7 +157,7 @@ def create_evo_chains(evolutions: dict[str, dict[str, str]]) -> list[str]:
 def main():
     data_dir = Path(__file__).parents[1] / "data"
 
-    bulba_evo_table_path = data_dir / "evo_chains.csv"
+    bulba_evo_table_path = data_dir / "bulba_evo_chains.csv"
     with bulba_evo_table_path.open("r", encoding="utf-8") as f:
         csv_reader = csv.reader(f, delimiter=",", quotechar='"')
         raw_table = list(csv_reader)
