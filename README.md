@@ -55,7 +55,6 @@ Afterwards, the necessary scripts can be run with:
 
 ```sh
 python core/scripts/scrape_smogon.py;
-python core/scripts/scrape_bulba_images.py;
 python core/scripts/scrape_bulba_learnsets.py;
 python core/scripts/create_evo_chains.py;
 ```

@@ -51,7 +51,6 @@ jobs:
         working-directory: ${{github.workspace}}/core/scripts
         run: |
           python scrape_smogon.py
-          python scrape_bulba_images.py
           python scrape_bulba_learnsets.py
           python create_evo_chains.py
 
