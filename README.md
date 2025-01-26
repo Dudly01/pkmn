@@ -7,8 +7,8 @@ pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and fin
 <!-- code_chunk_output -->
 
 - [Getting started](#getting-started)
+  - [Pokémon data](#pokémon-data)
   - [Dependencies](#dependencies)
-  - [Prepare data](#prepare-data)
   - [Build desktop app](#build-desktop-app)
   - [Build WASM and test webapp locally](#build-wasm-and-test-webapp-locally)
   - [Benchmarks](#benchmarks)
@@ -23,6 +23,10 @@ pkmn is an app for Pokémon RBY and GSC. It can simplify calculating DVs and fin
 
 This section describes the steps of using the project from its source on Linux. User experience on Windows may vary.
 
+### Pokémon data
+
+This project would not have been possible without data from other sources. The learnsets and evolutions originate from [Bulbapedia](https://bulbapedia.bulbagarden.net). The moves, items and Pokémon originate from [Smogon](https://www.smogon.com/). The list of in-game item names originates from [Serebii.net](https://serebii.net/). Read more [here](core/data/README.md).
+
 ### Dependencies
 
 Certain crates may require the installation of additional libraries. These are the ones I had to get for my system:
@@ -34,32 +38,6 @@ sudo apt-get install libx11-dev libxcb-shm0-dev libxcb-randr0-dev
 # For show-image
 sudo apt-get install pkg-config libfontconfig1-dev
 ```
-
-### Prepare data
-
-The project uses data from Bulbapedia and Smogon. As not all of it has been commited (yet) to the repo, the preparation scripts need to be called manually.
-
-To do so, first, install the required Python packages. Using conda, it can be done with:
-
-```sh
-conda install --yes --file core/scripts/requirements.txt  
-```
-
-With pip, this would change to:
-
-```sh
-pip install -r core/scripts/requirements.txt
-```
-
-Afterwards, the necessary scripts can be run with:
-
-```sh
-python core/scripts/scrape_smogon.py;
-python core/scripts/scrape_bulba_learnsets.py;
-python core/scripts/create_evo_chains.py;
-```
-
-The data should be ready within 1-2 minutes.
 
 ### Build desktop app
 

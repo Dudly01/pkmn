@@ -6,6 +6,8 @@ The learnsets and evolutions originate from [Bulbapedia](https://bulbapedia.bulb
 
 The screenshots in the `images` folder are direct captures from Gen I and II Pokémon games. They are used under fair use for non-commercial purposes.
 
+## Creating the files
+
 The `bulba_evo_chains.csv` file was created manually:
 
  - Visit the [evolutionary line article on Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/List_of_Pok%C3%A9mon_by_evolution_family).
@@ -13,4 +15,21 @@ The `bulba_evo_chains.csv` file was created manually:
  - Verify the layout and the structure of the cells; we need the form that we see on the website. (Look at diverging families and Sylveon).
  - Export sheet into a CSV using comma separators and " quote chars.
 
-The rest of the data files were created by scripts. `core/scripts/scrape_smogon.py` creates the CSV files for the itemdex, the movedex and the pokedex. `core/scripts/scrape_bulba_learnsets.py` creates the learnset files **using the Smogon naming convention** for the Pokemon. `core/scripts/create_evo_chains.py` creates the text files for the generation specific evolution chains from `bulba_evo_chains.csv`, **using the Smogon naming convention** for the Pokémon.
+The rest of the data files were created by Python scripts:
+
+```sh
+# Install dependencies with conda
+conda install --yes --file core/scripts/requirements.txt  
+
+# Install dependencies with pip
+pip install -r core/scripts/requirements.txt
+
+# Create data files
+python core/scripts/scrape_smogon.py;
+python core/scripts/scrape_bulba_learnsets.py;
+python core/scripts/create_evo_chains.py;
+```
+
+`scrape_smogon.py` creates the CSV files for the itemdex, the movedex and the pokedex.  
+`scrape_bulba_learnsets.py` creates the learnset files **using the Smogon naming convention** for the Pokemon.  
+`create_evo_chains.py` creates the text files for the generation specific evolution chains from `bulba_evo_chains.csv`, **using the Smogon naming convention** for the Pokémon.
