@@ -362,6 +362,12 @@ img {
 }
 
 /* The scanner app */
+.app {
+    border: 1px solid var(--border-primary);
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-bottom: 2rem;
+}
 
 .app-control-panel {
     display: flex;
