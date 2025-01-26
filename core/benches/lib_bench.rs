@@ -4,8 +4,8 @@ use criterion::*;
 use core as pkmn;
 use image::{io::Reader as ImageReader, GrayImage};
 
-const SUMMARY_SCREEN_1_PATH: &str = "data/Yellow_summary_1.png";
-const SUMMARY_SCREEN_2_PATH: &str = "data/Yellow_summary_2.png";
+const SUMMARY_SCREEN_1_PATH: &str = "data/images/Yellow_summary_1.png";
+const SUMMARY_SCREEN_2_PATH: &str = "data/images/Yellow_summary_2.png";
 
 fn locate_screen(c: &mut Criterion) {
     let mut group = c.benchmark_group("locate-screen");

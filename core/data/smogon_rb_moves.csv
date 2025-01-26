@@ -1,0 +1,166 @@
+name,type,category,power,accuracy,pp,description
+Absorb,Grass,Special,20,100,20,User recovers 50% of the damage dealt.
+Acid,Poison,Physical,40,100,30,33% chance to lower the target's Defense by 1.
+Acid Armor,Poison,Non-Damaging,0,0,40,Raises the user's Defense by 2.
+Agility,Psychic,Non-Damaging,0,0,30,Raises the user's Speed by 2.
+Amnesia,Psychic,Non-Damaging,0,0,20,Raises the user's Special by 2.
+Aurora Beam,Ice,Special,65,100,20,33% chance to lower the target's Attack by 1.
+Barrage,Normal,Physical,15,85,20,Hits 2-5 times in one turn.
+Barrier,Psychic,Non-Damaging,0,0,30,Raises the user's Defense by 2.
+Bide,Normal,Physical,0,0,10,Waits 2-3 turns; deals double the damage taken.
+Bind,Normal,Physical,15,75,20,Prevents the target from moving for 2-5 turns.
+Bite,Normal,Physical,60,100,25,10% chance to make the target flinch.
+Blizzard,Ice,Special,120,90,5,10% chance to freeze the target.
+Body Slam,Normal,Physical,85,100,15,30% chance to paralyze the target.
+Bone Club,Ground,Physical,65,85,20,10% chance to make the target flinch.
+Bonemerang,Ground,Physical,50,90,10,Hits 2 times in one turn.
+Bubble,Water,Special,20,100,30,33% chance to lower the target's Speed by 1.
+Bubble Beam,Water,Special,65,100,20,33% chance to lower the target's Speed by 1.
+Clamp,Water,Special,35,75,10,Prevents the target from moving for 2-5 turns.
+Comet Punch,Normal,Physical,18,85,15,Hits 2-5 times in one turn.
+Confuse Ray,Ghost,Non-Damaging,0,100,10,Confuses the target.
+Confusion,Psychic,Special,50,100,25,10% chance to confuse the target.
+Constrict,Normal,Physical,10,100,35,33% chance to lower the target's Speed by 1.
+Conversion,Normal,Non-Damaging,0,0,30,User becomes the same type as the target.
+Counter,Fighting,Physical,1,100,20,"If hit by Normal/Fighting move, deals 2x damage."
+Crabhammer,Water,Special,90,85,10,High critical hit ratio.
+Cut,Normal,Physical,50,95,30,No additional effect.
+Defense Curl,Normal,Non-Damaging,0,0,40,Raises the user's Defense by 1.
+Dig,Ground,Physical,100,100,10,"Digs underground turn 1, strikes turn 2."
+Disable,Normal,Non-Damaging,0,55,20,"For 0-7 turns, disables one of the target's moves."
+Dizzy Punch,Normal,Physical,70,100,10,No additional effect.
+Double Kick,Fighting,Physical,30,100,30,Hits 2 times in one turn.
+Double Slap,Normal,Physical,15,85,10,Hits 2-5 times in one turn.
+Double Team,Normal,Non-Damaging,0,0,15,Raises the user's evasiveness by 1.
+Double-Edge,Normal,Physical,100,100,15,Has 1/4 recoil.
+Dragon Rage,Dragon,Special,1,100,10,Deals 40 HP of damage to the target.
+Dream Eater,Psychic,Special,100,100,15,User gains 1/2 HP inflicted. Sleeping target only.
+Drill Peck,Flying,Physical,80,100,20,No additional effect.
+Earthquake,Ground,Physical,100,100,10,No additional effect.
+Egg Bomb,Normal,Physical,100,75,10,No additional effect.
+Ember,Fire,Special,40,100,25,10% chance to burn the target.
+Explosion,Normal,Physical,170,100,5,Target's Def halved during damage. User faints.
+Fire Blast,Fire,Special,120,85,5,30% chance to burn the target.
+Fire Punch,Fire,Special,75,100,15,10% chance to burn the target.
+Fire Spin,Fire,Special,15,70,15,Prevents the target from moving for 2-5 turns.
+Fissure,Ground,Physical,0,30,5,Deals 65535 damage. Fails if target is faster.
+Flamethrower,Fire,Special,95,100,15,10% chance to burn the target.
+Flash,Normal,Non-Damaging,0,70,20,Lowers the target's accuracy by 1.
+Fly,Flying,Physical,70,95,15,"Flies up on first turn, then strikes the next turn."
+Focus Energy,Normal,Non-Damaging,0,0,30,Quarters the user's chance for a critical hit.
+Fury Attack,Normal,Physical,15,85,20,Hits 2-5 times in one turn.
+Fury Swipes,Normal,Physical,18,80,15,Hits 2-5 times in one turn.
+Glare,Normal,Non-Damaging,0,75,30,Paralyzes the target.
+Growl,Normal,Non-Damaging,0,100,40,Lowers the target's Attack by 1.
+Growth,Normal,Non-Damaging,0,0,40,Raises the user's Special by 1.
+Guillotine,Normal,Physical,0,30,5,Deals 65535 damage. Fails if target is faster.
+Gust,Normal,Physical,40,100,35,No additional effect.
+Harden,Normal,Non-Damaging,0,0,30,Raises the user's Defense by 1.
+Haze,Ice,Non-Damaging,0,0,30,Resets all stat changes. Removes foe's status.
+Headbutt,Normal,Physical,70,100,15,30% chance to make the target flinch.
+High Jump Kick,Fighting,Physical,85,90,20,User takes 1 HP of damage if it misses.
+Horn Attack,Normal,Physical,65,100,25,No additional effect.
+Horn Drill,Normal,Physical,0,30,5,Deals 65535 damage. Fails if target is faster.
+Hydro Pump,Water,Special,120,80,5,No additional effect.
+Hyper Beam,Normal,Physical,150,90,5,Can't move next turn if target or sub is not KOed.
+Hyper Fang,Normal,Physical,80,90,15,10% chance to make the target flinch.
+Hypnosis,Psychic,Non-Damaging,0,60,20,Causes the target to fall asleep.
+Ice Beam,Ice,Special,95,100,10,10% chance to freeze the target.
+Ice Punch,Ice,Special,75,100,15,10% chance to freeze the target.
+Jump Kick,Fighting,Physical,70,95,25,User takes 1 HP of damage if it misses.
+Karate Chop,Normal,Physical,50,100,25,High critical hit ratio.
+Kinesis,Psychic,Non-Damaging,0,80,15,Lowers the target's accuracy by 1.
+Leech Life,Bug,Physical,20,100,15,User recovers 50% of the damage dealt.
+Leech Seed,Grass,Non-Damaging,0,90,10,1/8 of target's HP is restored to user every turn.
+Leer,Normal,Non-Damaging,0,100,30,Lowers the target's Defense by 1.
+Lick,Ghost,Physical,20,100,30,30% chance to paralyze the target.
+Light Screen,Psychic,Non-Damaging,0,0,30,"While active, user's Special is 2x when damaged."
+Lovely Kiss,Normal,Non-Damaging,0,75,10,Causes the target to fall asleep.
+Low Kick,Fighting,Physical,50,90,20,30% chance to make the target flinch.
+Meditate,Psychic,Non-Damaging,0,0,40,Raises the user's Attack by 1.
+Mega Drain,Grass,Special,40,100,10,User recovers 50% of the damage dealt.
+Mega Kick,Normal,Physical,120,75,5,No additional effect.
+Mega Punch,Normal,Physical,80,85,20,No additional effect.
+Metronome,Normal,Non-Damaging,0,0,10,Picks a random move.
+Mimic,Normal,Non-Damaging,0,100,10,Random move known by the target replaces this.
+Minimize,Normal,Non-Damaging,0,0,20,Raises the user's evasiveness by 1.
+Mirror Move,Flying,Non-Damaging,0,0,20,User uses the target's last used move against it.
+Mist,Ice,Non-Damaging,0,0,30,"While active, user is protected from stat drops."
+Night Shade,Ghost,Physical,1,100,15,Damage = user's level. Can hit Normal types.
+Pay Day,Normal,Physical,40,100,20,Scatters coins.
+Peck,Flying,Physical,35,100,35,No additional effect.
+Petal Dance,Grass,Special,70,100,20,Lasts 3-4 turns. Confuses the user afterwards.
+Pin Missile,Bug,Physical,14,85,20,Hits 2-5 times in one turn.
+Poison Gas,Poison,Non-Damaging,0,55,40,Poisons the target.
+Poison Powder,Poison,Non-Damaging,0,75,35,Poisons the target.
+Poison Sting,Poison,Physical,15,100,35,20% chance to poison the target.
+Pound,Normal,Physical,40,100,35,No additional effect.
+Psybeam,Psychic,Special,65,100,20,10% chance to confuse the target.
+Psychic,Psychic,Special,90,100,10,33% chance to lower the target's Special by 1.
+Psywave,Psychic,Special,1,80,15,Random damage from 1 to (user's level*1.5 - 1).
+Quick Attack,Normal,Physical,40,100,30,Usually goes first.
+Rage,Normal,Physical,20,100,20,Lasts forever. Raises user's Attack by 1 when hit.
+Razor Leaf,Grass,Special,55,95,25,High critical hit ratio.
+Razor Wind,Normal,Physical,80,75,10,Charges turn 1. Hits turn 2.
+Recover,Normal,Non-Damaging,0,0,20,Heals the user by 50% of its max HP.
+Reflect,Psychic,Non-Damaging,0,0,20,"While active, the user's Defense is doubled."
+Rest,Psychic,Non-Damaging,0,0,10,User sleeps 2 turns and restores HP and status.
+Roar,Normal,Non-Damaging,0,100,20,No competitive use.
+Rock Slide,Rock,Physical,75,90,10,No additional effect.
+Rock Throw,Rock,Physical,50,65,15,No additional effect.
+Rolling Kick,Fighting,Physical,60,85,15,30% chance to make the target flinch.
+Sand Attack,Normal,Non-Damaging,0,100,15,Lowers the target's accuracy by 1.
+Scratch,Normal,Physical,40,100,35,No additional effect.
+Screech,Normal,Non-Damaging,0,85,40,Lowers the target's Defense by 2.
+Seismic Toss,Fighting,Physical,1,100,20,Damage = user's level. Can hit Ghost types.
+Self-Destruct,Normal,Physical,130,100,5,Target's Def halved during damage. User faints.
+Sharpen,Normal,Non-Damaging,0,0,30,Raises the user's Attack by 1.
+Sing,Normal,Non-Damaging,0,55,15,Causes the target to fall asleep.
+Skull Bash,Normal,Physical,100,100,15,Charges turn 1. Hits turn 2.
+Sky Attack,Flying,Physical,140,90,5,Charges turn 1. Hits turn 2.
+Slam,Normal,Physical,80,75,20,No additional effect.
+Slash,Normal,Physical,70,100,20,High critical hit ratio.
+Sleep Powder,Grass,Non-Damaging,0,75,15,Causes the target to fall asleep.
+Sludge,Poison,Physical,65,100,20,40% chance to poison the target.
+Smog,Poison,Physical,20,70,20,40% chance to poison the target.
+Smokescreen,Normal,Non-Damaging,0,100,20,Lowers the target's accuracy by 1.
+Soft-Boiled,Normal,Non-Damaging,0,0,10,Heals the user by 50% of its max HP.
+Solar Beam,Grass,Special,120,100,10,Charges turn 1. Hits turn 2.
+Sonic Boom,Normal,Physical,1,90,20,Always does 20 HP of damage.
+Spike Cannon,Normal,Physical,20,100,15,Hits 2-5 times in one turn.
+Splash,Normal,Non-Damaging,0,0,40,No competitive use.
+Spore,Grass,Non-Damaging,0,100,15,Causes the target to fall asleep.
+Stomp,Normal,Physical,65,100,20,30% chance to make the target flinch.
+Strength,Normal,Physical,80,100,15,No additional effect.
+String Shot,Bug,Non-Damaging,0,95,40,Lowers the target's Speed by 1.
+Struggle,Normal,Physical,50,100,10,User loses 1/2 the HP lost by the target.
+Stun Spore,Grass,Non-Damaging,0,75,30,Paralyzes the target.
+Submission,Fighting,Physical,80,80,25,Has 1/4 recoil.
+Substitute,Normal,Non-Damaging,0,0,10,User takes 1/4 its max HP to put in a Substitute.
+Super Fang,Normal,Physical,1,90,10,Damage = 1/2 target's current HP. Hits Ghosts.
+Supersonic,Normal,Non-Damaging,0,55,20,Causes the target to become confused.
+Surf,Water,Special,95,100,15,No additional effect.
+Swift,Normal,Physical,60,0,20,"Never misses, even against Dig and Fly."
+Swords Dance,Normal,Non-Damaging,0,0,30,Raises the user's Attack by 2.
+Tackle,Normal,Physical,35,95,35,No additional effect.
+Tail Whip,Normal,Non-Damaging,0,100,30,Lowers the target's Defense by 1.
+Take Down,Normal,Physical,90,85,20,Has 1/4 recoil.
+Teleport,Psychic,Non-Damaging,0,0,20,Fails when used.
+Thrash,Normal,Physical,90,100,20,Lasts 3-4 turns. Confuses the user afterwards.
+Thunder,Electric,Special,120,70,10,10% chance to paralyze the target.
+Thunder Punch,Electric,Special,75,100,15,10% chance to paralyze the target.
+Thunder Shock,Electric,Special,40,100,30,10% chance to paralyze the target.
+Thunder Wave,Electric,Non-Damaging,0,100,20,Paralyzes the target.
+Thunderbolt,Electric,Special,95,100,15,10% chance to paralyze the target.
+Toxic,Poison,Non-Damaging,0,85,10,Badly poisons the target.
+Transform,Normal,Non-Damaging,0,0,10,"Copies target's stats, moves, types, and species."
+Tri Attack,Normal,Physical,80,100,10,No additional effect.
+Twineedle,Bug,Physical,25,100,20,Hits 2 times. Last hit has 20% chance to poison.
+Vice Grip,Normal,Physical,55,100,30,No additional effect.
+Vine Whip,Grass,Special,35,100,10,No additional effect.
+Water Gun,Water,Special,40,100,25,No additional effect.
+Waterfall,Water,Special,80,100,15,No additional effect.
+Whirlwind,Normal,Non-Damaging,0,85,20,No competitive use.
+Wing Attack,Flying,Physical,35,100,35,No additional effect.
+Withdraw,Water,Non-Damaging,0,0,40,Raises the user's Defense by 1.
+Wrap,Normal,Physical,15,85,20,Prevents the target from moving for 2-5 turns.

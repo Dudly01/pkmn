@@ -10,11 +10,11 @@ use std::io;
 fn main() -> Result<(), String> {
     // Relative to crate root
     let image_paths = [
-        "data/Yellow_summary_1.png",
-        "data/Yellow_summary_2.png",
-        "data/Crystal_summary_1.png",
-        "data/Crystal_summary_2.png",
-        "data/Crystal_summary_3.png",
+        "data/images/Yellow_summary_1.png",
+        "data/images/Yellow_summary_2.png",
+        "data/images/Crystal_summary_1.png",
+        "data/images/Crystal_summary_2.png",
+        "data/images/Crystal_summary_3.png",
     ];
 
     if image_paths.len() == 0 {

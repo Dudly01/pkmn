@@ -32,28 +32,8 @@ jobs:
           # Optional version of wasm-pack to install(eg. 'v0.9.1', 'latest')
           version: 'latest'
 
-      - name: Cache pip dependencies
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-          cache: 'pip'
-              
-      - name: Install Python dependencies
-        shell: bash
-        working-directory: ${{github.workspace}}/core/scripts
-        run: pip install -r requirements.txt
-
       - name: Setup Pages
         uses: actions/configure-pages@v3
-
-      - name: Get core data
-        shell: bash
-        working-directory: ${{github.workspace}}/core/scripts
-        run: |
-          python scrape_smogon.py
-          python scrape_bulba_images.py
-          python scrape_bulba_learnsets.py
-          python create_evo_chains.py
 
       - name: Insert project version into index.html
         shell: bash
@@ -85,7 +65,7 @@ jobs:
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
 
 # Sources:
 # 

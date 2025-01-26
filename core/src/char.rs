@@ -21,8 +21,8 @@ use std::ops::Deref;
 #[derive(PartialEq, Eq, Hash)]
 pub struct CharBitmap(u64);
 
-const IMG_NICKNAMING_1: &[u8] = include_bytes!("../data/Nicknaming_I.png");
-const IMG_NICKNAMING_2: &[u8] = include_bytes!("../data/Nicknaming_II.png");
+const IMG_NICKNAMING_1: &[u8] = include_bytes!("../data/images/Yellow_nicknaming_upper.png");
+const IMG_NICKNAMING_2: &[u8] = include_bytes!("../data/images/Crystal_nicknaming_upper.png");
 
 impl CharBitmap {
     /// Creates a CharBitmap from pixels.
