@@ -1,0 +1,81 @@
+Bulbasaur->Level 16->Ivysaur->Level 32->Venusaur
+Charmander->Level 16->Charmeleon->Level 36->Charizard
+Squirtle->Level 16->Wartortle->Level 36->Blastoise
+Caterpie->Level 7->Metapod->Level 10->Butterfree
+Weedle->Level 7->Kakuna->Level 10->Beedrill
+Pidgey->Level 18->Pidgeotto->Level 36->Pidgeot
+Rattata->Level 20->Raticate
+Spearow->Level 20->Fearow
+Ekans->Level 22->Arbok
+Pikachu->Thunder Stone->Raichu
+Sandshrew->Level 22->Sandslash
+Nidoran-F->Level 16->Nidorina->Moon Stone->Nidoqueen
+Nidoran-M->Level 16->Nidorino->Moon Stone->Nidoking
+Clefairy->Moon Stone->Clefable
+Vulpix->Fire Stone->Ninetales
+Jigglypuff->Moon Stone->Wigglytuff
+Zubat->Level 22->Golbat
+Oddish->Level 21->Gloom->Leaf Stone->Vileplume
+Paras->Level 24->Parasect
+Venonat->Level 31->Venomoth
+Diglett->Level 26->Dugtrio
+Meowth->Level 28->Persian
+Psyduck->Level 33->Golduck
+Mankey->Level 28->Primeape
+Growlithe->Fire Stone->Arcanine
+Poliwag->Level 25->Poliwhirl->Water Stone->Poliwrath
+Abra->Level 16->Kadabra->Trade->Alakazam
+Machop->Level 28->Machoke->Trade->Machamp
+Bellsprout->Level 21->Weepinbell->Leaf Stone->Victreebel
+Tentacool->Level 30->Tentacruel
+Geodude->Level 25->Graveler->Trade->Golem
+Ponyta->Level 40->Rapidash
+Slowpoke->Level 37->Slowbro
+Magnemite->Level 30->Magneton
+Farfetch'd
+Doduo->Level 31->Dodrio
+Seel->Level 34->Dewgong
+Grimer->Level 38->Muk
+Shellder->Water Stone->Cloyster
+Gastly->Level 25->Haunter->Trade->Gengar
+Onix
+Drowzee->Level 26->Hypno
+Krabby->Level 28->Kingler
+Voltorb->Level 30->Electrode
+Exeggcute->Leaf Stone->Exeggutor
+Cubone->Level 28->Marowak
+Hitmonlee
+Hitmonchan
+Lickitung
+Koffing->Level 35->Weezing
+Rhyhorn->Level 42->Rhydon
+Chansey
+Tangela
+Kangaskhan
+Horsea->Level 32->Seadra
+Goldeen->Level 33->Seaking
+Staryu->Water Stone->Starmie
+Mr. Mime
+Scyther
+Jynx
+Electabuzz
+Magmar
+Pinsir
+Tauros
+Magikarp->Level 20->Gyarados
+Lapras
+Ditto
+Eevee->Water Stone->Vaporeon
+Eevee->Thunder Stone->Jolteon
+Eevee->Fire Stone->Flareon
+Porygon
+Omanyte->Level 40->Omastar
+Kabuto->Level 40->Kabutops
+Aerodactyl
+Snorlax
+Articuno
+Zapdos
+Moltres
+Dratini->Level 30->Dragonair->Level 55->Dragonite
+Mewtwo
+Mew

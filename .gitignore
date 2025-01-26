@@ -10,10 +10,5 @@ net/target
 net/static/pkg
 pandoc_output.html
 
-# Data files
-# Ignored until resolved format
-core/data/
-core/data_manual/
-
 # Images for development
 *.png
