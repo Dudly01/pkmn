@@ -96,7 +96,10 @@ pub fn locate_screen(img: &DynamicImage) -> Option<Position> {
     let mut img =
         GrayImage::from_raw(w_new, h_new, pixels_bordered).expect("failed to add border to image");
 
-    let threshold_val = 140; // Can be anything in [30, 240]
+    // Can be set in a wide range
+    // [30, 240] for RBY and GSC
+    // [190, 230] for RBY and GS with Super Game Boy Border
+    let threshold_val = 200;
     threshold_mut(&mut img, threshold_val);
 
     // find_contours() does not find the border on an all-white image.

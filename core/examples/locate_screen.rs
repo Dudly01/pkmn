@@ -15,6 +15,18 @@ fn main() -> Result<(), String> {
         "data/images/Crystal_summary_1.png",
         "data/images/Crystal_summary_2.png",
         "data/images/Crystal_summary_3.png",
+        "data/images/Red_SGB_summary_1.png",
+        "data/images/Red_SGB_summary_2.png",
+        "data/images/Blue_SGB_summary_1.png",
+        "data/images/Blue_SGB_summary_2.png",
+        "data/images/Yellow_SGB_summary_1.png",
+        "data/images/Yellow_SGB_summary_2.png",
+        "data/images/Gold_SGB_summary_1.png",
+        "data/images/Gold_SGB_summary_2.png",
+        "data/images/Gold_SGB_summary_3.png",
+        "data/images/Silver_SGB_summary_1.png",
+        "data/images/Silver_SGB_summary_2.png",
+        "data/images/Silver_SGB_summary_3.png",
     ];
 
     if image_paths.len() == 0 {
@@ -89,7 +101,7 @@ fn main() -> Result<(), String> {
                 imageproc::drawing::draw_hollow_rect_mut(&mut img, rect, color);
 
                 print!(
-                    "RBY x:{} y:{} w:{} h:{}",
+                    "RBY x:{} y:{} w:{} h:{} ",
                     screen_pos.x, screen_pos.y, screen_pos.width, screen_pos.height
                 );
             }
