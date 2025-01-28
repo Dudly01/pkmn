@@ -1,5 +1,4 @@
-use crate::char::Charset;
-use crate::ocr::{read_char, read_field};
+use crate::ocr::{read_char, read_field, Charset};
 use crate::position::Position;
 use image::{DynamicImage, GrayImage, Luma};
 use imageproc::contours::Contour;

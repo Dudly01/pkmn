@@ -1,4 +1,3 @@
-pub mod char;
 pub mod evos;
 pub mod fmt;
 pub mod gameboy;

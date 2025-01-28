@@ -1,10 +1,10 @@
 use crate as pkmn;
-use crate::char::Charset;
 use crate::fmt;
 use crate::gameboy::{GscSummary1, GscSummary2, GscSummary3, RbySummary1, RbySummary2};
 use crate::items::GscItems;
 use crate::learnset::{GscLearnsets, RbyLearnsets};
 use crate::moves::{GscMoves, Moves};
+use crate::ocr::Charset;
 use crate::pokemon::{GscPokedex, RbyPokedex};
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
@@ -628,7 +628,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     // Init data
-    let chars = pkmn::char::Charset::new();
+    let chars = pkmn::ocr::Charset::new();
 
     let rby_pokedex = pkmn::pokemon::RbyPokedex::new();
     let rby_learnsets = pkmn::learnset::RbyLearnsets::new();
