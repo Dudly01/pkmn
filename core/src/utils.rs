@@ -4,7 +4,7 @@ use crate::gameboy::{GscSummary1, GscSummary2, GscSummary3, RbySummary1, RbySumm
 use crate::items::GscItems;
 use crate::learnset::{GscLearnsets, RbyLearnsets};
 use crate::moves::{GscMoves, Moves};
-use crate::ocr::Charset;
+use crate::ocr::CharTable;
 use crate::pokemon::{GscPokedex, RbyPokedex};
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
@@ -14,7 +14,7 @@ use imageproc::contrast::threshold_mut;
 fn scan_rby_summary_1(
     img_gameboy: &GrayImage,
     rby_summary_1: &RbySummary1,
-    chars: &Charset,
+    chars: &CharTable,
     rby_pokedex: &RbyPokedex,
 ) -> Result<String, String> {
     let content = rby_summary_1
@@ -131,7 +131,7 @@ fn scan_rby_summary_1(
 fn scan_rby_summary_2(
     img_gameboy: &GrayImage,
     rby_summary_2: &RbySummary2,
-    chars: &Charset,
+    chars: &CharTable,
     rby_pokedex: &RbyPokedex,
     rby_evo_chains: &Vec<String>,
     rby_learnsets: &RbyLearnsets,
@@ -218,7 +218,7 @@ fn scan_rby_summary_2(
 fn scan_gsc_summary_1(
     img_gameboy: &GrayImage,
     gsc_summary_1: &GscSummary1,
-    chars: &Charset,
+    chars: &CharTable,
     gsc_pokedex: &GscPokedex,
 ) -> Result<String, String> {
     let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.ndex, &chars);
@@ -295,7 +295,7 @@ fn scan_gsc_summary_1(
 fn scan_gsc_summary_2(
     img_gameboy: &GrayImage,
     gsc_summary_2: &GscSummary2,
-    chars: &Charset,
+    chars: &CharTable,
     gsc_pokedex: &GscPokedex,
     gsc_items: &GscItems,
     gsc_moves: &GscMoves,
@@ -440,7 +440,7 @@ fn scan_gsc_summary_2(
 fn scan_gsc_summary_3(
     img_gameboy: &GrayImage,
     gsc_summary_3: &GscSummary3,
-    chars: &Charset,
+    chars: &CharTable,
     gsc_pokedex: &GscPokedex,
 ) -> Result<String, String> {
     let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.ndex, &chars);
@@ -628,7 +628,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     // Init data
-    let chars = pkmn::ocr::Charset::new();
+    let chars = pkmn::ocr::CharTable::new();
 
     let rby_pokedex = pkmn::pokemon::RbyPokedex::new();
     let rby_learnsets = pkmn::learnset::RbyLearnsets::new();

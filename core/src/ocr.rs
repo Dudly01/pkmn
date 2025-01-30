@@ -73,15 +73,15 @@ impl CharBitmap {
 /// - ligatures (PK, MN etc.)
 /// - digits
 /// - symbols and punctuation (?, ! etc.)
-pub struct Charset {
+pub struct CharTable {
     chars: HashMap<CharBitmap, &'static str>,
 }
 
 const IMG_NICKNAMING_1: &[u8] = include_bytes!("../data/images/Yellow_nicknaming_upper.png");
 const IMG_NICKNAMING_2: &[u8] = include_bytes!("../data/images/Crystal_nicknaming_upper.png");
 
-impl Charset {
-    pub fn new() -> Charset {
+impl CharTable {
+    pub fn new() -> CharTable {
         let mut chars = HashMap::<CharBitmap, &str>::new();
 
         let img_nicknaming =
@@ -377,11 +377,11 @@ impl Charset {
         .unwrap();
         chars.insert(code, char);
 
-        Charset { chars: chars }
+        CharTable { chars: chars }
     }
 }
 
-impl Deref for Charset {
+impl Deref for CharTable {
     type Target = HashMap<CharBitmap, &'static str>;
 
     fn deref(&self) -> &Self::Target {
@@ -390,7 +390,11 @@ impl Deref for Charset {
 }
 
 /// Reads a character from 7x7 pixel large region of a `GrayImage`.
-pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'static str, String> {
+pub fn read_char(
+    img: &GrayImage,
+    pos: &Position,
+    chars: &CharTable,
+) -> Result<&'static str, String> {
     if pos.width != 7 || pos.height != 7 {
         return Err("incorrect Roi dimensions".to_string());
     }
@@ -407,7 +411,7 @@ pub fn read_char(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<&'s
 }
 
 /// Reads the characters from the field.
-pub fn read_field(img: &GrayImage, pos: &Position, chars: &Charset) -> Result<String, String> {
+pub fn read_field(img: &GrayImage, pos: &Position, chars: &CharTable) -> Result<String, String> {
     if pos.height != 7 || (pos.width + 1) % 8 != 0 {
         return Err("incorrect Roi dimensions".to_string());
     }

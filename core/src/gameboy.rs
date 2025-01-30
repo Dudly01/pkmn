@@ -1,4 +1,4 @@
-use crate::ocr::{read_char, read_field, Charset};
+use crate::ocr::{read_char, read_field, CharTable};
 use crate::position::Position;
 use image::{DynamicImage, GrayImage, Luma};
 use imageproc::contours::Contour;
@@ -249,7 +249,7 @@ impl RbySummary1 {
     /// Returns true if the image is the RBY summary screen 1.
     ///
     /// Expects the image to be a binary image.
-    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+    pub fn verify_layout(&self, img: &GrayImage, chars: &CharTable) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
         }
@@ -272,7 +272,7 @@ impl RbySummary1 {
     pub fn read_fields(
         &self,
         img: &GrayImage,
-        chars: &Charset,
+        chars: &CharTable,
     ) -> Result<RbySummaryContent, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return Err("Mismatch in image and layout dimensions.".to_string());
@@ -411,7 +411,7 @@ impl RbySummary2 {
     /// Returns true if the image is the RBY summary screen 2.
     ///
     /// Expects the image to be a binary image.
-    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+    pub fn verify_layout(&self, img: &GrayImage, chars: &CharTable) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
         }
@@ -439,7 +439,7 @@ impl RbySummary2 {
     pub fn read_fields(
         &self,
         img: &GrayImage,
-        chars: &Charset,
+        chars: &CharTable,
     ) -> Result<RbySummaryContent2, String> {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return Err("Mismatch in image and layout dimensions.".to_string());
@@ -543,7 +543,7 @@ impl GscSummary1 {
     /// Returns true if the image is the GSC summary screen 1.
     ///
     /// Expects the image to be a binary image.
-    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+    pub fn verify_layout(&self, img: &GrayImage, chars: &CharTable) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
         }
@@ -639,7 +639,7 @@ impl GscSummary2 {
     /// Returns true if the image is the RBY summary screen 2.
     ///
     /// Expects the image to be a binary image.
-    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+    pub fn verify_layout(&self, img: &GrayImage, chars: &CharTable) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
         }
@@ -735,7 +735,7 @@ impl GscSummary3 {
     /// Returns true if the image is the RBY summary screen 3.
     ///
     /// Expects the image to be a binary image.
-    pub fn verify_layout(&self, img: &GrayImage, chars: &Charset) -> bool {
+    pub fn verify_layout(&self, img: &GrayImage, chars: &CharTable) -> bool {
         if img.width() as i32 != self.width || img.height() as i32 != self.height {
             return false;
         }
