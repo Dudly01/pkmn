@@ -1,3 +1,5 @@
+//! High-level functions to scan the game screens and get a printable results.
+
 use crate as pkmn;
 use crate::fmt;
 use crate::gameboy::{GscSummary1, GscSummary2, GscSummary3, RbySummary1, RbySummary2};
@@ -615,9 +617,11 @@ fn scan_gsc_summary_3(
     return Ok(t);
 }
 
-/// Scans the image and returns the printable text.
-/// The summary screen 1 is for printing the stat DVs.
-/// The summary screen 2 us for printing the learnset and evolution chain.
+/// Locates and reads the game screen and returns the details of the Pokemon.
+///
+/// A one-stop function to locate the game on the input image, to read its
+/// content and to return the relevant info in a human readable form.
+/// Works with the summary screens of RBY and GSC.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let (w, h) = (img_screen.width(), img_screen.height());
     let (w_min, h_min) = (160, 144);
