@@ -41,9 +41,8 @@ impl CharBitmap {
         Ok(CharBitmap(bitmap))
     }
 
-    /// Encodes the pixels of the region of interest.
-    pub fn from_roi(roi: &Roi) -> Result<CharBitmap, String> {
-        let pos = roi.pos();
+    /// Encodes the pixels of the Region of Interest (RoI).
+    pub fn from_roi(img: &GrayImage, pos: &Position) -> Result<CharBitmap, String> {
         if pos.width != 7 || pos.height != 7 {
             let msg = format!(
                 "Expected width and height to be 7, got {:?} and {:?}",
@@ -51,6 +50,11 @@ impl CharBitmap {
             );
             return Err(msg);
         }
+
+        let roi = Roi {
+            img: &img,
+            pos: pos.clone(),
+        };
 
         let bitmap = roi
             .iter()
@@ -129,12 +133,7 @@ impl CharTable {
                 height: 7,
             };
 
-            let roi = Roi {
-                img: &img_nicknaming,
-                pos: char_pos,
-            };
-
-            let bitmap = CharBitmap::from_roi(&roi).unwrap();
+            let bitmap = CharBitmap::from_roi(&img_nicknaming, &char_pos).unwrap();
 
             chars.insert(bitmap, char);
         }
@@ -341,12 +340,7 @@ impl CharTable {
                 height: 7,
             };
 
-            let roi = Roi {
-                img: &img_nicknaming,
-                pos: char_pos,
-            };
-
-            let bitmap = CharBitmap::from_roi(&roi).unwrap();
+            let bitmap = CharBitmap::from_roi(&img_nicknaming, &char_pos).unwrap();
 
             chars.insert(bitmap, char);
         }
@@ -403,12 +397,7 @@ pub fn read_char(
         return Err(msg);
     }
 
-    let roi = Roi {
-        img: img,
-        pos: pos.clone(),
-    };
-
-    let bitmap = CharBitmap::from_roi(&roi)?;
+    let bitmap = CharBitmap::from_roi(img, &pos)?;
 
     let &char = chars.get(&bitmap).ok_or("character not recognized")?;
     Ok(char)
