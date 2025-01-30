@@ -1,7 +1,7 @@
-//! Text characters.
+//! The OCR related functionality.
 //!
-//! Functionality for handling characters found in Pokemon Gen I and II.
-//! Includes Latin letters, ligatures, digits, symbols and punctuation.
+//! This module enables reading texts from Pokemon RBY and GSC.
+//! A character can refer to digits, Latin letters, ligatures, symbols and punctuation.
 //!
 //! Sources:  
 //! https://bulbapedia.bulbagarden.net/wiki/Text_entry_in_the_Pok%C3%A9mon_games  
@@ -15,21 +15,21 @@ use imageproc::contrast::threshold_mut;
 use std::collections::HashMap;
 use std::ops::Deref;
 
-/// Stores the 7x7 binary image of a character as a u64 value.
+/// Encodes the binary image of a text character as a u64 value.
 ///
-/// The 0th element is the LSB.
-/// The background bits have the value 0.
+/// A character occupies a 7x7 region on the image. These pixels are encoded
+/// as a u64 value, where the n-th bit correponds to the n-th pixel in
+/// row-major order. The bits of the background have a value of 0.
+/// Pixels with a non-zero value are part of the foreground.
 #[derive(PartialEq, Eq, Hash)]
 pub struct CharBitmap(u64);
 
 impl CharBitmap {
-    /// Creates a CharBitmap from pixels.
-    ///
-    /// The 0th pixel will be the LSB.
-    /// A bit will be 0 if the pixel value is 0, 1 otherwise.
-    pub fn from_pixels(pixels: &[u8]) -> Result<CharBitmap, &str> {
+    /// Encodes the sequence of pixels.
+    pub fn from_pixels(pixels: &[u8]) -> Result<CharBitmap, String> {
         if pixels.len() != 49 {
-            return Err("Expected exactly 49 items in the sequence.");
+            let msg = format!("Expected 49 pixels, got {:?}", pixels.len());
+            return Err(msg);
         }
 
         let bitmap = pixels
@@ -41,10 +41,14 @@ impl CharBitmap {
         Ok(CharBitmap(bitmap))
     }
 
+    /// Encodes the pixels of the region of interest.
     pub fn from_roi(roi: &Roi) -> Result<CharBitmap, String> {
         let pos = roi.pos();
         if pos.width != 7 || pos.height != 7 {
-            let msg = format!("Width and height needs to be 7. Got {:?}", pos);
+            let msg = format!(
+                "Expected width and height to be 7, got {:?} and {:?}",
+                pos.width, pos.height
+            );
             return Err(msg);
         }
 
@@ -57,8 +61,7 @@ impl CharBitmap {
         Ok(CharBitmap(bitmap))
     }
 
-    /// Returns the Hamming distance of two CharBitmaps.
-    /// It is the number of positions the bits differ.
+    /// Returns the number of bits the two CharBitmaps differ.
     pub fn hamming_dist(&self, rhs: &CharBitmap) -> u32 {
         let diff = self.0 ^ rhs.0;
         let hamming_dist = diff.count_ones();
@@ -66,13 +69,10 @@ impl CharBitmap {
     }
 }
 
-/// A map from the CharBitmaps to the characters.
+/// Enables to decode a character on the screen.
 ///
-/// The characters include:
-/// - Latin letters
-/// - ligatures (PK, MN etc.)
-/// - digits
-/// - symbols and punctuation (?, ! etc.)
+/// Contains upper case letters and digits for Pokemon RBY and GSC.
+/// No other character was necessery yet.
 pub struct CharTable {
     chars: HashMap<CharBitmap, &'static str>,
 }
@@ -85,10 +85,10 @@ impl CharTable {
         let mut chars = HashMap::<CharBitmap, &str>::new();
 
         let img_nicknaming =
-            image::load_from_memory(IMG_NICKNAMING_1).expect("could not load Nicknaming_I.png");
+            image::load_from_memory(IMG_NICKNAMING_1).expect("failed to load image");
         let mut img_nicknaming = img_nicknaming.to_luma8();
         threshold_mut(&mut img_nicknaming, 200); // Needed as black is 7 white is 23x
-        invert(&mut img_nicknaming);
+        invert(&mut img_nicknaming); // Background should have the value of 0
         let img_nicknaming = img_nicknaming;
 
         let char_positions = [
@@ -298,7 +298,7 @@ impl CharTable {
         // GSC has a slightly modified set of character
 
         let img_nicknaming =
-            image::load_from_memory(IMG_NICKNAMING_2).expect("could not load Nicknaming_II.png");
+            image::load_from_memory(IMG_NICKNAMING_2).expect("failed to load image");
         let mut img_nicknaming = img_nicknaming.to_luma8();
         threshold_mut(&mut img_nicknaming, 200); // Needed as black is 7 white is 23x
         invert(&mut img_nicknaming);
@@ -389,14 +389,18 @@ impl Deref for CharTable {
     }
 }
 
-/// Reads a character from 7x7 pixel large region of a `GrayImage`.
+/// Reads a character from a 7x7 pixel large region of an image.
 pub fn read_char(
     img: &GrayImage,
     pos: &Position,
     chars: &CharTable,
 ) -> Result<&'static str, String> {
     if pos.width != 7 || pos.height != 7 {
-        return Err("incorrect Roi dimensions".to_string());
+        let msg = format!(
+            "Expected width and height to be 7, got {:?} and {:?}",
+            pos.width, pos.height
+        );
+        return Err(msg);
     }
 
     let roi = Roi {
@@ -406,14 +410,22 @@ pub fn read_char(
 
     let bitmap = CharBitmap::from_roi(&roi)?;
 
-    let char = chars.get(&bitmap).ok_or("could not recognize character")?;
-    Ok(*char)
+    let &char = chars.get(&bitmap).ok_or("character not recognized")?;
+    Ok(char)
 }
 
-/// Reads the characters from the field.
+/// Reads one line of text from the image.
+///
+/// A character is 7 pixels wide and high. There is a single pixel of space
+/// between characters.
 pub fn read_field(img: &GrayImage, pos: &Position, chars: &CharTable) -> Result<String, String> {
-    if pos.height != 7 || (pos.width + 1) % 8 != 0 {
-        return Err("incorrect Roi dimensions".to_string());
+    if pos.height != 7 {
+        let msg = format!("Expected height to be 7, got {:?}", pos.height);
+        return Err(msg);
+    }
+    if (pos.width + 1) % 8 != 0 {
+        let msg = format!("Invalid width of {:?}", pos.width);
+        return Err(msg);
     }
 
     let char_count = (pos.width + 1) / 8;
