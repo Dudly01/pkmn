@@ -24,10 +24,7 @@ fn main() {
         width: 23,
         height: 7,
     };
-    let roi = Roi {
-        img: &img_dyn.to_luma8(),
-        pos: pos_ndex,
-    };
+    let roi = Roi::new(&img_dyn.to_luma8(), pos_ndex).expect("could not create RoI");
 
     println!("Done");
 }

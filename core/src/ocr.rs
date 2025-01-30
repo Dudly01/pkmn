@@ -51,10 +51,7 @@ impl CharBitmap {
             return Err(msg);
         }
 
-        let roi = Roi {
-            img: &img,
-            pos: pos.clone(),
-        };
+        let roi = Roi::new(&img, pos.clone())?;
 
         let bitmap = roi
             .iter()

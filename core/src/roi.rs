@@ -1,13 +1,33 @@
 use crate::position::Position;
 use image::{GrayImage, Luma};
 
-/// The Region of Interest (ROI) of a image::GreyImage.
+/// The Region of Interest (ROI) of an image.
+///
+/// The primary purpose of Roi is to provide a simple way to iterate over the
+/// pixels of a binary image. It checks the region to be within the image
+/// bounds to avoid panics during iteration.
+/// May make sense to replace it later with the iterator itself.
 pub struct Roi<'a> {
-    pub img: &'a GrayImage,
-    pub pos: Position,
+    img: &'a GrayImage,
+    pos: Position,
 }
 
 impl<'a> Roi<'a> {
+    #[allow(unused_comparisons)]
+    pub fn new(img: &'a GrayImage, pos: Position) -> Result<Self, String> {
+        let (img_width, img_height) = img.dimensions();
+        if pos.x < 0 // no need due to type limits
+            || pos.y < 0 // no need due to type limits
+            || pos.x + pos.width > img_width
+            || pos.y + pos.height > img_height
+        {
+            let msg = format!("RoI goes out of image bounds, image is {img_width:?}x{img_height:?} pixels, RoI is {pos:?}");
+            return Err(msg);
+        }
+
+        Ok(Roi { img, pos })
+    }
+
     pub fn iter(&self) -> RoiIter<'_> {
         RoiIter {
             roi: self,
