@@ -26,7 +26,7 @@ PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows learnsets, 
   <img class="screenshot"src="img/Crystal_select_summary.png" alt="0">
   </div>
   <figcaption>
-  To access the summary, open the main menu with the START button, go into your party, select a Pokémon and choose STATS. The steps are the same for RBY and GSC.
+  To access the summary, open the main menu with the START button, go into your party, select a Pokémon, then choose STATS.
   </figcaption>
 </figure>
 
@@ -37,7 +37,7 @@ PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows learnsets, 
   <img class="screenshot" src="img/Crystal_summary_3.png" alt="2">
   </div>
   <figcaption>
-  The three summary screens in Pokémon GSC show the details of your Pokémon. The app shows different info based on the screen that is scanned.
+  Pokémon GSC uses three screens for the summary; the app shows different info for each.
   </figcaption>
 </figure>
 
@@ -47,7 +47,7 @@ PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows learnsets, 
   <img class="screenshot" src="img/Yellow_summary_2.png" alt="1">
   </div>
   <figcaption>
-  Pokémon RBY shows the details on two screens.
+  Pokémon RBY splits the summary into two screens.
   </figcaption>
 </figure>
 
@@ -63,7 +63,7 @@ The app works with emulators,s and videos -- if the conditions are met. The game
   <img class="screenshot" src="img/Gold_SGB_summary_3.png" alt="1">
   </div>
   <figcaption>
-  Super Game Boy borders with Pokémon Blue and Gold.
+  Pokémon Blue and Gold with their Super Game Boy borders.
   </figcaption>
 </figure>
 
