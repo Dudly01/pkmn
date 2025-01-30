@@ -11,42 +11,82 @@
 
 # PKMN
 
-PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows learnsets, evolutions and the details of known moves. No need to insert data into calculators or search online: PKMN shows you the info for the Pokémon you have selected in the game. It reads directly from the screen and processes everything in the browser; no data leaves your computer! 
+PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows learnsets, evolutions and the details of known moves and held items. No need to insert data into calculators or search online: PKMN shows you the info for the Pokémon you have selected in the game. It reads directly from the screen and processes everything in the browser; no data leaves your computer! 
 
 ## Quickstart
 
 1. Open the summary screen (STATS) of a Pokémon in the game.
 1. Click "Select screen" to select the window or screen that shows the game.
-1. Click "Scan once" to scan the screen once and "Start scanning" to scan it continuosly.
+1. Click "Scan once" to scan the screen once and "Start scanning" to scan it continuously. 
 1. See the results of the scan.
+
+<figure>
+  <div class="multi-img-figure">
+  <img src="img/Crystal_select_party.png" alt="1">
+  <img src="img/Crystal_select_summary.png" alt="0">
+  </div>
+  <figcaption>
+  To access the summary, open the main menu with the START button, go into your party, select a Pokémon and choose STATS. The steps are the same for RBY and GSC.
+  </figcaption>
+</figure>
+
+<figure>
+  <div class="multi-img-figure">
+  <img src="img/Crystal_summary_1.png" alt="0">
+  <img src="img/Crystal_summary_2.png" alt="1">
+  <img src="img/Crystal_summary_3.png" alt="2">
+  </div>
+  <figcaption>
+  The three summary screens in Pokémon GSC show the details of your Pokémon. The app shows different info based on the screen that is scanned.
+  </figcaption>
+</figure>
+
+<figure>
+  <div class="multi-img-figure">
+  <img src="img/Yellow_summary_1.png" alt="0">
+  <img src="img/Yellow_summary_2.png" alt="1">
+  </div>
+  <figcaption>
+  Pokémon RBY shows the details on two screens.
+  </figcaption>
+</figure>
 
 ## Details
 
-The app is intended for the English version of Pokémon RBY and GSC. However, it may function partially for other language variants as well. For example, the DV calculation is known to work with Pokémon Gelbe Edition.
+The PKMN supports the English version of Pokémon RBY and GSC. It may have partial functionality for other language variants though; the DV calculation works with Pokémon Gelbe Edition too.
 
-PKMN can scan emulators, screenshots and videos -- if the conditions are met. The game screen needs to be fully visible, to have the original 10:9 aspect ratio, to have no direct white borders and to be not blurry or distorted. The Super Game Boy borders need to be disabled. Scanning is not expected to work with photos taken with a camera.
+The app works with emulators, screenshots and videos -- if the conditions are met. The game screen needs to be in the original 10:9 aspect ratio, to be fully visible (mind the cursor), to have no white borders directly around it and to be neither blurry nor distorted. It is not expected to work with photos taken with a camera. Super Game Boy borders may be enabled.
 
-The DV calculation works for recently caught Pokémon. Through battling and consuming certain items, Pokémon gain stat experience that contributes to their total stat values. As this experience is hidden, the calculator assumes it to be 0. Bulbapedia describes [stat experience](https://bulbapedia.bulbagarden.net/wiki/Effort_values#Stat_experience) in more details.
+<figure>
+  <div class="multi-img-figure">
+  <img src="img/Blue_SGB_summary_1.png" alt="0">
+  <img src="img/Gold_SGB_summary_3.png" alt="1">
+  </div>
+  <figcaption>
+  Super Game Boy borders with Pokémon Blue and Gold.
+  </figcaption>
+</figure>
 
-DVs are calculated from the level, the base stat and the current stat value of a Pokémon. Finer details, such as the shared DV value for Spc. Att and Spc. Def, the effects of Gen II gender and the connection between the HP DV and other DVs are not yet taken into account. To learn more, visit [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Individual_values#Generation_I_and_II).
+The DV calculation works for recently caught Pokémon. Through battling and consuming certain items, Pokémon gain stat experience that contributes to their total stat values. As this experience is hidden, the calculator assumes it to be 0. Calculating the DV of a Pokémon that collected plenty of this experience will be inaccurate or will result in an error. Read more about stat experience on [stat Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Effort_values#Stat_experience). 
 
-The app was tested with Firefox on PC.
+The DV calculation has other limitations. Finer details, such as the shared DV value for Spc. Att and Spc. Def, the effects of Gen II gender and the connection between the HP DV and other DVs are not yet taken into account. Read more about stats and DVs on [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Individual_values#Generation_I_and_II) and [Smogon](https://www.smogon.com/ingame/guides/rby_gsc_stats).
+
+The app was tested with Firefox on Windows and Ubuntu.
 
 ## Troubleshooting
 
 When encountering issues, following these steps can generally solve the majority of them:
 
 - Refresh the page.
-- Select the screen or window that shows the game.
-- Make sure that there is no white border directly around the Game Boy screen.
-- Disable the Super Game Boy borders.
-- Use the original 10:9 aspect ratio for the game.
-- Make sure that the screen is fully visible. Avoid covering the game with the cursor.
-- Experiment with resizing the screen, especially if not using the original resolution.
-- Make sure that the game shows the Pokémon summary (stats) screen.
-- When multiple games are visible, the one with the bigger screen will be scanned.
+- Select the screen or window that shows the game screen.
+- Make sure the game is in the original 10:9 aspect ratio.
+- Make sure there is no white border directly around the game screen.
+- Make sure the screen is fully visible. Mind your cursor.
+- Make sure the game shows the Pokémon summary (STATS) screen.
+- Try resizing the game screen.
 - Click "Show snapshot" to see the image that was scanned last.
 - Click "Show screen" to show the window or screen that the app receives as input.
+- When multiple games are visible, the one with the bigger screen will be scanned.
 
 With the help of the error messages, this process may be simplified.
 
@@ -63,9 +103,9 @@ This error indicates that the Game Boy screen was found (likely correctly) and t
 This error appears if a stat has an unexpected(ly high) value. The Pokémon likely gained stat experience through battling or consuming certain items. The DV can not be calculated just from the visible stats anymore.
 
 **could not read XXX: could not read character #X: could not recognize character**:  
-A specific field could not be read because a character (letter) is not recognized. The game should be fully visible and not even the cursor should covers the texts. Make sure the image is not blurry and try resizing the game screen until the error goes away.
+A specific field could not be read because a character (letter) is not recognized. The game should be fully visible and not even the cursor should cover the texts. Make sure the game is not blurry and try resizing it until the error goes away.
 
-If in doubt, use the "Show snapshot" button to to see the image that was scanned last, and the "Show screen" button to see the window or screen that the app receives as input.
+If in doubt, use the "Show snapshot" button to see the image that was scanned last, and use the "Show screen" button to see the window or screen that the app receives as input.
 
 ## Credits
 
