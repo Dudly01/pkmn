@@ -216,7 +216,10 @@ def show_plotly(fig: go.Figure):
 
 
 def plot_roi(roi):
-    """Plots a crate::roi::Roi instance."""
+    """Plots a crate::roi::Roi instance.
+
+    Note: may be worth to split input to separate img and position
+    """
     roi = debugger.unwrap(roi)
 
     image = roi.GetChildMemberWithName("img")
@@ -257,7 +260,7 @@ def plot_roi(roi):
         fig = px.imshow(
             data_of_interest,
             color_continuous_scale="gray",
-            range_color=[0, np.iinfo(numpy_dtype).max],  # 
+            range_color=[0, np.iinfo(numpy_dtype).max],
         )
         fig.update_layout(coloraxis_showscale=False)
 
