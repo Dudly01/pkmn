@@ -47,13 +47,13 @@ fn verify_layout(c: &mut Criterion) {
 
     group.bench_function("summary-screen-1", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_1_PATH);
-        let chars = pkmn::char::Charset::new();
+        let chars = pkmn::ocr::CharTable::new();
         let screen_layout = pkmn::gameboy::RbySummary1::new();
         b.iter(|| screen_layout.verify_layout(&img, &chars));
     });
     group.bench_function("summary-screen-2", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_2_PATH);
-        let chars = pkmn::char::Charset::new();
+        let chars = pkmn::ocr::CharTable::new();
         let screen_layout = pkmn::gameboy::RbySummary2::new();
         b.iter(|| screen_layout.verify_layout(&img, &chars));
     });
@@ -65,13 +65,13 @@ fn read_screen(c: &mut Criterion) {
 
     group.bench_function("summary-screen-1", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_1_PATH);
-        let chars = pkmn::char::Charset::new();
+        let chars = pkmn::ocr::CharTable::new();
         let screen_layout = pkmn::gameboy::RbySummary1::new();
         b.iter(|| screen_layout.read_fields(&img, &chars));
     });
     group.bench_function("summary-screen-2", |b| {
         let img = init_img_for_layout_tests(SUMMARY_SCREEN_2_PATH);
-        let chars = pkmn::char::Charset::new();
+        let chars = pkmn::ocr::CharTable::new();
         let screen_layout = pkmn::gameboy::RbySummary2::new();
         b.iter(|| screen_layout.read_fields(&img, &chars));
     });

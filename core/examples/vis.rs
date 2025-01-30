@@ -2,11 +2,12 @@
 
 use core::{position::Position, roi::Roi};
 
+#[allow(unused_variables)]
 #[show_image::main]
 fn main() {
     const EXAMPLE_IMG: &[u8] = include_bytes!("../data/images/Yellow_summary_1.png"); // Compile-time file check
 
-    let img_dyn = image::load_from_memory(EXAMPLE_IMG).expect("could not load Nicknaming_I.png");
+    let img_dyn = image::load_from_memory(EXAMPLE_IMG).expect("could not load image");
 
     let img_buff = img_dyn.clone().to_rgb32f();
 
@@ -24,10 +25,7 @@ fn main() {
         width: 23,
         height: 7,
     };
-    let roi = Roi {
-        img: &img_dyn.to_luma8(),
-        pos: pos_ndex,
-    };
+    let roi = Roi::new(&img_dyn.to_luma8(), pos_ndex).expect("could not create RoI");
 
     println!("Done");
 }

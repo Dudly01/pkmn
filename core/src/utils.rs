@@ -1,10 +1,12 @@
+//! High-level functions to scan the game screens and get a printable results.
+
 use crate as pkmn;
-use crate::char::Charset;
 use crate::fmt;
 use crate::gameboy::{GscSummary1, GscSummary2, GscSummary3, RbySummary1, RbySummary2};
 use crate::items::GscItems;
 use crate::learnset::{GscLearnsets, RbyLearnsets};
 use crate::moves::{GscMoves, Moves};
+use crate::ocr::CharTable;
 use crate::pokemon::{GscPokedex, RbyPokedex};
 use crate::stats::{DvRange, StatVariation};
 use image::imageops::invert;
@@ -14,7 +16,7 @@ use imageproc::contrast::threshold_mut;
 fn scan_rby_summary_1(
     img_gameboy: &GrayImage,
     rby_summary_1: &RbySummary1,
-    chars: &Charset,
+    chars: &CharTable,
     rby_pokedex: &RbyPokedex,
 ) -> Result<String, String> {
     let content = rby_summary_1
@@ -131,7 +133,7 @@ fn scan_rby_summary_1(
 fn scan_rby_summary_2(
     img_gameboy: &GrayImage,
     rby_summary_2: &RbySummary2,
-    chars: &Charset,
+    chars: &CharTable,
     rby_pokedex: &RbyPokedex,
     rby_evo_chains: &Vec<String>,
     rby_learnsets: &RbyLearnsets,
@@ -218,7 +220,7 @@ fn scan_rby_summary_2(
 fn scan_gsc_summary_1(
     img_gameboy: &GrayImage,
     gsc_summary_1: &GscSummary1,
-    chars: &Charset,
+    chars: &CharTable,
     gsc_pokedex: &GscPokedex,
 ) -> Result<String, String> {
     let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_1.ndex, &chars);
@@ -295,7 +297,7 @@ fn scan_gsc_summary_1(
 fn scan_gsc_summary_2(
     img_gameboy: &GrayImage,
     gsc_summary_2: &GscSummary2,
-    chars: &Charset,
+    chars: &CharTable,
     gsc_pokedex: &GscPokedex,
     gsc_items: &GscItems,
     gsc_moves: &GscMoves,
@@ -440,7 +442,7 @@ fn scan_gsc_summary_2(
 fn scan_gsc_summary_3(
     img_gameboy: &GrayImage,
     gsc_summary_3: &GscSummary3,
-    chars: &Charset,
+    chars: &CharTable,
     gsc_pokedex: &GscPokedex,
 ) -> Result<String, String> {
     let ndex = pkmn::ocr::read_field(&img_gameboy, &gsc_summary_3.ndex, &chars);
@@ -615,9 +617,11 @@ fn scan_gsc_summary_3(
     return Ok(t);
 }
 
-/// Scans the image and returns the printable text.
-/// The summary screen 1 is for printing the stat DVs.
-/// The summary screen 2 us for printing the learnset and evolution chain.
+/// Locates and reads the game screen and returns the details of the Pokemon.
+///
+/// A one-stop function to locate the game on the input image, to read its
+/// content and to return the relevant info in a human readable form.
+/// Works with the summary screens of RBY and GSC.
 pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     let (w, h) = (img_screen.width(), img_screen.height());
     let (w_min, h_min) = (160, 144);
@@ -628,7 +632,7 @@ pub fn scan_img(img_screen: DynamicImage) -> Result<String, String> {
     }
 
     // Init data
-    let chars = pkmn::char::Charset::new();
+    let chars = pkmn::ocr::CharTable::new();
 
     let rby_pokedex = pkmn::pokemon::RbyPokedex::new();
     let rby_learnsets = pkmn::learnset::RbyLearnsets::new();
