@@ -396,7 +396,7 @@ pub fn read_char(
 
     let bitmap = CharBitmap::from_image_region(img, &pos)?;
 
-    let &char = chars.get(&bitmap).ok_or("character not recognized")?;
+    let &char = chars.get(&bitmap).ok_or("could not recognize character")?;
     Ok(char)
 }
 
