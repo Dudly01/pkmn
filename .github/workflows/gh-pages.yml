@@ -39,7 +39,7 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/net/scripts
         run: |
-          python version.py
+          python add_version_to_footer.py
 
       - name: Build        
         shell: bash
