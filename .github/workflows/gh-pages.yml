@@ -39,7 +39,8 @@ jobs:
         shell: bash
         working-directory: ${{github.workspace}}/net/scripts
         run: |
-          python version.py
+          python add_version_to_footer.py;
+          python copy_images_to_static_dir.py;
 
       - name: Build        
         shell: bash

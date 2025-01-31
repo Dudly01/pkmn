@@ -185,6 +185,14 @@ img {
     color: #1b1b1b;
 }
 
+/* Screenshots from Pokémon RBY and GSC */
+.screenshot {
+    border-radius: 0;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+}
+
 .button {
     --button-bg: var(--button-primary-default);
     --button-bg-hover: var(--button-primary-hover);
