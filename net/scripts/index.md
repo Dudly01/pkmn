@@ -53,9 +53,9 @@ PKMN is an app for Pokémon RBY and GSC. It calculates DVs and shows learnsets, 
 
 ## Details
 
-The PKMN supports the English version of Pokémon RBY and GSC. It may have partial functionality for other language variants though; the DV calculation works with Pokémon Gelbe Edition too.
+The PKMN was created for the English version of Pokémon RBY and GSC. Nonetheless, it may have partial functionality with other language variants as well. As an example, the DV calculation also works with Pokémon Gelbe Edition.
 
-The app works with emulators,s and videos -- if the conditions are met. The game screen needs to be in the original 10:9 aspect ratio, to be fully visible (mind the cursor), to have no white borders directly around it and to be neither blurry nor distorted. It is not expected to work with photos taken with a camera. Super Game Boy borders may be enabled.
+The app works with emulators, screenshots and videos -- if the conditions are met. The game screen needs to be in the original 10:9 aspect ratio, to be fully visible (mind the cursor), to have no white borders directly around it and to be neither blurry nor distorted. It is not expected to work with photos taken with a camera. Super Game Boy borders may be enabled.
 
 <figure>
   <div class="multi-img-figure">
@@ -67,7 +67,7 @@ The app works with emulators,s and videos -- if the conditions are met. The game
   </figcaption>
 </figure>
 
-The DV calculation works for recently caught Pokémon. Through battling and consuming certain items, Pokémon gain stat experience that contributes to their total stat values. As this experience is hidden, the calculator assumes it to be 0. Calculating the DV of a Pokémon that collected plenty of this experience will be inaccurate or will result in an error. Read more about stat experience on [stat Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Effort_values#Stat_experience). 
+The DV calculation works for recently caught Pokémon. Through battles and by consuming certain items, Pokémon gain stat experience that contributes to their total stat values. As this experience is hidden, the calculator assumes it to be 0. Calculating the DV of a Pokémon that collected plenty of this experience will be inaccurate or will result in an error. Read more about stat experience on [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Effort_values#Stat_experience). 
 
 The DV calculation has other limitations. Finer details, such as the shared DV value for Spc. Att and Spc. Def, the effects of Gen II gender and the connection between the HP DV and other DVs are not yet taken into account. Read more about stats and DVs on [Bulbapedia](https://bulbapedia.bulbagarden.net/wiki/Individual_values#Generation_I_and_II) and [Smogon](https://www.smogon.com/ingame/guides/rby_gsc_stats).
 
@@ -75,12 +75,12 @@ The app was tested with Firefox on Windows and Ubuntu.
 
 ## Troubleshooting
 
-When encountering issues, following these steps can generally solve the majority of them:
+When encountering issues, following these steps should solve the majority of them:
 
 - Refresh the page.
 - Select the screen or window that shows the game screen.
 - Make sure the game is in the original 10:9 aspect ratio.
-- Make sure there is no white border directly around the game screen.
+- Make sure there are no white borders directly around the game screen.
 - Make sure the screen is fully visible. Mind your cursor.
 - Make sure the game shows the Pokémon summary (STATS) screen.
 - Try resizing the game screen.
@@ -94,16 +94,16 @@ With the help of the error messages, this process may be simplified.
 This error appears if the source window is minimized.
 
 **could not locate Game Boy screen**:  
-The Game Boy screen was not found on the shared window or screen. Make sure it is indeed there. The game needs to be fully visible (mind the cursor), in the original 10:9 aspect ratio and have no white borders around. The Super Game Boy borders need to be disabled.
+The Game Boy screen was not found on the shared window or screen. Make sure it is indeed there. The game needs to be fully visible (mind the cursor), in the original 10:9 aspect ratio and have no white borders around it.
 
 **could not recognize screen layout**:  
-This error indicates that the Game Boy screen was found (likely correctly) and the game screen is not recognized. First, make sure that the game shows a Pokémon summary (stats) screen. Having the cursor on the Game Boy screen can also be a cause.
+This error indicates that the Game Boy screen was found (likely correctly) and the game screen is not recognized. Make sure that the game shows a Pokémon summary (stats) screen. Having the cursor on the Game Boy screen can also cause this error.
 
 **could not determine XXX DV range: stat value not found in stat variation XXX**:  
-This error appears if a stat has an unexpected(ly high) value. The Pokémon likely gained stat experience through battling or consuming certain items. The DV can not be calculated just from the visible stats anymore.
+This error appears if a stat has an unexpected(ly high) value. The Pokémon likely gained stat experience through battles or by consuming certain items. The DV can not be calculated just from the visible stats anymore.
 
 **could not read XXX: could not read character #X: could not recognize character**:  
-A specific field could not be read because a character (letter) is not recognized. The game should be fully visible and not even the cursor should cover the texts. Make sure the game is not blurry and try resizing it until the error goes away.
+A specific field could not be read because a character (Latin letter or digit) is not recognized. The game should be fully visible and not even the cursor should cover the texts. Make sure the game is not blurry. Try resizing it until the error goes away.
 
 If in doubt, use the "Show snapshot" button to see the image that was scanned last, and use the "Show screen" button to see the window or screen that the app receives as input.
 
